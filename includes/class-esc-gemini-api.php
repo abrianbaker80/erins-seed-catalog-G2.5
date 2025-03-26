@@ -13,7 +13,7 @@ class ESC_Gemini_API {
     // Use the generative language model API endpoint
     // Make sure to use the correct model name (e.g., models/gemini-1.5-flash-latest, models/gemini-pro)
     // Flash is faster and cheaper, Pro might be more thorough. Test which works better.
-    const API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-thinking-exp-01-21:generateContent';
+    const API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent';
 
 
     /**

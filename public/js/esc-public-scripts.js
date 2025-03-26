@@ -5,23 +5,22 @@ jQuery(document).ready(function($) {
     $('#esc-ai-fetch-trigger').on('click', function() {
         var $button = $(this);
         var $statusDiv = $('#esc-ai-status');
-        var $resultDiv = $('#esc-ai-result-display');
+        var $extendedForm = $('#esc-extended-form');
         var $form = $button.closest('form');
-
         var seedName = $form.find('#esc_seed_name').val();
         var variety = $form.find('#esc_variety_name').val();
-        var brand = $form.find('#esc_brand').val();
-        var skuUpc = $form.find('#esc_sku_upc').val();
 
         if (!seedName) {
-            $statusDiv.text('Please enter a Seed Name first.').css('color', 'red');
+            $statusDiv.html('<div class="esc-error">Please enter a Seed Type first.</div>');
             return;
         }
 
         // Disable button and show loading state
-        $button.prop('disabled', true).text(esc_ajax_object.loading_text || 'Fetching...');
-        $statusDiv.text('Contacting AI assistant...').css('color', '#555');
-        $resultDiv.hide().empty(); // Clear previous results
+        $button.prop('disabled', true).html('<span class="dashicons dashicons-update-alt"></span> ' + (esc_ajax_object.loading_text || 'Searching...'));
+        $statusDiv.html('<div class="esc-loading">Searching for seed information...</div>');
+        
+        // Hide extended form while searching
+        $extendedForm.slideUp();
 
         $.ajax({
             url: esc_ajax_object.ajax_url,
@@ -30,138 +29,83 @@ jQuery(document).ready(function($) {
                 action: 'esc_gemini_search',
                 nonce: esc_ajax_object.nonce,
                 seed_name: seedName,
-                variety: variety,
-                brand: brand,
-                sku_upc: skuUpc
+                variety: variety
             },
-            dataType: 'json', // Expect JSON response
+            dataType: 'json',
             success: function(response) {
                 if (response.success) {
-                    $statusDiv.text('AI information received. Review below and fill form.').css('color', 'green');
-                    displayAiResults(response.data, $form, $resultDiv);
+                    $statusDiv.html('<div class="esc-success">Information found! Review and edit below.</div>');
+                    displayAiResults(response.data);
+                    // Show the extended form with a smooth animation
+                    $extendedForm.slideDown();
+                    // Scroll to the results after a short delay to allow animation
+                    setTimeout(function() {
+                        $('html, body').animate({
+                            scrollTop: $statusDiv.offset().top - 50
+                        }, 500);
+                    }, 300);
                 } else {
-                    // Display specific error from Gemini or generic one
-                    let errorMsg = esc_ajax_object.gemini_error_text || 'Error fetching AI info:';
-                    if (response.data && response.data.message) {
-                        errorMsg += ' ' + response.data.message;
-                        if(response.data.data) { // Add extra details if available
-                             errorMsg += ' (' + response.data.data + ')';
-                        }
-                    } else {
-                        errorMsg += ' Unknown error.';
-                    }
-                    $statusDiv.text(errorMsg).css('color', 'red');
-                    console.error("Gemini Error:", response.data);
+                    let errorMsg = response.data.message || esc_ajax_object.gemini_error_text || 'Error finding seed information.';
+                    $statusDiv.html('<div class="esc-error">' + errorMsg + '</div>');
+                    // Still show the form so user can enter manually
+                    $extendedForm.slideDown();
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                $statusDiv.text(esc_ajax_object.error_text || 'An error occurred during the request.').css('color', 'red');
+                $statusDiv.html('<div class="esc-error">' + (esc_ajax_object.error_text || 'An error occurred during the search.') + '</div>');
                 console.error("AJAX Error:", textStatus, errorThrown);
+                // Still show the form so user can enter manually
+                $extendedForm.slideDown();
             },
             complete: function() {
-                // Re-enable button
-                $button.prop('disabled', false).text('Fetch AI Info');
+                // Restore button state
+                $button.prop('disabled', false).html('<span class="dashicons dashicons-search"></span> Search');
             }
         });
     });
 
     // Function to display AI results and pre-fill form
-    function displayAiResults(data, $form, $resultDiv) {
-        $resultDiv.empty().append('<h4>Suggested Information (Review & Edit)</h4>');
-        let foundData = false;
-
+    function displayAiResults(data) {
         if (!data || typeof data !== 'object') {
-            $resultDiv.append('<p>Invalid data received from AI.</p>');
+            console.error('Invalid data received from AI');
             return;
         }
 
-        // Skip these fields in display
+        // Clear any previous values
+        $('#esc-extended-form input:not([type="hidden"]), #esc-extended-form textarea, #esc-extended-form select').each(function() {
+            if ($(this).is(':checkbox')) {
+                $(this).prop('checked', false);
+            } else {
+                $(this).val('');
+            }
+        });
+
+        // Skip these fields when displaying/filling
         const skipFields = ['action', 'nonce', 'suggested_term_ids'];
 
-        // Display all non-empty values from the data object
+        // Fill in the form fields with AI data
         Object.entries(data).forEach(([key, value]) => {
             if (value !== null && value !== '' && !skipFields.includes(key)) {
-                let label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                let displayValue = '';
-
-                // Format the display value based on type
-                if (typeof value === 'boolean') {
-                    displayValue = value ? 'Yes' : 'No';
-                } else {
-                    displayValue = escapeHtml(String(value));
-                }
-
-                $resultDiv.append(
-                    '<div class="esc-ai-result-item">' +
-                    '<strong>' + label + ':</strong> ' +
-                    '<span class="ai-value">' + displayValue + '</span>' +
-                    '</div>'
-                );
-                foundData = true;
-
-                // Pre-fill form field if it exists and is empty
-                let $field = $form.find('#esc_' + key);
+                let $field = $('#esc_' + key);
                 if ($field.length > 0) {
-                    let currentValue = $field.val();
-                    if (!currentValue) {
-                        if ($field.is(':checkbox')) {
-                            $field.prop('checked', !!value);
-                        } else if ($field.is('select')) {
-                            if ($field.find('option[value="' + value + '"]').length > 0) {
-                                $field.val(value);
-                            } else {
-                                $field.find('option').filter(function() {
-                                    return $(this).text().toLowerCase() === String(value).toLowerCase();
-                                }).prop('selected', true);
-                            }
-                        } else {
+                    if ($field.is(':checkbox')) {
+                        $field.prop('checked', !!value);
+                    } else if ($field.is('select[multiple]')) {
+                        // Handle multiple select (categories)
+                        if (Array.isArray(value)) {
                             $field.val(value);
                         }
+                    } else {
+                        $field.val(value);
                     }
                 }
             }
         });
 
-        // Handle category suggestions separately
-        if (data.esc_seed_category_suggestion) {
-            $resultDiv.append(
-                '<div class="esc-ai-result-item">' +
-                '<strong>Suggested Categories:</strong> ' +
-                '<span class="ai-value">' + escapeHtml(data.esc_seed_category_suggestion) + '</span>' +
-                '</div>'
-            );
-            foundData = true;
-
-            // Try to select the suggested categories in the dropdown
-            if (data.suggested_term_ids && Array.isArray(data.suggested_term_ids) && data.suggested_term_ids.length > 0) {
-                let $categorySelect = $form.find('#esc_seed_category');
-                if ($categorySelect.length > 0 && $categorySelect.is('select[multiple]')) {
-                    let currentSelection = $categorySelect.val();
-                    if (!currentSelection || !currentSelection.length) {
-                        $categorySelect.val(data.suggested_term_ids);
-                    }
-                }
-            }
+        // Handle category suggestions
+        if (data.suggested_term_ids && Array.isArray(data.suggested_term_ids)) {
+            $('#esc_seed_category').val(data.suggested_term_ids);
         }
-
-        if (!foundData) {
-            $resultDiv.append('<p>No specific details found by AI.</p>');
-        }
-
-        $resultDiv.show();
-    }
-
-    // Helper to escape HTML for display
-    function escapeHtml(text) {
-        if (typeof text !== 'string') return String(text);
-        const map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
-        };
-        return text.replace(/[&<>"']/g, m => map[m]);
     }
 
     // --- Add New Seed Form Submission ---

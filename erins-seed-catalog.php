@@ -3,11 +3,11 @@
  * Plugin Name:       Erin's Seed Catalog
  * Plugin URI:        https://github.com/abrianbaker80/erins-seed-catalog-G2.5.git
  * Description:       Catalog and track your vegetable garden seeds with AI-assisted information retrieval via the Gemini API. Mobile-first design.
- * Version:           1.0.0
+ * Version:           1.0.2
  * Requires at least: 6.0
  * Requires PHP:      8.2
  * Author:            Allen Baker
- * Author URI:        https://example.com
+ * Author URI:        https://github.com/abrianbaker80/erins-seed-catalog-G2.5.git
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       erins-seed-catalog
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define Constants
-define( 'ESC_VERSION', '1.0.0' );
+define( 'ESC_VERSION', '1.0.2' );
 define( 'ESC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ESC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'ESC_PLUGIN_FILE', __FILE__ );
