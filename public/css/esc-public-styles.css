@@ -1,0 +1,387 @@
+/* Erin's Seed Catalog - Public Styles (Mobile-First) */
+
+/* General Container */
+.esc-container,
+#esc-add-seed-form-container,
+#esc-catalog-view-container,
+#esc-search-container,
+#esc-categories-container {
+    width: 100%;
+    max-width: 1200px; /* Adjust max width as needed */
+    margin: 20px auto;
+    padding: 15px;
+    box-sizing: border-box;
+    font-family: sans-serif; /* Basic font stack */
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+/* Form Styling */
+.esc-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 0.95em;
+}
+
+.esc-form input[type="text"],
+.esc-form input[type="url"],
+.esc-form input[type="number"],
+.esc-form input[type="date"],
+.esc-form textarea,
+.esc-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+.esc-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+/* Smaller inputs */
+.esc-form input.small-text {
+    width: auto;
+    max-width: 100px;
+}
+
+.esc-form .esc-field-group {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+.esc-form .esc-field-group legend {
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding: 0 5px;
+    font-size: 1.1em;
+}
+
+.esc-form .esc-checkbox-group label {
+    display: inline-block;
+    font-weight: normal;
+    margin-right: 15px;
+}
+.esc-form .esc-checkbox-group input[type="checkbox"] {
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* Buttons */
+.esc-button,
+button.esc-button {
+    display: inline-block;
+    background-color: #2ea44f; /* Green */
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    vertical-align: middle;
+}
+.esc-button:hover,
+button.esc-button:hover {
+    background-color: #22863a;
+    color: white;
+}
+.esc-button-secondary {
+    background-color: #6a737d; /* Gray */
+}
+.esc-button-secondary:hover {
+    background-color: #586069;
+}
+
+/* AI Fetch Area */
+#esc-ai-fetch-trigger {
+    margin-top: 5px; /* Space below SKU field */
+}
+#esc-ai-status {
+    margin-top: 10px;
+    font-style: italic;
+    color: #555;
+}
+#esc-ai-result-display {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px dashed #0366d6; /* Blue dashed border */
+    border-radius: 4px;
+    background-color: #f0f6fc;
+    display: none; /* Hidden by default */
+}
+#esc-ai-result-display h4 {
+    margin-top: 0;
+    color: #0366d6;
+}
+#esc-ai-result-display pre { /* Style if showing raw JSON */
+    white-space: pre-wrap;
+    word-break: break-all;
+    background: #eee;
+    padding: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+.esc-ai-result-item {
+    margin-bottom: 8px;
+}
+.esc-ai-result-item strong {
+    color: #333;
+}
+
+/* Form Messages */
+.esc-message {
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+}
+.esc-message.success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+.esc-message.error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+.esc-message.loading {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+
+/* Catalog View */
+#esc-catalog-results {
+    margin-top: 20px;
+}
+.esc-seed-list {
+    display: grid;
+    grid-template-columns: 1fr; /* 1 column on mobile */
+    gap: 20px;
+}
+.esc-seed-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    overflow: hidden; /* Contain elements */
+}
+.esc-seed-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.3em;
+    color: #333;
+}
+.esc-seed-card .esc-seed-image {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.esc-seed-card .esc-field {
+    margin-bottom: 8px;
+    font-size: 0.95em;
+}
+.esc-seed-card .esc-field-label {
+    color: #555;
+}
+.esc-seed-card .esc-field-value {
+    color: #222;
+}
+.esc-seed-card .esc-field-value img { /* Limit image size if shown inline */
+    max-width: 100px;
+    max-height: 100px;
+    vertical-align: middle;
+    margin-left: 5px;
+}
+.esc-seed-card .esc-categories {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #666;
+}
+.esc-seed-card .esc-categories a {
+    color: #0073aa;
+    text-decoration: none;
+}
+.esc-seed-card .esc-categories a:hover {
+    text-decoration: underline;
+}
+
+/* Search Form */
+#esc-search-form {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    padding: 15px;
+    border-radius: 5px;
+}
+#esc-search-form label {
+    margin-bottom: 0; /* Remove bottom margin for inline display */
+    margin-right: 5px;
+    font-weight: normal;
+}
+#esc-search-form input[type="search"] {
+    flex-grow: 1; /* Allow search input to take available space */
+    margin-bottom: 0; /* Remove default bottom margin */
+    min-width: 150px; /* Ensure minimum width */
+}
+#esc-search-form select {
+    margin-bottom: 0;
+    min-width: 150px;
+}
+#esc-search-form button {
+    margin-bottom: 0;
+}
+
+/* Category List */
+.esc-category-list {
+    list-style: none;
+    padding-left: 0;
+}
+.esc-category-list ul {
+    list-style: none;
+    padding-left: 20px;
+    margin-top: 5px;
+}
+.esc-category-list li {
+    margin-bottom: 5px;
+}
+.esc-category-list a {
+    text-decoration: none;
+    color: #0073aa;
+}
+.esc-category-list a:hover {
+    text-decoration: underline;
+}
+
+/* Pagination */
+.esc-pagination {
+    margin-top: 30px;
+    text-align: center;
+}
+.esc-pagination .page-numbers {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 0 2px;
+    border: 1px solid #ddd;
+    text-decoration: none;
+    color: #0073aa;
+    border-radius: 3px;
+}
+.esc-pagination .page-numbers:hover {
+    background-color: #f0f0f0;
+}
+.esc-pagination .page-numbers.current {
+    background-color: #0073aa;
+    color: white;
+    border-color: #0073aa;
+}
+.esc-pagination .dots {
+    border: none;
+    padding: 5px 0;
+}
+
+
+/* No Results */
+.esc-no-results {
+    margin-top: 20px;
+    text-align: center;
+    color: #777;
+    font-style: italic;
+}
+
+/* Loading Indicator (Simple) */
+.esc-loading {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: #555;
+}
+
+/* --- Responsive Enhancements (Desktop) --- */
+
+/* Medium screens (Tablets) */
+@media (min-width: 768px) {
+    .esc-form label {
+        /* Could align labels left if desired */
+    }
+
+    /* Arrange AI fetch button better */
+    #esc-ai-fetch-container {
+        display: flex;
+        align-items: flex-end; /* Align button to bottom */
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+     #esc-ai-fetch-container > div { /* Target input field containers */
+        flex-grow: 1;
+     }
+     #esc-ai-fetch-container > div:last-child { /* Button container */
+         flex-grow: 0;
+         align-self: flex-end; /* Keep button aligned */
+     }
+     #esc-ai-fetch-trigger {
+         margin-top: 0; /* Reset margin */
+     }
+
+    /* Catalog Grid */
+    .esc-seed-list {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    }
+
+    /* Search Form Layout */
+     #esc-search-form {
+        flex-wrap: nowrap; /* Prevent wrapping */
+     }
+     #esc-search-form input[type="search"] {
+        /* max-width: 300px; */ /* Optional: limit width */
+     }
+     #esc-search-form select {
+        /* max-width: 200px; */
+     }
+
+}
+
+/* Large screens (Desktops) */
+@media (min-width: 1024px) {
+    .esc-seed-list {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    }
+
+    .esc-form .esc-field-group {
+        padding: 20px;
+    }
+
+    /* Optional: Two-column form layout for wider screens */
+    /* .esc-form .form-column-container {
+        display: flex;
+        gap: 30px;
+    }
+    .esc-form .form-column {
+        flex: 1;
+    } */
+}
+
+/* Extra Large screens */
+@media (min-width: 1200px) {
+     .esc-seed-list {
+        grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    }
+}

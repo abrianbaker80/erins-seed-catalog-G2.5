@@ -1,0 +1,692 @@
+# Copyright (C) 2024 Your Name
+# This file is distributed under the same license as the Erin's Seed Catalog package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Erin's Seed Catalog 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/erins-seed-catalog\n"
+"POT-Creation-Date: 2024-07-28 10:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2024-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Full Name <email@address>\n"
+"Language-Team: Language <LL@li.org>\n"
+"X-Generator: Poedit 3.0.1\n"
+"Language: en_US\n"
+
+#: erins-seed-catalog.php:44
+msgid "Erin's Seed Catalog requires PHP version 8.2 or higher. Your current version is "
+msgstr ""
+
+#: includes/class-esc-db.php:151 includes/class-esc-ajax.php:144
+msgid "Seed Name is required."
+msgstr ""
+
+#: includes/class-esc-db.php:160
+msgid "Could not insert seed data into the database."
+msgstr ""
+
+#: includes/class-esc-db.php:180
+msgid "Invalid Seed ID provided for update."
+msgstr ""
+
+#: includes/class-esc-db.php:212
+msgid "Could not update seed data in the database."
+msgstr ""
+
+#: includes/class-esc-functions.php:135
+msgid "Invalid image URL"
+msgstr ""
+
+#: includes/class-esc-functions.php:149
+msgid "Yes"
+msgstr ""
+
+#: includes/class-esc-taxonomy.php:25
+msgctxt "taxonomy general name"
+msgid "Seed Categories"
+msgstr ""
+
+#: includes/class-esc-taxonomy.php:26
+msgctxt "taxonomy singular name"
+msgid "Seed Category"
+msgstr ""
+
+#: includes/class-esc-taxonomy.php:27
+msgid "Search Seed Categories"
+msgstr ""
+
+#: includes/class-esc-taxonomy.php:28
+msgid "All Seed Categories"
+msgstr ""
+
+#: includes/class-esc-taxonomy.php:29
+msgid "Parent Seed Category"
+msgstr ""
+
+#: includes/class-esc-taxonomy.php:30
+msgid "Parent Seed Category:"
+msgstr ""
+
+#: includes/class-esc-taxonomy.php:31
+msgid "Edit Seed Category"
+msgstr ""
+
+#: includes/class-esc-taxonomy.php:32
+msgid "Update Seed Category"
+msgstr ""
+
+#: includes/class-esc-taxonomy.php:33
+msgid "Add New Seed Category"
+msgstr ""
+
+#: includes/class-esc-taxonomy.php:34
+msgid "New Seed Category Name"
+msgstr ""
+
+#: includes/class-esc-taxonomy.php:35 includes/class-esc-admin.php:35 includes/class-esc-admin.php:36 admin/views/manage-catalog-page.php:163 public/views/seed-catalog-display.php:21 public/views/seed-category-list.php:31
+msgid "Seed Categories"
+msgstr ""
+
+#: includes/class-esc-gemini-api.php:37
+msgid "Gemini API Key is missing. Please configure it in the plugin settings."
+msgstr ""
+
+#: includes/class-esc-gemini-api.php:87
+msgid "Error communicating with the Gemini API."
+msgstr ""
+
+#: includes/class-esc-gemini-api.php:95
+#: includes/class-esc-ajax.php:61
+msgid "Gemini API Error (Code: %d):"
+msgstr ""
+
+#: includes/class-esc-gemini-api.php:98
+msgid "Invalid Gemini API Key."
+msgstr ""
+
+#: includes/class-esc-gemini-api.php:102
+msgid "Gemini API request blocked due to safety settings."
+msgstr ""
+
+#: includes/class-esc-gemini-api.php:115 includes/class-esc-gemini-api.php:119
+msgid "Gemini API returned an empty or incomplete response."
+msgstr ""
+
+#: includes/class-esc-gemini-api.php:122
+msgid "Gemini API did not return usable content for this seed."
+msgstr ""
+
+#: includes/class-esc-gemini-api.php:131
+msgid "Could not parse the JSON data from the Gemini API response."
+msgstr ""
+
+#: includes/class-esc-ajax.php:47
+msgid "Seed Name is required for AI search."
+msgstr ""
+
+#: includes/class-esc-ajax.php:126 includes/class-esc-admin.php:218 includes/class-esc-admin.php:315
+msgid "Permission denied."
+msgstr ""
+
+#: includes/class-esc-ajax.php:155
+msgid "Seed added successfully!"
+msgstr ""
+
+#: includes/class-esc-ajax.php:211 public/views/seed-catalog-display.php:41
+msgid "No seeds found matching your criteria."
+msgstr ""
+
+#: includes/class-esc-ajax.php:217 public/views/seed-catalog-display.php:31
+msgid "&laquo; Previous"
+msgstr ""
+
+#: includes/class-esc-ajax.php:218 public/views/seed-catalog-display.php:32
+msgid "Next &raquo;"
+msgstr ""
+
+#: includes/class-esc-ajax.php:245
+msgid "Invalid Seed ID."
+msgstr ""
+
+#: includes/class-esc-ajax.php:253
+msgid "Seed deleted successfully."
+msgstr ""
+
+#: includes/class-esc-ajax.php:255
+msgid "Error deleting seed."
+msgstr ""
+
+#: includes/class-esc-functions.php:60
+msgid "Loading..."
+msgstr ""
+
+#: includes/class-esc-functions.php:61 public/js/esc-public-scripts.js:105 public/js/esc-public-scripts.js:169 public/js/esc-public-scripts.js:240
+msgid "An error occurred."
+msgstr ""
+
+#: includes/class-esc-functions.php:62 public/js/esc-public-scripts.js:85
+msgid "Error fetching AI info:"
+msgstr ""
+
+#: includes/class-esc-functions.php:63 public/js/esc-public-scripts.js:161
+msgid "Seed added successfully!"
+msgstr ""
+
+#: includes/class-esc-functions.php:64 public/js/esc-public-scripts.js:166
+msgid "Error adding seed."
+msgstr ""
+
+#: includes/class-esc-functions.php:107 admin/js/esc-admin-scripts.js:19
+msgid "Are you sure you want to delete this seed? This cannot be undone."
+msgstr ""
+
+#: includes/class-esc-admin.php:43 includes/class-esc-admin.php:44
+msgid "Settings"
+msgstr ""
+
+#: includes/class-esc-admin.php:54
+msgid "Manage Catalog"
+msgstr ""
+
+#: includes/class-esc-admin.php:55
+msgid "Manage Catalog"
+msgstr ""
+
+#: includes/class-esc-admin.php:67
+msgid "Categories"
+msgstr ""
+
+#: includes/class-esc-admin.php:94
+msgid "API Settings"
+msgstr ""
+
+#: includes/class-esc-admin.php:102
+msgid "Gemini API Key"
+msgstr ""
+
+#: includes/class-esc-admin.php:126
+msgid "Enter your Google Gemini API Key to enable AI-assisted seed information retrieval."
+msgstr ""
+
+#: includes/class-esc-admin.php:128
+#, php-format
+msgid "You can obtain an API key from <a href=\"%s\" target=\"_blank\">Google AI Studio</a>."
+msgstr ""
+
+#: includes/class-esc-admin.php:139
+msgid "Your API key is stored securely in the WordPress database."
+msgstr ""
+
+#: includes/class-esc-admin.php:146 includes/class-esc-admin.php:155 admin/views/manage-catalog-page.php:10 admin/views/settings-page.php:10
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: includes/class-esc-admin.php:194
+msgid "Error updating seed:"
+msgstr ""
+
+#: includes/class-esc-admin.php:200
+msgid "Seed updated successfully."
+msgstr ""
+
+#: includes/class-esc-admin.php:207
+msgid "Security check failed. Please try again."
+msgstr ""
+
+#: includes/class-esc-admin.php:215
+msgid "Seed not found for editing."
+msgstr ""
+
+#: includes/class-esc-admin.php:236
+msgid "Security check failed."
+msgstr ""
+
+#: includes/class-esc-admin.php:236
+msgid "Nonce Error"
+msgstr ""
+
+#: includes/class-esc-admin.php:240
+msgid "Permissions Error"
+msgstr ""
+
+#: includes/class-esc-admin.php:246
+msgid "No seeds found to export."
+msgstr ""
+
+#: includes/class-esc-admin.php:246
+msgid "Export Error"
+msgstr ""
+
+#: includes/class-esc-admin.php:318 readme.txt:42
+msgid "Settings"
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:48
+#, php-format
+msgid "Edit Seed: %s"
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:49
+msgid "<< Back to Catalog List"
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:159
+msgid "No categories found."
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:163
+msgid "Select one or more relevant categories."
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:163 admin/views/manage-catalog-page.php:189 public/views/add-seed-form.php:269
+msgid "Manage Categories"
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:170
+msgid "Save Changes"
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:174
+msgid "Current Seed Catalog"
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:177
+msgid "Export Catalog to CSV"
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:183
+msgid "ID"
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:184
+msgid "Seed Name"
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:185
+msgid "Variety"
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:186
+msgid "Brand"
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:188
+msgid "Date Added"
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:189
+msgid "Actions"
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:214
+msgid "Edit"
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:217
+msgid "Delete"
+msgstr ""
+
+#: admin/views/manage-catalog-page.php:224 public/views/seed-catalog-display.php:43
+msgid "No seeds found in the catalog yet."
+msgstr ""
+
+#: admin/views/settings-page.php:18
+msgid "Save Settings"
+msgstr ""
+
+#: public/views/add-seed-form.php:11
+msgid "Add New Seed to Catalog"
+msgstr ""
+
+#: public/views/add-seed-form.php:18
+msgid "Seed Identification & AI Search"
+msgstr ""
+
+#: public/views/add-seed-form.php:21
+msgid "Seed Name"
+msgstr ""
+
+#: public/views/add-seed-form.php:23
+msgid "The main name, e.g., \"Tomato\", \"Bean\", \"Zinnia\"."
+msgstr ""
+
+#: public/views/add-seed-form.php:28
+msgid "Variety"
+msgstr ""
+
+#: public/views/add-seed-form.php:30
+msgid "Specific variety, e.g., \"Brandywine\", \"Kentucky Wonder\", \"California Giant\"."
+msgstr ""
+
+#: public/views/add-seed-form.php:34
+msgid "Seed Brand/Source"
+msgstr ""
+
+#: public/views/add-seed-form.php:36
+msgid "Company you bought it from, e.g., \"Baker Creek\", \"Johnny's Seeds\", \"Local Swap\"."
+msgstr ""
+
+#: public/views/add-seed-form.php:40
+msgid "Item / SKU / UPC"
+msgstr ""
+
+#: public/views/add-seed-form.php:42
+msgid "Optional: Product code for precise AI search."
+msgstr ""
+
+#: public/views/add-seed-form.php:47
+msgid "Fetch AI Info"
+msgstr ""
+
+#: public/views/add-seed-form.php:59
+msgid "Seed Details"
+msgstr ""
+
+#: public/views/add-seed-form.php:62
+msgid "Image URL"
+msgstr ""
+
+#: public/views/add-seed-form.php:64
+msgid "Link to an image of the plant, fruit, or seeds. Upload to Media Library first for reliability."
+msgstr ""
+
+#: public/views/add-seed-form.php:68
+msgid "Description"
+msgstr ""
+
+#: public/views/add-seed-form.php:74
+msgid "Plant Characteristics"
+msgstr ""
+
+#: public/views/add-seed-form.php:76
+msgid "Plant Type"
+msgstr ""
+
+#: public/views/add-seed-form.php:80
+msgid "Growth Habit"
+msgstr ""
+
+#: public/views/add-seed-form.php:84
+msgid "Plant Size (H x W)"
+msgstr ""
+
+#: public/views/add-seed-form.php:88
+msgid "Fruit/Flower/Harvest Info"
+msgstr ""
+
+#: public/views/add-seed-form.php:92
+msgid "Flavor Profile (Edibles)"
+msgstr ""
+
+#: public/views/add-seed-form.php:97
+msgid "Scent (Flowers/Herbs)"
+msgstr ""
+
+#: public/views/add-seed-form.php:101
+msgid "Bloom Time (Flowers)"
+msgstr ""
+
+#: public/views/add-seed-form.php:105
+msgid "Days to Maturity/Harvest"
+msgstr ""
+
+#: public/views/add-seed-form.php:109
+msgid "Special Characteristics"
+msgstr ""
+
+#: public/views/add-seed-form.php:113
+msgid "Edible Parts"
+msgstr ""
+
+#: public/views/add-seed-form.php:119
+msgid "Growing Instructions"
+msgstr ""
+
+#: public/views/add-seed-form.php:121
+msgid "Sowing Method"
+msgstr ""
+
+#: public/views/add-seed-form.php:123
+msgid "-- Select --"
+msgstr ""
+
+#: public/views/add-seed-form.php:124
+msgid "Direct Sow"
+msgstr ""
+
+#: public/views/add-seed-form.php:125
+msgid "Start Indoors"
+msgstr ""
+
+#: public/views/add-seed-form.php:126
+msgid "Both"
+msgstr ""
+
+#: public/views/add-seed-form.php:130
+msgid "Sowing Depth"
+msgstr ""
+
+#: public/views/add-seed-form.php:134
+msgid "Sowing/Plant Spacing"
+msgstr ""
+
+#: public/views/add-seed-form.php:138
+msgid "Germination Temp"
+msgstr ""
+
+#: public/views/add-seed-form.php:142
+msgid "Sunlight Requirements"
+msgstr ""
+
+#: public/views/add-seed-form.php:146
+msgid "Watering Needs"
+msgstr ""
+
+#: public/views/add-seed-form.php:150
+msgid "Fertilizer Recommendations"
+msgstr ""
+
+#: public/views/add-seed-form.php:154
+msgid "Pest & Disease Info"
+msgstr ""
+
+#: public/views/add-seed-form.php:158
+msgid "Harvesting Tips"
+msgstr ""
+
+#: public/views/add-seed-form.php:164
+msgid "Seed Packet Information"
+msgstr ""
+
+#: public/views/add-seed-form.php:166
+msgid "Seed Count/Weight"
+msgstr ""
+
+#: public/views/add-seed-form.php:170
+msgid "Seed Type/Treatment"
+msgstr ""
+
+#: public/views/add-seed-form.php:172
+msgid "Comma-separated if multiple apply."
+msgstr ""
+
+#: public/views/add-seed-form.php:175
+msgid "Germination Rate (%)"
+msgstr ""
+
+#: public/views/add-seed-form.php:179
+msgid "Purchase Date"
+msgstr ""
+
+#: public/views/add-seed-form.php:183
+msgid "Expiration Date / Packed For"
+msgstr ""
+
+#: public/views/add-seed-form.php:187
+msgid "Quantity On Hand (Packets)"
+msgstr ""
+
+#: public/views/add-seed-form.php:191
+msgid "Price Paid"
+msgstr ""
+
+#: public/views/add-seed-form.php:195
+msgid "Availability"
+msgstr ""
+
+#: public/views/add-seed-form.php:199
+msgid "Company Info / Website"
+msgstr ""
+
+#: public/views/add-seed-form.php:205
+msgid "Additional Information"
+msgstr ""
+
+#: public/views/add-seed-form.php:207
+msgid "USDA Hardiness Zones"
+msgstr ""
+
+#: public/views/add-seed-form.php:211
+msgid "Pollinator Information"
+msgstr ""
+
+#: public/views/add-seed-form.php:216
+msgid "Suitable for Containers?"
+msgstr ""
+
+#: public/views/add-seed-form.php:220
+msgid "Good Cut Flower?"
+msgstr ""
+
+#: public/views/add-seed-form.php:224
+msgid "Harvest Storage"
+msgstr ""
+
+#: public/views/add-seed-form.php:228
+msgid "Historical Background"
+msgstr ""
+
+#: public/views/add-seed-form.php:232
+msgid "Recipes / Uses"
+msgstr ""
+
+#: public/views/add-seed-form.php:236
+msgid "Companion Plants"
+msgstr ""
+
+#: public/views/add-seed-form.php:240
+msgid "Customer Reviews Summary/Link"
+msgstr ""
+
+#: public/views/add-seed-form.php:244
+msgid "Regional Growing Tips"
+msgstr ""
+
+#: public/views/add-seed-form.php:248
+msgid "Seed Producer Info"
+msgstr ""
+
+#: public/views/add-seed-form.php:252
+msgid "Seed Saving Info"
+msgstr ""
+
+#: public/views/add-seed-form.php:258
+msgid "Organization & Notes"
+msgstr ""
+
+#: public/views/add-seed-form.php:265
+msgid "Select one or more relevant categories (hold Ctrl/Cmd to select multiple)."
+msgstr ""
+
+#: public/views/add-seed-form.php:271
+msgid "Personal Notes"
+msgstr ""
+
+#: public/views/add-seed-form.php:273
+msgid "Your own observations, planting dates, results, etc."
+msgstr ""
+
+#: public/views/add-seed-form.php:278
+msgid "Add Seed to Catalog"
+msgstr ""
+
+#: public/views/seed-search-form.php:13
+msgid "Search Seeds:"
+msgstr ""
+
+#: public/views/seed-search-form.php:14
+msgid "Search name, variety..."
+msgstr ""
+
+#: public/views/seed-search-form.php:16
+msgid "Filter by Category:"
+msgstr ""
+
+#: public/views/seed-search-form.php:18 public/views/seed-search-form.php:23
+msgid "All Categories"
+msgstr ""
+
+#: public/views/seed-search-form.php:36
+msgid "Search"
+msgstr ""
+
+#: public/views/seed-category-list.php:34
+msgid "No seed categories found."
+msgstr ""
+
+#: public/views/_seed-card.php:26
+msgid "Brand:"
+msgstr ""
+
+#: public/views/_seed-card.php:30
+msgid "Type"
+msgstr ""
+
+#: public/views/_seed-card.php:31
+msgid "Matures In"
+msgstr ""
+
+#: public/views/_seed-card.php:32
+msgid "Sunlight"
+msgstr ""
+
+#: public/views/_seed-card.php:33
+msgid "Sowing"
+msgstr ""
+
+#: public/views/_seed-card.php:39
+msgid "Categories"
+msgstr ""
+
+#: public/views/_seed-card.php:50
+msgid "View Details"
+msgstr ""
+
+#: readme.txt:15
+msgid "Where do I get a Gemini API Key?"
+msgstr ""
+
+#: readme.txt:19
+msgid "How does the AI search work?"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Erin's Seed Catalog"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://example.com/erins-seed-catalog"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Catalog and track your vegetable garden seeds with AI-assisted information retrieval via the Gemini API. Mobile-first design."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Your Name"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://example.com"
+msgstr ""
