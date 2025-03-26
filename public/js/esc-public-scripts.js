@@ -310,5 +310,61 @@ jQuery(document).ready(function($) {
         });
     }
 
+    // --- Modal & Seed Detail Functionality ---
+    const $modal = $('#esc-seed-detail-modal');
+    const $modalContent = $('#esc-seed-detail-content');
+    
+    // Handle clicking on seed cards
+    $('.esc-seed-list').on('click', '.esc-seed-card', function(e) {
+        const seedId = $(this).data('seed-id');
+        if (!seedId) return;
+        
+        // Show loading state in modal
+        $modalContent.html('<div class="esc-loading">' + (esc_ajax_object.loading_text || 'Loading...') + '</div>');
+        $modal.fadeIn(200).addClass('show');
+
+        // Prevent body scrolling when modal is open
+        $('body').css('overflow', 'hidden');
+        
+        // Fetch seed details
+        $.ajax({
+            url: esc_ajax_object.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'esc_get_seed_details',
+                nonce: esc_ajax_object.nonce,
+                seed_id: seedId
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    $modalContent.html(response.data.html);
+                } else {
+                    $modalContent.html('<div class="esc-error">' + (response.data.message || 'Error loading seed details.') + '</div>');
+                }
+            },
+            error: function() {
+                $modalContent.html('<div class="esc-error">' + (esc_ajax_object.error_text || 'An error occurred.') + '</div>');
+            }
+        });
+    });
+
+    // Close modal when clicking close button or outside modal content
+    $modal.on('click', function(e) {
+        if (e.target === this || $(e.target).hasClass('esc-modal-close')) {
+            $modal.removeClass('show');
+            setTimeout(function() {
+                $modal.fadeOut(200);
+                $('body').css('overflow', '');
+            }, 200);
+        }
+    });
+
+    // Close modal on escape key
+    $(document).on('keyup', function(e) {
+        if (e.key === "Escape" && $modal.is(':visible')) {
+            $modal.find('.esc-modal-close').click();
+        }
+    });
 
 }); // End jQuery ready

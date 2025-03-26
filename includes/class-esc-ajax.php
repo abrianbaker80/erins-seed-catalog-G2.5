@@ -28,6 +28,10 @@ class ESC_Ajax {
 
         // AJAX hook for deleting seed (admin only)
         add_action( 'wp_ajax_esc_delete_seed', [ __CLASS__, 'handle_delete_seed' ] );
+
+        // AJAX hook for getting seed details
+        add_action( 'wp_ajax_esc_get_seed_details', [ __CLASS__, 'handle_get_seed_details' ] );
+		add_action( 'wp_ajax_nopriv_esc_get_seed_details', [ __CLASS__, 'handle_get_seed_details' ] );
 	}
 
 	/**
@@ -263,6 +267,37 @@ class ESC_Ajax {
         } else {
              wp_send_json_error(['message' => __('Error deleting seed.', 'erins-seed-catalog')]);
         }
+
+        wp_die();
+    }
+
+    /**
+     * Handle the AJAX request for getting seed details
+     */
+    public static function handle_get_seed_details() {
+        check_ajax_referer('esc_ajax_nonce', 'nonce');
+
+        $seed_id = isset($_POST['seed_id']) ? absint($_POST['seed_id']) : 0;
+        if (!$seed_id) {
+            wp_send_json_error(['message' => __('Invalid seed ID.', 'erins-seed-catalog')]);
+            return;
+        }
+
+        // Get seed from database
+        $seed = ESC_DB::get_seed($seed_id);
+        if (!$seed) {
+            wp_send_json_error(['message' => __('Seed not found.', 'erins-seed-catalog')]);
+            return;
+        }
+
+        // Get the HTML using the detail template
+        ob_start();
+        include ESC_PLUGIN_DIR . 'public/views/_seed-detail.php';
+        $html = ob_get_clean();
+
+        wp_send_json_success([
+            'html' => $html
+        ]);
 
         wp_die();
     }

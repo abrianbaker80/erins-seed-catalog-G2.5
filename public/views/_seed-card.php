@@ -8,7 +8,7 @@ if ( ! isset( $seed ) || ! is_object( $seed ) ) {
     return;
 }
 ?>
-<div class="esc-seed-card">
+<div class="esc-seed-card" data-seed-id="<?php echo esc_attr( $seed->id ); ?>">
     <?php if ( ! empty( $seed->image_url ) && filter_var( $seed->image_url, FILTER_VALIDATE_URL ) ) : ?>
         <img src="<?php echo esc_url( $seed->image_url ); ?>" alt="<?php echo esc_attr( $seed->seed_name ); ?><?php echo $seed->variety_name ? ' - ' . esc_attr( $seed->variety_name ) : ''; ?>" class="esc-seed-image" loading="lazy">
     <?php endif; ?>

@@ -49,3 +49,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</div><!-- #esc-catalog-results -->
 
 </div><!-- #esc-catalog-view-container -->
+
+<!-- Seed Detail Modal -->
+<div id="esc-seed-detail-modal" class="esc-modal" style="display: none;">
+    <div class="esc-modal-content">
+        <span class="esc-modal-close">&times;</span>
+        <div id="esc-seed-detail-content"></div>
+    </div>
+</div>
