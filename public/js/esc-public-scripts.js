@@ -71,6 +71,8 @@ jQuery(document).ready(function($) {
             return;
         }
 
+        console.log('Processing AI data:', data);
+
         // Clear any previous values
         $('#esc-extended-form input:not([type="hidden"]), #esc-extended-form textarea, #esc-extended-form select').each(function() {
             if ($(this).is(':checkbox')) {
@@ -85,8 +87,21 @@ jQuery(document).ready(function($) {
 
         // Fill in the form fields with AI data
         Object.entries(data).forEach(([key, value]) => {
+            // Special handling for sowing_depth to debug
+            if (key === 'sowing_depth') {
+                console.log('Found sowing_depth value:', value);
+                const $sowingDepth = $('#esc_sowing_depth');
+                console.log('Sowing depth field exists:', $sowingDepth.length > 0);
+                if ($sowingDepth.length > 0) {
+                    $sowingDepth.val(value);
+                    console.log('Set sowing depth value to:', value);
+                }
+            }
+
             if (value !== null && value !== '' && !skipFields.includes(key)) {
                 let $field = $('#esc_' + key);
+                console.log(`Processing field ${key}:`, { value, fieldExists: $field.length > 0 });
+                
                 if ($field.length > 0) {
                     if ($field.is(':checkbox')) {
                         $field.prop('checked', !!value);
@@ -96,7 +111,7 @@ jQuery(document).ready(function($) {
                             $field.val(value);
                         }
                     } else {
-                        $field.val(value);
+                        $field.val(value).trigger('change');
                     }
                 }
             }
@@ -106,6 +121,21 @@ jQuery(document).ready(function($) {
         if (data.suggested_term_ids && Array.isArray(data.suggested_term_ids)) {
             $('#esc_seed_category').val(data.suggested_term_ids);
         }
+
+        // Verify all fields were populated correctly
+        Object.entries(data).forEach(([key, value]) => {
+            if (!skipFields.includes(key)) {
+                const $field = $('#esc_' + key);
+                if ($field.length > 0) {
+                    const currentValue = $field.val();
+                    console.log(`Verification - Field ${key}:`, { 
+                        expected: value, 
+                        actual: currentValue,
+                        matches: currentValue === value 
+                    });
+                }
+            }
+        });
     }
 
     // --- Add New Seed Form Submission ---

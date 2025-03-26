@@ -76,8 +76,10 @@ class ESC_Gemini_API {
         $api_url = add_query_arg( 'key', $api_key, self::API_ENDPOINT );
 
         $response = wp_remote_post( $api_url, $args );
-
-        // --- Handle Response ---
+        
+        // Log raw response for debugging
+        error_log('Gemini API Raw Response: ' . print_r($response, true));
+        
         if ( is_wp_error( $response ) ) {
             // WordPress HTTP API error
             return new WP_Error( 'http_error', __( 'Error communicating with the Gemini API.', 'erins-seed-catalog' ), $response->get_error_message() );
@@ -85,7 +87,14 @@ class ESC_Gemini_API {
 
         $response_code = wp_remote_retrieve_response_code( $response );
         $response_body = wp_remote_retrieve_body( $response );
+        
+        // Log response body before JSON decode
+        error_log('Gemini API Response Body: ' . $response_body);
+        
         $result_data = json_decode( $response_body, true );
+        
+        // Log parsed data
+        error_log('Gemini API Parsed Data: ' . print_r($result_data, true));
 
         if ( $response_code !== 200 ) {
             // Gemini API returned an error

@@ -51,6 +51,9 @@ class ESC_Ajax {
 		// 3. Call the Gemini API Class
 		$result = ESC_Gemini_API::fetch_seed_info( $seed_name, $variety, $brand, $sku_upc );
 
+		 // Log the API response for debugging
+        error_log('Gemini API Response for ' . $seed_name . ': ' . print_r($result, true));
+
 		// 4. Process result and send JSON response
 		if ( is_wp_error( $result ) ) {
 			wp_send_json_error( [
