@@ -60,6 +60,7 @@ add_action( 'plugins_loaded', 'esc_load_textdomain' );
 require_once ESC_PLUGIN_DIR . 'includes/class-esc-db.php';
 require_once ESC_PLUGIN_DIR . 'includes/class-esc-taxonomy.php';
 require_once ESC_PLUGIN_DIR . 'includes/class-esc-gemini-api.php';
+require_once ESC_PLUGIN_DIR . 'includes/class-esc-model-updater.php';
 require_once ESC_PLUGIN_DIR . 'includes/esc-functions.php';
 require_once ESC_PLUGIN_DIR . 'includes/class-esc-ajax.php';
 require_once ESC_PLUGIN_DIR . 'includes/class-esc-shortcodes.php';
@@ -120,6 +121,7 @@ function esc_init_plugin() {
 	ESC_Shortcodes::init();
     ESC_Ajax::init();
     ESC_Functions::init(); // For enqueueing
+    ESC_Model_Updater::init(); // For model updates
 }
 add_action( 'plugins_loaded', 'esc_init_plugin' );
 

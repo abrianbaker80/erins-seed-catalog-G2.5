@@ -239,12 +239,25 @@ class ESC_Admin {
 		     esc_html__('Learn more about Gemini models', 'erins-seed-catalog') .
 		     ' <span class="dashicons dashicons-external"></span></a></p>';
 
+		// Add the refresh button to check for new models
+		ESC_Model_Updater::render_refresh_button();
+
 		// Add some CSS to style the dropdown
 		echo '<style>
 			.esc-model-select option[disabled] {
 				font-weight: bold;
 				background-color: #f0f0f0;
 				color: #23282d;
+			}
+			.esc-model-refresh {
+				margin-top: 10px;
+			}
+			.esc-model-refresh .button {
+				display: inline-flex;
+				align-items: center;
+			}
+			.esc-model-refresh .dashicons {
+				margin-right: 5px;
 			}
 		</style>';
 	}
