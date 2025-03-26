@@ -1,0 +1,24 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Exclude development files from language statistics
+*.md linguist-documentation
+dev-bootstrap.php linguist-documentation
+phpdoc-templates.php linguist-documentation
+.php-cs-fixer.php linguist-documentation
+phpcs.xml linguist-documentation
+composer.json linguist-documentation
+jsconfig.json linguist-documentation
+
+# Exclude these files from GitHub releases
+.gitattributes export-ignore
+.gitignore export-ignore
+.vscode export-ignore
+dev-bootstrap.php export-ignore
+phpdoc-templates.php export-ignore
+.php-cs-fixer.php export-ignore
+phpcs.xml export-ignore
+composer.json export-ignore
+composer.lock export-ignore
+jsconfig.json export-ignore
+vendor/ export-ignore

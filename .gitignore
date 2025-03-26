@@ -1,0 +1,61 @@
+# Development environment files
+.vscode/
+.vscode/settings.json
+.vscode/launch.json
+dev-bootstrap.php
+jsconfig.json
+phpdoc-templates.php
+.php-cs-fixer.php
+.php-cs-fixer.cache
+
+# Composer
+/vendor/
+composer.lock
+
+# WordPress stubs
+/wordpress-stubs/
+
+# PHP CodeSniffer
+phpcs.xml
+.phpcs.xml
+.phpcs.xml.dist
+phpcs.xml.dist
+
+# Node.js
+/node_modules/
+package-lock.json
+npm-debug.log
+yarn-error.log
+yarn.lock
+
+# Build files
+/build/
+/dist/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+*.sublime-project
+*.sublime-workspace
+*.komodoproject
+.komodotools
+*.code-workspace
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
