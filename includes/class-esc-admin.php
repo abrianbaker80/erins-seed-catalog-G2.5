@@ -209,22 +209,44 @@ class ESC_Admin {
 	 */
 	public static function render_gemini_model_field() {
 		$current_model = get_option( ESC_GEMINI_MODEL_OPTION, 'gemini-2.0-flash-lite' );
-		$available_models = ESC_Gemini_API::get_available_models();
+		$available_models = ESC_Gemini_API::get_models_for_dropdown();
 
-		echo '<select id="' . esc_attr( ESC_GEMINI_MODEL_OPTION ) . '" name="' . esc_attr( ESC_GEMINI_MODEL_OPTION ) . '">';
+		echo '<select id="' . esc_attr( ESC_GEMINI_MODEL_OPTION ) . '" name="' . esc_attr( ESC_GEMINI_MODEL_OPTION ) . '" class="esc-model-select">';
 
 		foreach ( $available_models as $model_id => $model_name ) {
-			printf(
-				'<option value="%1$s" %2$s>%3$s</option>',
-				esc_attr( $model_id ),
-				selected( $current_model, $model_id, false ),
-				esc_html( $model_name )
-			);
+			// Check if this is a header (group separator)
+			if ( strpos( $model_id, '_header' ) !== false ) {
+				printf(
+					'<option value="" disabled>%s</option>',
+					esc_html( $model_name )
+				);
+			} else {
+				printf(
+					'<option value="%1$s" %2$s>%3$s</option>',
+					esc_attr( $model_id ),
+					selected( $current_model, $model_id, false ),
+					esc_html( $model_name )
+				);
+			}
 		}
 
 		echo '</select>';
 		echo '<p class="description">' . esc_html__('Select which Gemini model to use for AI-assisted information retrieval.', 'erins-seed-catalog') . '</p>';
 		echo '<p class="description">' . esc_html__('Flash models are faster and more cost-effective, while Pro models may provide more detailed information.', 'erins-seed-catalog') . '</p>';
+
+		// Add a link to update models documentation
+		echo '<p class="description"><a href="https://ai.google.dev/models/gemini" target="_blank">' .
+		     esc_html__('Learn more about Gemini models', 'erins-seed-catalog') .
+		     ' <span class="dashicons dashicons-external"></span></a></p>';
+
+		// Add some CSS to style the dropdown
+		echo '<style>
+			.esc-model-select option[disabled] {
+				font-weight: bold;
+				background-color: #f0f0f0;
+				color: #23282d;
+			}
+		</style>';
 	}
 
 	/**

@@ -26,16 +26,104 @@ class ESC_Gemini_API {
     /**
      * Get available Gemini models.
      *
-     * @return array Array of available models with model ID as key and display name as value.
+     * @return array Array of available models with model ID as key and model data as value.
      */
     public static function get_available_models() {
-        return [
-            'gemini-2.0-flash-lite' => __('Gemini 2.0 Flash Lite (Fastest)', 'erins-seed-catalog'),
-            'gemini-2.0-flash' => __('Gemini 2.0 Flash (Fast)', 'erins-seed-catalog'),
-            'gemini-2.0-pro' => __('Gemini 2.0 Pro (Most Accurate)', 'erins-seed-catalog'),
-            'gemini-1.5-flash-latest' => __('Gemini 1.5 Flash (Legacy)', 'erins-seed-catalog'),
-            'gemini-1.5-pro-latest' => __('Gemini 1.5 Pro (Legacy)', 'erins-seed-catalog'),
+        // Define default models with their properties
+        $default_models = [
+            'gemini-2.0-flash-lite' => [
+                'name' => __('Gemini 2.0 Flash Lite (Fastest)', 'erins-seed-catalog'),
+                'type' => 'free',
+                'description' => __('Fastest response, most cost-effective', 'erins-seed-catalog'),
+                'recommended' => true
+            ],
+            'gemini-2.0-flash' => [
+                'name' => __('Gemini 2.0 Flash (Fast)', 'erins-seed-catalog'),
+                'type' => 'free',
+                'description' => __('Fast response, good balance of speed and quality', 'erins-seed-catalog'),
+                'recommended' => false
+            ],
+            'gemini-2.0-pro' => [
+                'name' => __('Gemini 2.0 Pro (Most Accurate)', 'erins-seed-catalog'),
+                'type' => 'free',
+                'description' => __('Most detailed responses, slower but more accurate', 'erins-seed-catalog'),
+                'recommended' => false
+            ],
+            'gemini-1.5-flash-latest' => [
+                'name' => __('Gemini 1.5 Flash (Legacy)', 'erins-seed-catalog'),
+                'type' => 'legacy',
+                'description' => __('Legacy model, may be deprecated in the future', 'erins-seed-catalog'),
+                'recommended' => false
+            ],
+            'gemini-1.5-pro-latest' => [
+                'name' => __('Gemini 1.5 Pro (Legacy)', 'erins-seed-catalog'),
+                'type' => 'legacy',
+                'description' => __('Legacy model, may be deprecated in the future', 'erins-seed-catalog'),
+                'recommended' => false
+            ],
+            // Experimental models can be added here
+            'gemini-ultra-latest' => [
+                'name' => __('Gemini Ultra (Experimental)', 'erins-seed-catalog'),
+                'type' => 'experimental',
+                'description' => __('Most powerful model, may require special access', 'erins-seed-catalog'),
+                'recommended' => false
+            ],
         ];
+
+        // Allow other plugins or themes to modify the list of available models
+        // This makes it easy to add new models or remove deprecated ones
+        return apply_filters('esc_gemini_available_models', $default_models);
+    }
+
+    /**
+     * Get a simplified list of available models for the settings dropdown.
+     *
+     * @return array Array of available models with model ID as key and display name as value.
+     */
+    public static function get_models_for_dropdown() {
+        $models = self::get_available_models();
+        $dropdown_options = [];
+
+        // Group models by type
+        $grouped_models = [
+            'free' => [],
+            'experimental' => [],
+            'legacy' => []
+        ];
+
+        foreach ($models as $model_id => $model_data) {
+            $type = isset($model_data['type']) ? $model_data['type'] : 'free';
+            if (!isset($grouped_models[$type])) {
+                $grouped_models[$type] = [];
+            }
+            $grouped_models[$type][$model_id] = $model_data;
+        }
+
+        // Add free models first
+        if (!empty($grouped_models['free'])) {
+            $dropdown_options['free_header'] = __('--- Free Models ---', 'erins-seed-catalog');
+            foreach ($grouped_models['free'] as $model_id => $model_data) {
+                $dropdown_options[$model_id] = $model_data['name'];
+            }
+        }
+
+        // Add experimental models
+        if (!empty($grouped_models['experimental'])) {
+            $dropdown_options['experimental_header'] = __('--- Experimental Models ---', 'erins-seed-catalog');
+            foreach ($grouped_models['experimental'] as $model_id => $model_data) {
+                $dropdown_options[$model_id] = $model_data['name'];
+            }
+        }
+
+        // Add legacy models
+        if (!empty($grouped_models['legacy'])) {
+            $dropdown_options['legacy_header'] = __('--- Legacy Models ---', 'erins-seed-catalog');
+            foreach ($grouped_models['legacy'] as $model_id => $model_data) {
+                $dropdown_options[$model_id] = $model_data['name'];
+            }
+        }
+
+        return $dropdown_options;
     }
 
 
