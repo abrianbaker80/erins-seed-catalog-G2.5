@@ -1,0 +1,66 @@
+/**
+ * Usage Statistics Styles
+ */
+
+.esc-usage-stats-container {
+    margin-top: 20px;
+}
+
+.esc-usage-summary {
+    margin-bottom: 30px;
+}
+
+.esc-usage-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.esc-usage-card {
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    padding: 20px;
+    min-width: 200px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    flex: 1;
+}
+
+.esc-usage-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #23282d;
+}
+
+.esc-usage-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: #0073aa;
+}
+
+.esc-usage-details {
+    margin-bottom: 30px;
+}
+
+.esc-usage-details table {
+    margin-top: 15px;
+}
+
+.esc-usage-actions {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e5e5;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 782px) {
+    .esc-usage-cards {
+        flex-direction: column;
+    }
+    
+    .esc-usage-card {
+        width: 100%;
+    }
+}

@@ -76,6 +76,16 @@ class ESC_Admin {
                 'manage_categories', // Capability to manage terms
                 'edit-tags.php?taxonomy=' . ESC_Taxonomy::TAXONOMY_NAME
             );
+
+            // Add Usage Statistics page
+            add_submenu_page(
+                'erins-seed-catalog',                                // Parent slug
+                __( 'API Usage Statistics', 'erins-seed-catalog' ),   // Page title
+                __( 'Usage Statistics', 'erins-seed-catalog' ),       // Menu title
+                'manage_options',                                    // Capability
+                'esc-usage-stats',                                   // Menu slug
+                [ __CLASS__, 'render_usage_stats_page' ]             // Callback function
+            );
          }
     }
 
@@ -231,6 +241,15 @@ class ESC_Admin {
 		}
 
 		echo '</select>';
+
+		// Add a test button
+		echo '<button type="button" id="esc-test-model" class="button button-secondary">';
+		echo '<span class="dashicons dashicons-yes"></span> ' . esc_html__('Test Selected Model', 'erins-seed-catalog');
+		echo '</button>';
+
+		// Add a container for test results
+		echo '<div id="esc-model-test-results" style="display:none;" class="esc-test-results"></div>';
+
 		echo '<p class="description">' . esc_html__('Select which Gemini model to use for AI-assisted information retrieval.', 'erins-seed-catalog') . '</p>';
 		echo '<p class="description">' . esc_html__('Flash models are faster and more cost-effective, while Pro models may provide more detailed information.', 'erins-seed-catalog') . '</p>';
 
@@ -239,10 +258,14 @@ class ESC_Admin {
 		     esc_html__('Learn more about Gemini models', 'erins-seed-catalog') .
 		     ' <span class="dashicons dashicons-external"></span></a></p>';
 
+		// Add containers for model capabilities and usage statistics
+		echo '<div id="esc-model-capabilities" style="display:none;" class="esc-model-info-container"></div>';
+		echo '<div id="esc-model-usage-stats" style="display:none;" class="esc-model-info-container"></div>';
+
 		// Add the refresh button to check for new models
 		ESC_Model_Updater::render_refresh_button();
 
-		// Add some CSS to style the dropdown
+		// Add some CSS to style the dropdown and status indicators
 		echo '<style>
 			.esc-model-select option[disabled] {
 				font-weight: bold;
@@ -251,6 +274,10 @@ class ESC_Admin {
 			}
 			.esc-model-refresh {
 				margin-top: 10px;
+				padding: 10px;
+				background: #f9f9f9;
+				border: 1px solid #e5e5e5;
+				border-radius: 4px;
 			}
 			.esc-model-refresh .button {
 				display: inline-flex;
@@ -258,6 +285,34 @@ class ESC_Admin {
 			}
 			.esc-model-refresh .dashicons {
 				margin-right: 5px;
+			}
+			.esc-update-status {
+				display: inline-block;
+				margin-left: 10px;
+				padding: 2px 8px;
+				border-radius: 3px;
+				font-size: 12px;
+			}
+			.esc-update-status.success {
+				background-color: #dff0d8;
+				color: #3c763d;
+			}
+			.esc-update-status.error {
+				background-color: #f2dede;
+				color: #a94442;
+			}
+			.esc-update-status.warning {
+				background-color: #fcf8e3;
+				color: #8a6d3b;
+			}
+			.esc-new-models {
+				margin-top: 5px;
+			}
+			.esc-model-list {
+				font-family: monospace;
+				background: #f0f0f0;
+				padding: 2px 5px;
+				border-radius: 3px;
 			}
 		</style>';
 	}
@@ -269,7 +324,19 @@ class ESC_Admin {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'erins-seed-catalog' ) );
 		}
+
+		// Enqueue the model capabilities CSS
+		wp_enqueue_style(
+			'esc-model-capabilities-styles',
+			ESC_PLUGIN_URL . 'admin/css/esc-model-capabilities.css',
+			[],
+			ESC_VERSION
+		);
+
 		include_once ESC_PLUGIN_DIR . 'admin/views/settings-page.php';
+
+		// Include the model capabilities template
+		include_once ESC_PLUGIN_DIR . 'admin/views/model-capabilities.php';
 	}
 
 	/**
@@ -450,6 +517,35 @@ class ESC_Admin {
         );
         array_unshift( $links, $settings_link ); // Add to beginning
         return $links;
+    }
+
+    /**
+     * Render the usage statistics page.
+     */
+    public static function render_usage_stats_page() {
+        // Enqueue the usage stats CSS
+        wp_enqueue_style(
+            'esc-usage-stats-styles',
+            ESC_PLUGIN_URL . 'admin/css/esc-usage-stats.css',
+            [],
+            ESC_VERSION
+        );
+
+        // Handle reset statistics action
+        if (isset($_POST['action']) && $_POST['action'] === 'reset_usage_stats') {
+            if (check_admin_referer('esc_reset_usage_stats', 'esc_reset_usage_stats_nonce')) {
+                delete_option('esc_model_usage_stats');
+                add_settings_error(
+                    'esc_usage_stats',
+                    'stats_reset',
+                    __('Usage statistics have been reset.', 'erins-seed-catalog'),
+                    'updated'
+                );
+            }
+        }
+
+        // Include the usage statistics template
+        include ESC_PLUGIN_DIR . 'admin/views/usage-stats-page.php';
     }
 
 }

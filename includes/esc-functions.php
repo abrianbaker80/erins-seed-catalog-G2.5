@@ -94,10 +94,27 @@ class ESC_Functions {
                 ESC_VERSION
             );
 
+            // Enqueue Model Test CSS
+            wp_enqueue_style(
+                'esc-model-test-styles',
+                ESC_PLUGIN_URL . 'admin/css/esc-model-test.css',
+                [],
+                ESC_VERSION
+            );
+
             // Enqueue Admin JS (if needed for interactions)
             wp_enqueue_script(
                 'esc-admin-scripts',
                 ESC_PLUGIN_URL . 'admin/js/esc-admin-scripts.js',
+                [ 'jquery' ],
+                ESC_VERSION,
+                true
+            );
+
+            // Enqueue Model Test JS
+            wp_enqueue_script(
+                'esc-model-test-scripts',
+                ESC_PLUGIN_URL . 'admin/js/esc-model-test.js',
                 [ 'jquery' ],
                 ESC_VERSION,
                 true
@@ -113,6 +130,37 @@ class ESC_Functions {
                     'confirm_delete' => __( 'Are you sure you want to delete this seed? This cannot be undone.', 'erins-seed-catalog' ),
                 ]
              );
+
+            // Localize model test script
+            wp_localize_script(
+                'esc-model-test-scripts',
+                'esc_model_test',
+                [
+                    'ajax_url' => admin_url( 'admin-ajax.php' ),
+                    'nonce'    => wp_create_nonce( 'esc_test_model_nonce' ),
+                    'model_option_name' => ESC_GEMINI_MODEL_OPTION,
+                    'api_key_option_name' => ESC_API_KEY_OPTION,
+                    'loading_text' => __('Testing model connection...', 'erins-seed-catalog'),
+                    'loading_header' => __('Testing Model', 'erins-seed-catalog'),
+                    'success_text' => __('Model connection successful!', 'erins-seed-catalog'),
+                    'success_header' => __('Test Successful', 'erins-seed-catalog'),
+                    'error_text' => __('Model connection failed.', 'erins-seed-catalog'),
+                    'error_header' => __('Test Failed', 'erins-seed-catalog'),
+                    'error_no_api_key' => __('Please enter your API key first.', 'erins-seed-catalog'),
+                    'usage_header' => __('Usage Statistics', 'erins-seed-catalog'),
+                    'usage_model' => __('Model', 'erins-seed-catalog'),
+                    'usage_tokens_in' => __('Input Tokens', 'erins-seed-catalog'),
+                    'usage_tokens_out' => __('Output Tokens', 'erins-seed-catalog'),
+                    'usage_total_tokens' => __('Total Tokens', 'erins-seed-catalog'),
+                    'usage_latency' => __('Response Time', 'erins-seed-catalog'),
+                    'capabilities_header' => __('Model Capabilities', 'erins-seed-catalog'),
+                    'capabilities_methods' => __('Supported Generation Methods', 'erins-seed-catalog'),
+                    'capabilities_temperature' => __('Temperature Range', 'erins-seed-catalog'),
+                    'capabilities_min' => __('Minimum', 'erins-seed-catalog'),
+                    'capabilities_max' => __('Maximum', 'erins-seed-catalog'),
+                    'capabilities_token_limit' => __('Token Limit', 'erins-seed-catalog'),
+                ]
+            );
         }
 	}
 

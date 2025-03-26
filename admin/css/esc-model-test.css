@@ -1,0 +1,91 @@
+/* Test model button styles */
+
+/* Model info containers */
+.esc-model-info-container {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+}
+
+.esc-model-info-container h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #23282d;
+}
+
+.esc-model-info-container h5 {
+    margin: 15px 0 5px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #23282d;
+}
+
+.esc-model-info-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.esc-model-info-container th {
+    text-align: left;
+    width: 40%;
+}
+
+.esc-model-info-container ul {
+    margin: 0 0 0 20px;
+    padding: 0;
+}
+
+.esc-model-info-container ul li {
+    margin-bottom: 5px;
+}
+#esc-test-model {
+    margin-left: 10px;
+    display: inline-flex;
+    align-items: center;
+}
+#esc-test-model .dashicons {
+    margin-right: 5px;
+}
+.esc-test-results {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    border: 1px solid #e5e5e5;
+}
+.esc-test-results.success {
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+.esc-test-results.error {
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+.esc-test-results.loading {
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+.esc-test-results h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+.esc-test-results pre {
+    background: #fff;
+    padding: 10px;
+    overflow: auto;
+    max-height: 200px;
+    border: 1px solid #e5e5e5;
+}
+.esc-test-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    vertical-align: middle;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23333' d='M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50'%3E%3CanimateTransform attributeName='transform' attributeType='XML' type='rotate' dur='1s' from='0 50 50' to='360 50 50' repeatCount='indefinite'/%3E%3C/path%3E%3C/svg%3E");
+    background-size: 100%;
+}

@@ -92,6 +92,11 @@ class ESC_Gemini_API {
         ];
 
         foreach ($models as $model_id => $model_data) {
+            // Skip metadata entries (those starting with _)
+            if (strpos($model_id, '_') === 0) {
+                continue;
+            }
+
             $type = isset($model_data['type']) ? $model_data['type'] : 'free';
             if (!isset($grouped_models[$type])) {
                 $grouped_models[$type] = [];
@@ -103,7 +108,19 @@ class ESC_Gemini_API {
         if (!empty($grouped_models['free'])) {
             $dropdown_options['free_header'] = __('--- Free Models ---', 'erins-seed-catalog');
             foreach ($grouped_models['free'] as $model_id => $model_data) {
-                $dropdown_options[$model_id] = $model_data['name'];
+                $name = isset($model_data['name']) ? $model_data['name'] : $model_id;
+
+                // Check if the model is available with the current API key
+                if (isset($model_data['available']) && $model_data['available'] === false) {
+                    $name .= ' ' . __('(Not available with your API key)', 'erins-seed-catalog');
+                }
+
+                // Add a recommended indicator
+                if (isset($model_data['recommended']) && $model_data['recommended']) {
+                    $name .= ' ' . __('(Recommended)', 'erins-seed-catalog');
+                }
+
+                $dropdown_options[$model_id] = $name;
             }
         }
 
@@ -111,7 +128,14 @@ class ESC_Gemini_API {
         if (!empty($grouped_models['experimental'])) {
             $dropdown_options['experimental_header'] = __('--- Experimental Models ---', 'erins-seed-catalog');
             foreach ($grouped_models['experimental'] as $model_id => $model_data) {
-                $dropdown_options[$model_id] = $model_data['name'];
+                $name = isset($model_data['name']) ? $model_data['name'] : $model_id;
+
+                // Check if the model is available with the current API key
+                if (isset($model_data['available']) && $model_data['available'] === false) {
+                    $name .= ' ' . __('(Not available with your API key)', 'erins-seed-catalog');
+                }
+
+                $dropdown_options[$model_id] = $name;
             }
         }
 
@@ -119,7 +143,14 @@ class ESC_Gemini_API {
         if (!empty($grouped_models['legacy'])) {
             $dropdown_options['legacy_header'] = __('--- Legacy Models ---', 'erins-seed-catalog');
             foreach ($grouped_models['legacy'] as $model_id => $model_data) {
-                $dropdown_options[$model_id] = $model_data['name'];
+                $name = isset($model_data['name']) ? $model_data['name'] : $model_id;
+
+                // Check if the model is available with the current API key
+                if (isset($model_data['available']) && $model_data['available'] === false) {
+                    $name .= ' ' . __('(Not available with your API key)', 'erins-seed-catalog');
+                }
+
+                $dropdown_options[$model_id] = $name;
             }
         }
 
