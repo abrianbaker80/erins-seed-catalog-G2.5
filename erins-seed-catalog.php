@@ -1,12 +1,12 @@
 <?php
 /**
  * Plugin Name:       Erin's Seed Catalog
- * Plugin URI:        https://example.com/erins-seed-catalog
+ * Plugin URI:        https://github.com/abrianbaker80/erins-seed-catalog-G2.5.git
  * Description:       Catalog and track your vegetable garden seeds with AI-assisted information retrieval via the Gemini API. Mobile-first design.
  * Version:           1.0.0
  * Requires at least: 6.0
  * Requires PHP:      8.2
- * Author:            Your Name
+ * Author:            Allen Baker
  * Author URI:        https://example.com
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
