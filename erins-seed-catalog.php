@@ -29,6 +29,7 @@ define( 'ESC_DB_VERSION_OPTION', 'esc_db_version' );
 define( 'ESC_DB_CURRENT_VERSION', '1.0' ); // Increment this when changing DB schema
 define( 'ESC_SETTINGS_OPTION_GROUP', 'esc_settings_group' );
 define( 'ESC_API_KEY_OPTION', 'esc_gemini_api_key' );
+define( 'ESC_GEMINI_MODEL_OPTION', 'esc_gemini_model' );
 
 // Check PHP Version
 if ( version_compare( PHP_VERSION, '8.2', '<' ) ) {
@@ -85,6 +86,11 @@ function esc_activate_plugin() {
     if ( false === get_option( ESC_API_KEY_OPTION ) ) {
         update_option( ESC_API_KEY_OPTION, '' );
     }
+
+    // Set default Gemini model if not set
+    if ( false === get_option( ESC_GEMINI_MODEL_OPTION ) ) {
+        update_option( ESC_GEMINI_MODEL_OPTION, 'gemini-2.0-flash-lite' );
+    }
 }
 register_activation_hook( ESC_PLUGIN_FILE, 'esc_activate_plugin' );
 
@@ -129,6 +135,7 @@ function esc_uninstall_plugin() {
 
     // Remove options
     delete_option( ESC_API_KEY_OPTION );
+    delete_option( ESC_GEMINI_MODEL_OPTION );
     delete_option( ESC_DB_VERSION_OPTION );
 
     // Remove terms and taxonomy? More complex, involves WP Term API.

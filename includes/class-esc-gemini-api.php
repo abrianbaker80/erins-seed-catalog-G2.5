@@ -10,10 +10,33 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class ESC_Gemini_API {
 
-    // Use the generative language model API endpoint
-    // Make sure to use the correct model name (e.g., models/gemini-1.5-flash-latest, models/gemini-pro)
-    // Flash is faster and cheaper, Pro might be more thorough. Test which works better.
-    const API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent';
+    // Base API endpoint for Gemini models
+    const API_BASE_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/';
+
+    /**
+     * Get the full API endpoint with the selected model.
+     *
+     * @return string The complete API endpoint with the selected model.
+     */
+    public static function get_api_endpoint() {
+        $model = get_option(ESC_GEMINI_MODEL_OPTION, 'gemini-2.0-flash-lite');
+        return self::API_BASE_ENDPOINT . $model . ':generateContent';
+    }
+
+    /**
+     * Get available Gemini models.
+     *
+     * @return array Array of available models with model ID as key and display name as value.
+     */
+    public static function get_available_models() {
+        return [
+            'gemini-2.0-flash-lite' => __('Gemini 2.0 Flash Lite (Fastest)', 'erins-seed-catalog'),
+            'gemini-2.0-flash' => __('Gemini 2.0 Flash (Fast)', 'erins-seed-catalog'),
+            'gemini-2.0-pro' => __('Gemini 2.0 Pro (Most Accurate)', 'erins-seed-catalog'),
+            'gemini-1.5-flash-latest' => __('Gemini 1.5 Flash (Legacy)', 'erins-seed-catalog'),
+            'gemini-1.5-pro-latest' => __('Gemini 1.5 Pro (Legacy)', 'erins-seed-catalog'),
+        ];
+    }
 
 
     /**
@@ -72,14 +95,14 @@ class ESC_Gemini_API {
             'timeout'     => 60, // Increase timeout for potentially long API calls
         ];
 
-        // Append API key to the endpoint URL
-        $api_url = add_query_arg( 'key', $api_key, self::API_ENDPOINT );
+        // Append API key to the dynamic endpoint URL
+        $api_url = add_query_arg( 'key', $api_key, self::get_api_endpoint() );
 
         $response = wp_remote_post( $api_url, $args );
-        
+
         // Log raw response for debugging
         error_log('Gemini API Raw Response: ' . print_r($response, true));
-        
+
         if ( is_wp_error( $response ) ) {
             // WordPress HTTP API error
             return new WP_Error( 'http_error', __( 'Error communicating with the Gemini API.', 'erins-seed-catalog' ), $response->get_error_message() );
@@ -87,12 +110,12 @@ class ESC_Gemini_API {
 
         $response_code = wp_remote_retrieve_response_code( $response );
         $response_body = wp_remote_retrieve_body( $response );
-        
+
         // Log response body before JSON decode
         error_log('Gemini API Response Body: ' . $response_body);
-        
+
         $result_data = json_decode( $response_body, true );
-        
+
         // Log parsed data
         error_log('Gemini API Parsed Data: ' . print_r($result_data, true));
 

@@ -84,11 +84,18 @@ class ESC_Admin {
 	 * Register plugin settings using the Settings API.
 	 */
 	public static function register_settings() {
-		// Register the setting
+		// Register the API key setting
 		register_setting(
 			ESC_SETTINGS_OPTION_GROUP,        // Option group
 			ESC_API_KEY_OPTION,               // Option name
 			[ __CLASS__, 'sanitize_api_key' ] // Sanitization callback
+		);
+
+		// Register the Gemini model setting
+		register_setting(
+			ESC_SETTINGS_OPTION_GROUP,        // Option group
+			ESC_GEMINI_MODEL_OPTION,          // Option name
+			[ __CLASS__, 'sanitize_gemini_model' ] // Sanitization callback
 		);
 
 		// Add settings section
@@ -104,6 +111,15 @@ class ESC_Admin {
 			ESC_API_KEY_OPTION,               // ID
 			__( 'Gemini API Key', 'erins-seed-catalog' ), // Title
 			[ __CLASS__, 'render_api_key_field' ], // Callback to render the field
+			'erins-seed-catalog',             // Page slug
+			'esc_settings_section_api'      // Section ID
+		);
+
+		// Add settings field for Gemini Model
+		add_settings_field(
+			ESC_GEMINI_MODEL_OPTION,          // ID
+			__( 'Gemini Model', 'erins-seed-catalog' ), // Title
+			[ __CLASS__, 'render_gemini_model_field' ], // Callback to render the field
 			'erins-seed-catalog',             // Page slug
 			'esc_settings_section_api'      // Section ID
 		);
@@ -140,6 +156,30 @@ class ESC_Admin {
 	}
 
 	/**
+	 * Sanitize the Gemini model input.
+	 *
+	 * @param string $input Raw input.
+	 * @return string Sanitized input.
+	 */
+	public static function sanitize_gemini_model( $input ) {
+		// Get available models to validate against
+		$available_models = ESC_Gemini_API::get_available_models();
+
+		// Check if the input is a valid model
+		if ( array_key_exists( $input, $available_models ) ) {
+			return $input;
+		}
+
+		// If not valid, return the default model
+		add_settings_error(
+			ESC_GEMINI_MODEL_OPTION,
+			'invalid_model',
+			__( 'Invalid Gemini model selected. Using default model.', 'erins-seed-catalog' )
+		);
+		return 'gemini-2.0-flash-lite';
+	}
+
+	/**
 	 * Render descriptive text for the API settings section.
 	 */
 	public static function render_api_section_text() {
@@ -162,6 +202,29 @@ class ESC_Admin {
 			esc_attr( $api_key )
 		);
         echo '<p class="description">' . esc_html__('Your API key is stored securely in the WordPress database.', 'erins-seed-catalog') . '</p>';
+	}
+
+	/**
+	 * Render the dropdown field for the Gemini Model.
+	 */
+	public static function render_gemini_model_field() {
+		$current_model = get_option( ESC_GEMINI_MODEL_OPTION, 'gemini-2.0-flash-lite' );
+		$available_models = ESC_Gemini_API::get_available_models();
+
+		echo '<select id="' . esc_attr( ESC_GEMINI_MODEL_OPTION ) . '" name="' . esc_attr( ESC_GEMINI_MODEL_OPTION ) . '">';
+
+		foreach ( $available_models as $model_id => $model_name ) {
+			printf(
+				'<option value="%1$s" %2$s>%3$s</option>',
+				esc_attr( $model_id ),
+				selected( $current_model, $model_id, false ),
+				esc_html( $model_name )
+			);
+		}
+
+		echo '</select>';
+		echo '<p class="description">' . esc_html__('Select which Gemini model to use for AI-assisted information retrieval.', 'erins-seed-catalog') . '</p>';
+		echo '<p class="description">' . esc_html__('Flash models are faster and more cost-effective, while Pro models may provide more detailed information.', 'erins-seed-catalog') . '</p>';
 	}
 
 	/**
@@ -196,7 +259,7 @@ class ESC_Admin {
                 if ($edit_seed_id > 0) {
                     $allowed_fields = ESC_DB::get_allowed_fields();
                     $seed_data = [];
-                    
+
                     // Ensure $allowed_fields is an array before looping
                     if (is_array($allowed_fields)) {
                         foreach ($allowed_fields as $field => $type) {
@@ -213,7 +276,7 @@ class ESC_Admin {
                             echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__('Error: Could not retrieve field definitions.', 'erins-seed-catalog') . '</p></div>';
                         });
                         // Optionally prevent further processing
-                        // return; 
+                        // return;
                     }
 
                      // Handle Categories
