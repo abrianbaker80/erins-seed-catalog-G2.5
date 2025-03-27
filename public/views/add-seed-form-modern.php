@@ -166,21 +166,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 </div>
                             </div>
 
-                            <div class="esc-form-row">
-                                <div class="esc-form-field">
-                                    <div class="esc-floating-label">
-                                        <input type="text" id="esc_brand" name="brand" placeholder=" ">
-                                        <label for="esc_brand"><?php esc_html_e('Seed Brand/Source', 'erins-seed-catalog'); ?></label>
-                                    </div>
-                                </div>
 
-                                <div class="esc-form-field">
-                                    <div class="esc-floating-label">
-                                        <input type="text" id="esc_sku_upc" name="sku_upc" placeholder=" ">
-                                        <label for="esc_sku_upc"><?php esc_html_e('Item / SKU / UPC', 'erins-seed-catalog'); ?></label>
-                                    </div>
-                                </div>
-                            </div>
 
                             <div class="esc-form-row">
                                 <div class="esc-form-field esc-full-width">
@@ -234,13 +220,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <div class="esc-form-row">
                                 <div class="esc-form-field">
                                     <label for="esc_days_to_maturity"><?php esc_html_e('Days to Maturity', 'erins-seed-catalog'); ?></label>
-                                    <div class="esc-range-slider">
-                                        <input type="range" id="esc_days_to_maturity_slider" min="1" max="365" value="60" class="esc-slider">
-                                        <div class="esc-slider-value">
-                                            <input type="number" id="esc_days_to_maturity" name="days_to_maturity" min="1" max="365" value="60">
-                                            <span class="esc-unit"><?php esc_html_e('days', 'erins-seed-catalog'); ?></span>
-                                        </div>
-                                    </div>
+                                    <input type="text" id="esc_days_to_maturity" name="days_to_maturity" placeholder="e.g., 60-90">
                                 </div>
 
                                 <div class="esc-form-field">
@@ -256,17 +236,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 </div>
                             </div>
 
-                            <div class="esc-ai-suggestions">
-                                <div class="esc-suggestion-header">
-                                    <span class="dashicons dashicons-lightbulb"></span>
-                                    <span><?php esc_html_e('AI Suggestions for Growth Habit', 'erins-seed-catalog'); ?></span>
-                                </div>
-                                <div class="esc-suggestions-list">
-                                    <button type="button" class="esc-suggestion" data-field="growth_habit" data-value="Bush"><?php esc_html_e('Bush', 'erins-seed-catalog'); ?></button>
-                                    <button type="button" class="esc-suggestion" data-field="growth_habit" data-value="Vining"><?php esc_html_e('Vining', 'erins-seed-catalog'); ?></button>
-                                    <button type="button" class="esc-suggestion" data-field="growth_habit" data-value="Upright"><?php esc_html_e('Upright', 'erins-seed-catalog'); ?></button>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
 

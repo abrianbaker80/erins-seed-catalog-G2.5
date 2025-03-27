@@ -213,6 +213,11 @@
                     // Add a small delay to ensure the DOM is ready
                     setTimeout(function() {
                         try {
+                            // Make sure we have the seed name in the data
+                            if (!response.data.seed_name && seedName) {
+                                response.data.seed_name = seedName;
+                            }
+
                             // Populate the review form with the seed data
                             populateReviewForm(response.data);
 
@@ -483,9 +488,20 @@
 
         // Special handling for sunlight radio buttons
         if (data.sunlight) {
-            $('input[name="sunlight"][value="' + data.sunlight + '"]').prop('checked', true);
+            // First uncheck all options
+            $('input[name="sunlight"]').prop('checked', false);
+
+            // Then check only the one that matches exactly
+            const sunlightValue = data.sunlight.trim();
+            $('input[name="sunlight"][value="' + sunlightValue + '"]').prop('checked', true);
+
+            // If none match exactly, check the first one
+            if ($('input[name="sunlight"]:checked').length === 0 && $('input[name="sunlight"]').length > 0) {
+                $('input[name="sunlight"]:first').prop('checked', true);
+            }
+
             $('input[name="sunlight"]').closest('.esc-form-field').addClass('esc-ai-populated');
-            addToChangesList('sunlight', data.sunlight);
+            addToChangesList('sunlight', $('input[name="sunlight"]:checked').val() || sunlightValue);
         }
 
         // Special handling for sowing method dropdown
@@ -495,14 +511,23 @@
             addToChangesList('sowing_method', data.sowing_method);
         }
 
+        // Special handling for pollinator information
+        if (data.pollinator_info) {
+            $('#esc_pollinator_info').val(data.pollinator_info).trigger('input');
+            $('#esc_pollinator_info').closest('.esc-form-field').addClass('esc-ai-populated');
+            addToChangesList('pollinator_info', 'Pollinator information added');
+        }
+
         // Special handling for categories if present
         if (data.suggested_term_ids && Array.isArray(data.suggested_term_ids) && data.suggested_term_ids.length > 0) {
             console.log('Setting categories from suggested_term_ids:', data.suggested_term_ids);
             const $categorySelect = $('#esc_seed_category, #esc_seed_category_review, #esc_seed_category_manual');
             if ($categorySelect.length) {
-                $categorySelect.val(data.suggested_term_ids).trigger('change');
+                // Only select the first category from the suggested list
+                const firstCategory = [data.suggested_term_ids[0]];
+                $categorySelect.val(firstCategory).trigger('change');
                 $categorySelect.closest('.esc-form-field').addClass('esc-ai-populated');
-                addToChangesList('categories', 'Suggested categories');
+                addToChangesList('categories', 'Selected category from AI');
             }
         }
 
@@ -515,23 +540,25 @@
 
             if ($categorySelect.length) {
                 // Get all available options
-                const selectedValues = [];
+                let selectedValue = null;
                 $categorySelect.find('option').each(function() {
+                    if (selectedValue) return; // Only select the first match
+
                     const optionText = $(this).text().toLowerCase();
                     // Check if any suggestion matches this option
                     for (const suggestion of suggestions) {
                         if (optionText.includes(suggestion.toLowerCase())) {
-                            selectedValues.push($(this).val());
+                            selectedValue = $(this).val();
                             console.log('Found matching category:', optionText, 'for suggestion:', suggestion);
                             break;
                         }
                     }
                 });
 
-                if (selectedValues.length > 0) {
-                    $categorySelect.val(selectedValues).trigger('change');
+                if (selectedValue) {
+                    $categorySelect.val([selectedValue]).trigger('change');
                     $categorySelect.closest('.esc-form-field').addClass('esc-ai-populated');
-                    addToChangesList('categories', 'Categories from AI suggestion: ' + data.esc_seed_category_suggestion);
+                    addToChangesList('categories', 'Category from AI suggestion');
                 }
             }
         }
