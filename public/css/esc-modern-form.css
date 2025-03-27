@@ -605,6 +605,34 @@
 
 .esc-ai-populated {
     margin-top: 24px;
+    position: relative;
+}
+
+.esc-ai-populated::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: #27ae60;
+    border-radius: 2px 0 0 2px;
+}
+
+.esc-ai-processed {
+    margin-top: 24px;
+    position: relative;
+}
+
+.esc-ai-processed::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: #95a5a6; /* Gray color for null values */
+    border-radius: 2px 0 0 2px;
 }
 
 /* Make sure the quick review tab is always visible when active */

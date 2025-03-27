@@ -307,8 +307,33 @@
             if (data.hasOwnProperty(key)) {
                 const value = data[key];
 
-                // Skip null or undefined values
-                if (value === null || value === undefined) {
+                // Handle null, undefined, or string "null" values
+                if (value === null || value === undefined || value === 'null' || value === "null") {
+                    // For null values, clear the field but still mark it as processed by AI
+                    let $field = $('#esc_' + key + '_review');
+                    if (!$field.length) {
+                        $field = $('#esc_' + key);
+                    }
+                    if (!$field.length) {
+                        $field = $('#esc_' + key + '_manual');
+                    }
+
+                    if ($field.length) {
+                        // Clear the field
+                        if ($field.is('select')) {
+                            $field.val('');
+                        } else if ($field.is('input[type="checkbox"]')) {
+                            $field.prop('checked', false);
+                        } else if ($field.is('input[type="radio"]')) {
+                            $('input[name="' + $field.attr('name') + '"]').prop('checked', false);
+                        } else {
+                            $field.val('');
+                        }
+
+                        // Still mark as processed by AI
+                        $field.closest('.esc-form-field').addClass('esc-ai-processed');
+                    }
+
                     continue;
                 }
 

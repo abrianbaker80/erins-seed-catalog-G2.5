@@ -281,10 +281,12 @@ class ESC_Gemini_API {
             return new WP_Error( 'api_json_error', __( 'Could not parse the JSON data from the Gemini API response.', 'erins-seed-catalog' ), json_last_error_msg() . ' | Raw text: ' . substr($generated_text, 0, 200) . '...' );
         }
 
-        // Sanitize the extracted data before returning
-        // return self::sanitize_extracted_data( $extracted_data );
-        // Return raw data, sanitization happens during DB insert/update
-        return $extracted_data;
+        // Process the extracted data to handle string "null" values
+        $processed_data = self::process_api_data($extracted_data);
+        error_log('Gemini API Processed Data: ' . print_r($processed_data, true));
+
+        // Return processed data, sanitization happens during DB insert/update
+        return $processed_data;
 
     }
 
@@ -368,7 +370,45 @@ class ESC_Gemini_API {
         return $prompt;
     }
 
-     /**
+    /**
+     * Process data extracted from API response to handle string "null" values.
+     *
+     * @param array $data Raw data from API.
+     * @return array Processed data.
+     */
+    private static function process_api_data(array $data): array {
+        $processed_data = [];
+
+        foreach ($data as $key => $value) {
+            // Handle string "null" values
+            if ($value === 'null' || $value === "null") {
+                $processed_data[$key] = null;
+            }
+            // Handle boolean values that might be strings
+            else if ($key === 'container_suitability' || $key === 'cut_flower_potential') {
+                if (is_string($value)) {
+                    $lower_value = strtolower($value);
+                    if ($lower_value === 'true') {
+                        $processed_data[$key] = true;
+                    } else if ($lower_value === 'false') {
+                        $processed_data[$key] = false;
+                    } else {
+                        $processed_data[$key] = null;
+                    }
+                } else {
+                    $processed_data[$key] = $value;
+                }
+            }
+            // Handle all other values
+            else {
+                $processed_data[$key] = $value;
+            }
+        }
+
+        return $processed_data;
+    }
+
+    /**
      * Sanitize data extracted from API response.
      * Deprecated: Sanitization now happens in ESC_DB::add_seed/update_seed.
      * Kept here for potential future use or reference.
