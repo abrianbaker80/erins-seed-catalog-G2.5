@@ -26,24 +26,51 @@
 
     // Initialize floating labels
     function initFloatingLabels() {
+        console.log('Initializing floating labels');
+
         // Add has-value class to inputs that already have values
         $('.esc-floating-label input').each(function() {
             if ($(this).val().trim() !== '') {
                 $(this).addClass('has-value');
+                console.log('Added has-value class to input with value: ' + $(this).val());
             }
         });
 
         // Add event listeners for input changes
-        $('.esc-floating-label input').on('input change blur', function() {
-            if ($(this).val().trim() !== '') {
+        $('.esc-floating-label input').off('input change blur').on('input change blur', function() {
+            const value = $(this).val().trim();
+            console.log('Input value changed: ' + value);
+
+            if (value !== '') {
                 $(this).addClass('has-value');
             } else {
                 $(this).removeClass('has-value');
             }
         });
 
+        // Force the label to be visible when input is focused
+        $('.esc-floating-label input').off('focus').on('focus', function() {
+            $(this).next('label').css('color', '#3498db');
+        });
+
+        // Reset label color on blur if empty
+        $('.esc-floating-label input').off('blur').on('blur', function() {
+            if ($(this).val().trim() === '') {
+                $(this).next('label').css('color', '#666');
+            }
+        });
+
         // Trigger the input event on page load to set initial state
         $('.esc-floating-label input').trigger('input');
+
+        // Add a small delay to ensure everything is properly initialized
+        setTimeout(function() {
+            $('.esc-floating-label input').each(function() {
+                if ($(this).val().trim() !== '') {
+                    $(this).addClass('has-value').trigger('input');
+                }
+            });
+        }, 100);
     }
 
     // Initialize event listeners
@@ -390,49 +417,74 @@
 
     // Populate attention needed fields
     function populateAttentionNeededFields() {
+        console.log('Populating attention needed fields');
         const $attentionFields = $('.esc-attention-fields');
         $attentionFields.empty();
 
-        $('.esc-form-card[data-ai-status="not-populated"], .esc-form-card[data-ai-status="partially-populated"]').each(function() {
-            const $card = $(this);
-            const cardTitle = $card.find('.esc-card-header h3').text();
+        // First check if we have any cards that need attention
+        const $needsAttentionCards = $('.esc-form-card[data-ai-status="not-populated"], .esc-form-card[data-ai-status="partially-populated"]');
+        console.log('Found ' + $needsAttentionCards.length + ' cards needing attention');
 
-            const $attentionCard = $('<div class="esc-attention-card"></div>');
-            $attentionCard.append('<h5>' + cardTitle + '</h5>');
+        // If we have cards that need attention, process them
+        if ($needsAttentionCards.length > 0) {
+            $needsAttentionCards.each(function() {
+                const $card = $(this);
+                const cardTitle = $card.find('.esc-card-header h3').text();
+                console.log('Processing card: ' + cardTitle);
 
-            const $fieldList = $('<div class="esc-attention-field-list"></div>');
+                const $attentionCard = $('<div class="esc-attention-card"></div>');
+                $attentionCard.append('<h5>' + cardTitle + '</h5>');
 
-            $card.find('.esc-form-field:not(.esc-ai-populated)').each(function() {
-                const $field = $(this);
-                const fieldLabel = $field.find('label').text();
-                const fieldId = $field.find('input, textarea, select').attr('id');
+                const $fieldList = $('<div class="esc-attention-field-list"></div>');
 
-                if (fieldLabel && fieldId) {
-                    const $attentionField = $('<div class="esc-attention-field"></div>');
-                    $attentionField.append('<label for="' + fieldId + '">' + fieldLabel + '</label>');
+                // Find fields that need attention
+                const $fieldsNeedingAttention = $card.find('.esc-form-field:not(.esc-ai-populated)');
+                console.log('Found ' + $fieldsNeedingAttention.length + ' fields needing attention in ' + cardTitle);
 
-                    // Clone the input field
-                    const $inputClone = $field.find('input, textarea, select').clone();
-                    $inputClone.attr('id', fieldId + '_attention');
+                $fieldsNeedingAttention.each(function() {
+                    const $field = $(this);
+                    const fieldLabel = $field.find('label').text();
+                    const $input = $field.find('input, textarea, select');
+                    const fieldId = $input.attr('id');
 
-                    // Sync the cloned field with the original
-                    $inputClone.on('input change', function() {
-                        $('#' + fieldId).val($(this).val()).trigger('change');
-                    });
+                    console.log('Processing field: ' + fieldLabel + ' (ID: ' + fieldId + ')');
 
-                    $attentionField.append($inputClone);
-                    $fieldList.append($attentionField);
+                    if (fieldLabel && fieldId) {
+                        const $attentionField = $('<div class="esc-attention-field"></div>');
+                        $attentionField.append('<label for="' + fieldId + '_attention">' + fieldLabel + '</label>');
+
+                        // Clone the input field
+                        const $inputClone = $input.clone();
+                        $inputClone.attr('id', fieldId + '_attention');
+
+                        // Make sure the clone has the current value
+                        $inputClone.val($input.val());
+
+                        // Sync the cloned field with the original
+                        $inputClone.on('input change', function() {
+                            $('#' + fieldId).val($(this).val()).trigger('change');
+                        });
+
+                        $attentionField.append($inputClone);
+                        $fieldList.append($attentionField);
+                    }
+                });
+
+                // Only add the card if it has fields
+                if ($fieldList.children().length > 0) {
+                    $attentionCard.append($fieldList);
+                    $attentionFields.append($attentionCard);
                 }
             });
-
-            $attentionCard.append($fieldList);
-            $attentionFields.append($attentionCard);
-        });
+        }
 
         // If no attention needed fields, show a message
         if ($attentionFields.children().length === 0) {
             $attentionFields.append('<p>All fields have been populated by AI. You can review them in Detailed Edit mode.</p>');
         }
+
+        // Make sure the quick review tab is visible
+        $('.esc-mode-quick').show();
     }
 
     // Toggle manual entry
@@ -460,6 +512,7 @@
     // Switch review mode
     function switchReviewMode() {
         const mode = $(this).data('mode');
+        console.log('Switching to review mode: ' + mode);
 
         // Update active button
         $('.esc-mode-button').removeClass('active');
@@ -468,6 +521,20 @@
         // Show the selected mode
         $('.esc-review-mode').hide();
         $('.esc-mode-' + mode).show();
+
+        // If switching to quick mode, make sure attention fields are populated
+        if (mode === 'quick') {
+            populateAttentionNeededFields();
+        }
+
+        // Ensure floating labels are properly initialized in the visible mode
+        setTimeout(function() {
+            $('.esc-mode-' + mode + ' .esc-floating-label input').each(function() {
+                if ($(this).val().trim() !== '') {
+                    $(this).addClass('has-value').trigger('input');
+                }
+            });
+        }, 100);
     }
 
     // Toggle card

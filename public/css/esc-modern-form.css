@@ -146,6 +146,7 @@
     position: relative;
     z-index: 0;
     background-color: #fff;
+    color: #333; /* Ensure text is visible */
 }
 
 .esc-floating-label label {
@@ -157,7 +158,7 @@
     color: #666;
     margin: 0;
     background-color: transparent;
-    z-index: 1;
+    z-index: 2; /* Increased z-index to ensure label is above input */
 }
 
 /* This is the key fix - ensuring the label moves when input has content */
