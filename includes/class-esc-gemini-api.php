@@ -371,12 +371,18 @@ class ESC_Gemini_API {
     }
 
     /**
-     * Process data extracted from API response to handle string "null" values.
+     * Process data extracted from API response to handle string "null" values and array responses.
      *
      * @param array $data Raw data from API.
      * @return array Processed data.
      */
     private static function process_api_data(array $data): array {
+        // Check if the data is an array of objects (which happens sometimes with the API)
+        if (isset($data[0]) && is_array($data[0])) {
+            error_log('Gemini API returned array of objects, using first item');
+            $data = $data[0];
+        }
+
         $processed_data = [];
 
         foreach ($data as $key => $value) {

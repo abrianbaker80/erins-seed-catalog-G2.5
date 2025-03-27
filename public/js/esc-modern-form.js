@@ -196,8 +196,8 @@
                 console.log('AI response received:', response);
 
                 if (response.success) {
-                    // Process the AI data
-                    const aiData = response.data;
+                    // Process the AI data - response.data contains the seed information
+                    console.log('Success! Raw response:', response);
 
                     // Show success state
                     showAIStatus('success');
@@ -207,24 +207,33 @@
                     $('#esc-seed-name-display, #esc-seed-display-name').text(displayName);
 
                     // Ensure the review phase is visible before populating
-                    // This fixes the issue with form not being found
                     $('#esc-phase-review-edit').show();
                     $('.esc-review-mode').show();
 
                     // Add a small delay to ensure the DOM is ready
                     setTimeout(function() {
-                        // Populate the review form
-                        populateReviewForm(response.data);
+                        try {
+                            // Populate the review form with the seed data
+                            populateReviewForm(response.data);
 
-                        // Switch to review phase
-                        showPhase('review-edit');
+                            // Switch to review phase
+                            showPhase('review-edit');
 
-                        // Ensure floating labels are properly initialized
-                        $('.esc-floating-label input, .esc-floating-label textarea').each(function() {
-                            if ($(this).val() && $(this).val().trim() !== '') {
-                                $(this).addClass('has-value');
-                            }
-                        });
+                            // Ensure floating labels are properly initialized
+                            $('.esc-floating-label input, .esc-floating-label textarea').each(function() {
+                                if ($(this).val()) {
+                                    const val = $(this).val();
+                                    if (typeof val === 'string' && val.trim() !== '') {
+                                        $(this).addClass('has-value');
+                                    } else if (val) {
+                                        $(this).addClass('has-value');
+                                    }
+                                }
+                            });
+                        } catch (error) {
+                            console.error('Error populating form:', error);
+                            alert('There was an error populating the form. Please try again or enter details manually.');
+                        }
                     }, 100);
                 } else {
                     // Show error state
@@ -565,37 +574,47 @@
 
     // Update AI status badges
     function updateAIStatusBadges() {
-        $('.esc-form-card').each(function() {
-            const $card = $(this);
-            const $fields = $card.find('.esc-form-field');
+        try {
+            $('.esc-form-card').each(function() {
+                const $card = $(this);
+                const $fields = $card.find('.esc-form-field');
 
-            // First mark fields with values as populated
-            $fields.each(function() {
-                const $field = $(this);
-                const $input = $field.find('input, textarea, select');
+                // First mark fields with values as populated
+                $fields.each(function() {
+                    try {
+                        const $field = $(this);
+                        const $input = $field.find('input, textarea, select');
 
-                // Skip if already marked as populated
-                if ($field.hasClass('esc-ai-populated')) {
-                    return;
-                }
+                        // Skip if already marked as populated
+                        if ($field.hasClass('esc-ai-populated')) {
+                            return;
+                        }
 
-                // Check if the field has a value
-                if ($input.is('input[type="radio"]')) {
-                    // For radio buttons, check if any in the group is checked
-                    const radioName = $input.attr('name');
-                    if ($('input[name="' + radioName + '"]:checked').length > 0) {
-                        $field.addClass('esc-ai-populated');
+                        // Check if the field has a value
+                        if ($input.is('input[type="radio"]')) {
+                            // For radio buttons, check if any in the group is checked
+                            const radioName = $input.attr('name');
+                            if ($('input[name="' + radioName + '"]:checked').length > 0) {
+                                $field.addClass('esc-ai-populated');
+                            }
+                        } else if ($input.length && $input.val()) {
+                            const val = $input.val();
+                            if (typeof val === 'string' && val.trim() !== '') {
+                                $field.addClass('esc-ai-populated');
+                            } else if (val) {
+                                $field.addClass('esc-ai-populated');
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('Error processing field:', e);
                     }
-                } else if ($input.val() && $input.val().trim() !== '') {
-                    $field.addClass('esc-ai-populated');
-                }
-            });
+                });
 
-            // Now count populated fields
-            const $populatedFields = $card.find('.esc-form-field.esc-ai-populated');
-            console.log('Card:', $card.find('.esc-card-header h3').text(),
-                      'Fields:', $fields.length,
-                      'Populated:', $populatedFields.length);
+                // Now count populated fields
+                const $populatedFields = $card.find('.esc-form-field.esc-ai-populated');
+                console.log('Card:', $card.find('.esc-card-header h3').text(),
+                          'Fields:', $fields.length,
+                          'Populated:', $populatedFields.length);
 
             if ($populatedFields.length === 0) {
                 $card.attr('data-ai-status', 'not-populated');
@@ -617,6 +636,9 @@
                     .addClass('dashicons-marker');
             }
         });
+        } catch (error) {
+            console.error('Error updating AI status badges:', error);
+        }
     }
 
     // Removed populateAISummary function as we no longer have a quick review mode

@@ -79,10 +79,14 @@ class ESC_Ajax {
 				throw new Exception('API request failed');
 			}
 
-			wp_send_json_success([
-				'data' => $result,
-				'message' => __('Seed information found!', 'erins-seed-catalog')
-			]);
+			// Check if result is an array of objects (which happens sometimes with the API)
+			if (is_array($result) && isset($result[0]) && is_array($result[0])) {
+				// Use the first item in the array
+				$result = $result[0];
+				error_log('Gemini API returned array of objects, using first item');
+			}
+
+			wp_send_json_success($result);
 
 		} catch (Exception $e) {
 			wp_send_json_error([
