@@ -28,45 +28,61 @@
     function initFloatingLabels() {
         console.log('Initializing floating labels');
 
-        // Add has-value class to inputs that already have values
-        $('.esc-floating-label input').each(function() {
-            if ($(this).val().trim() !== '') {
-                $(this).addClass('has-value');
-                console.log('Added has-value class to input with value: ' + $(this).val());
+        // Process all form elements with floating labels (inputs, textareas, selects)
+        $('.esc-floating-label input, .esc-floating-label textarea, .esc-floating-label select').each(function() {
+            var $field = $(this);
+
+            // Check if the field has a value
+            if ($field.val() && $field.val().trim() !== '') {
+                $field.addClass('has-value');
+                console.log('Added has-value class to field with value: ' + $field.val());
+
+                // Ensure the label is properly positioned
+                var $label = $field.siblings('label');
+                if ($label.length) {
+                    $label.addClass('active');
+                }
+            }
+
+            // Ensure placeholder attribute exists (critical for CSS selectors)
+            if (!$field.attr('placeholder')) {
+                $field.attr('placeholder', ' ');
             }
         });
 
         // Add event listeners for input changes
-        $('.esc-floating-label input').off('input change blur').on('input change blur', function() {
-            const value = $(this).val().trim();
-            console.log('Input value changed: ' + value);
+        $('.esc-floating-label input, .esc-floating-label textarea, .esc-floating-label select').off('input change blur').on('input change blur', function() {
+            var $field = $(this);
+            var value = $field.val();
+            var hasValue = value && value.trim() !== '';
 
-            if (value !== '') {
-                $(this).addClass('has-value');
+            if (hasValue) {
+                $field.addClass('has-value');
             } else {
-                $(this).removeClass('has-value');
+                $field.removeClass('has-value');
             }
         });
 
-        // Force the label to be visible when input is focused
-        $('.esc-floating-label input').off('focus').on('focus', function() {
-            $(this).next('label').css('color', '#3498db');
+        // Force the label to be visible when field is focused
+        $('.esc-floating-label input, .esc-floating-label textarea, .esc-floating-label select').off('focus').on('focus', function() {
+            $(this).siblings('label').css('color', '#3498db');
         });
 
         // Reset label color on blur if empty
-        $('.esc-floating-label input').off('blur').on('blur', function() {
-            if ($(this).val().trim() === '') {
-                $(this).next('label').css('color', '#666');
+        $('.esc-floating-label input, .esc-floating-label textarea, .esc-floating-label select').off('blur').on('blur', function() {
+            if (!$(this).val() || $(this).val().trim() === '') {
+                $(this).siblings('label').css('color', '#666');
             }
         });
 
         // Trigger the input event on page load to set initial state
-        $('.esc-floating-label input').trigger('input');
+        $('.esc-floating-label input, .esc-floating-label textarea, .esc-floating-label select').trigger('input');
 
         // Add a small delay to ensure everything is properly initialized
+        // This is especially important for dynamically loaded content
         setTimeout(function() {
-            $('.esc-floating-label input').each(function() {
-                if ($(this).val().trim() !== '') {
+            $('.esc-floating-label input, .esc-floating-label textarea, .esc-floating-label select').each(function() {
+                if ($(this).val() && $(this).val().trim() !== '') {
                     $(this).addClass('has-value').trigger('input');
                 }
             });
@@ -334,6 +350,11 @@
                     // Ensure floating label behavior works
                     if ($field.closest('.esc-floating-label').length) {
                         $field.addClass('has-value');
+
+                        // Make sure the field has a placeholder attribute
+                        if (!$field.attr('placeholder')) {
+                            $field.attr('placeholder', ' ');
+                        }
                     }
 
                     // Add to changes list
@@ -563,9 +584,17 @@
 
         // Ensure floating labels are properly initialized in the visible mode
         setTimeout(function() {
-            $('.esc-mode-' + mode + ' .esc-floating-label input').each(function() {
-                if ($(this).val().trim() !== '') {
-                    $(this).addClass('has-value').trigger('input');
+            $('.esc-mode-' + mode + ' .esc-floating-label input, .esc-mode-' + mode + ' .esc-floating-label textarea, .esc-mode-' + mode + ' .esc-floating-label select').each(function() {
+                var $field = $(this);
+
+                // Ensure placeholder attribute exists
+                if (!$field.attr('placeholder')) {
+                    $field.attr('placeholder', ' ');
+                }
+
+                // Add has-value class if the field has a value
+                if ($field.val() && $field.val().trim() !== '') {
+                    $field.addClass('has-value').trigger('input');
                 }
             });
         }, 100);

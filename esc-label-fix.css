@@ -1,0 +1,55 @@
+/**
+ * Fix for floating labels with pre-filled fields
+ */
+
+/* Fix for floating labels when fields have values */
+.esc-floating-label {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.esc-floating-label input,
+.esc-floating-label textarea,
+.esc-floating-label select {
+  height: auto;
+  padding: 15px 15px 5px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+  background: #fff;
+}
+
+.esc-floating-label label {
+  position: absolute;
+  top: 0;
+  left: 15px;
+  height: 100%;
+  padding: 15px 0 0;
+  font-size: 16px;
+  color: #666;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  transform-origin: 0 0;
+}
+
+/* This is the key fix - ensure labels are properly positioned when inputs have values */
+.esc-floating-label input:not(:placeholder-shown) + label,
+.esc-floating-label input.has-value + label,
+.esc-floating-label textarea:not(:placeholder-shown) + label,
+.esc-floating-label textarea.has-value + label,
+.esc-floating-label select:not([value=""]):not([value="0"]) + label,
+.esc-floating-label select.has-value + label {
+  transform: translateY(-10px) scale(0.75);
+  color: #3a7bd5;
+}
+
+/* Also ensure focus state works properly */
+.esc-floating-label input:focus + label,
+.esc-floating-label textarea:focus + label,
+.esc-floating-label select:focus + label {
+  transform: translateY(-10px) scale(0.75);
+  color: #3a7bd5;
+}
+
+/* Add a JavaScript fix to ensure pre-filled fields are properly handled */

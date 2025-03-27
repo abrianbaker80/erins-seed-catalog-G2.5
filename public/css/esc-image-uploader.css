@@ -1,0 +1,128 @@
+/**
+ * Modern Drag & Drop Image Uploader for Erin's Seed Catalog
+ */
+
+.esc-image-uploader {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+/* Drop Zone */
+.esc-dropzone {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+  transition: all 0.3s ease;
+  background-color: #f9f9f9;
+  position: relative;
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.esc-dropzone:hover,
+.esc-dropzone.esc-drag-over {
+  border-color: #3a7bd5;
+  background-color: #f0f7ff;
+}
+
+.esc-dropzone-icon {
+  font-size: 36px;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.esc-dropzone-text {
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.esc-dropzone-subtext {
+  color: #999;
+  font-size: 12px;
+}
+
+/* Image Preview */
+.esc-image-preview {
+  position: relative;
+  margin-top: 15px;
+  display: none; /* Hidden by default, shown when image is selected */
+}
+
+.esc-preview-image {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.esc-preview-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.esc-remove-image {
+  color: #e74c3c;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+}
+
+.esc-remove-image .dashicons {
+  margin-right: 5px;
+}
+
+/* Upload Progress */
+.esc-upload-progress {
+  width: 100%;
+  height: 4px;
+  background-color: #eee;
+  border-radius: 2px;
+  margin-top: 10px;
+  overflow: hidden;
+  display: none;
+}
+
+.esc-progress-bar {
+  height: 100%;
+  background-color: #3a7bd5;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+/* Error Messages */
+.esc-upload-error {
+  color: #e74c3c;
+  margin-top: 10px;
+  font-size: 13px;
+  display: none;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .esc-dropzone {
+    padding: 20px;
+    min-height: 120px;
+  }
+  
+  .esc-dropzone-icon {
+    font-size: 28px;
+  }
+}
+
+/* Animation for drag over */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.esc-dropzone.esc-drag-over {
+  animation: pulse 1s infinite;
+}

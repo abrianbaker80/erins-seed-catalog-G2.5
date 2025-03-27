@@ -93,9 +93,10 @@ function esc_display_category_checklist_item($term, $selected_cats, $level = 0) 
                             <tr valign="top">
                                 <th scope="row"><label for="esc_<?php echo esc_attr($field); ?>"><?php echo esc_html($label); ?></label></th>
                                 <td>
-                                    <input type="url" id="esc_<?php echo esc_attr($field); ?>" name="<?php echo esc_attr($field); ?>" value="<?php echo esc_url($value); ?>" class="regular-text">
-                                     <?php if ($field === 'image_url' && !empty($value)) : ?>
-                                        <p><img src="<?php echo esc_url($value); ?>" alt="Current Image" style="max-width: 150px; max-height: 150px; margin-top: 5px;"></p>
+                                    <?php if ($field === 'image_url') : ?>
+                                        <?php ESC_Image_Uploader::render($field, 'esc_' . $field, $value, $label); ?>
+                                    <?php else : ?>
+                                        <input type="url" id="esc_<?php echo esc_attr($field); ?>" name="<?php echo esc_attr($field); ?>" value="<?php echo esc_url($value); ?>" class="regular-text">
                                     <?php endif; ?>
                                 </td>
                             </tr>

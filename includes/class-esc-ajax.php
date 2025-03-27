@@ -47,6 +47,9 @@ class ESC_Ajax {
         // AJAX hook for getting seed details
         add_action( 'wp_ajax_esc_get_seed_details', [ __CLASS__, 'handle_get_seed_details' ] );
 		add_action( 'wp_ajax_nopriv_esc_get_seed_details', [ __CLASS__, 'handle_get_seed_details' ] );
+
+        // AJAX hook for image upload
+        // Note: The actual handler is in ESC_Image_Uploader class
 	}
 
 	/**
@@ -54,91 +57,40 @@ class ESC_Ajax {
 	 */
 	public static function handle_gemini_search() {
 		// 1. Verify Nonce
-		check_ajax_referer( 'esc_ajax_nonce', 'nonce' );
+		check_ajax_referer('esc_ajax_nonce', 'nonce');
 
-		// 2. Get data from $_POST
-		$seed_name = isset( $_POST['seed_name'] ) ? sanitize_text_field( wp_unslash( $_POST['seed_name'] ) ) : '';
-		$variety   = isset( $_POST['variety_name'] ) ? sanitize_text_field( wp_unslash( $_POST['variety_name'] ) ) : null;
-		$brand     = isset( $_POST['brand_name'] ) ? sanitize_text_field( wp_unslash( $_POST['brand_name'] ) ) : null;
-		$sku_upc   = isset( $_POST['sku_upc'] ) ? sanitize_text_field( wp_unslash( $_POST['sku_upc'] ) ) : null;
+		// 2. Get and validate input
+		$seed_name = isset($_POST['seed_name']) ? sanitize_text_field(wp_unslash($_POST['seed_name'])) : '';
+		$variety = isset($_POST['variety']) ? sanitize_text_field(wp_unslash($_POST['variety'])) : '';
 
-		// Log the search parameters
-		error_log('ESC Gemini Search - Seed Name: ' . $seed_name . ', Variety: ' . $variety);
-
-		if ( empty( $seed_name ) ) {
-			wp_send_json_error( [ 'message' => __( 'Seed Name is required for AI search.', 'erins-seed-catalog' ) ] );
+		if (empty($seed_name)) {
+			wp_send_json_error([
+				'message' => __('Seed Name is required for AI search.', 'erins-seed-catalog'),
+				'code' => 'missing_seed_name'
+			]);
 			return;
 		}
 
 		try {
-			// 3. Call the Gemini API Class
-			$result = ESC_Gemini_API::fetch_seed_info( $seed_name, $variety, $brand, $sku_upc );
+			// 3. Call the Gemini API
+			$result = ESC_Gemini_API::fetch_seed_info($seed_name, $variety);
 
-			// Log the API response for debugging
-			error_log('Gemini API Response for ' . $seed_name . ': ' . print_r($result, true));
-
-			// 4. Process result and send JSON response
-			if ( is_wp_error( $result ) ) {
-				wp_send_json_error( [
-					'message' => $result->get_error_message(),
-					'code' => $result->get_error_code(),
-					'data' => $result->get_error_data()
-				] );
-			} else {
-				// Successfully got data from API
-				// Add category term_ids based on suggestion
-				$suggested_category_names = [];
-				if (!empty($result['esc_seed_category_suggestion'])) {
-					$suggested_category_names = array_map('trim', explode(',', $result['esc_seed_category_suggestion']));
-				}
-				$term_ids = [];
-				if (!empty($suggested_category_names)) {
-					foreach ($suggested_category_names as $name) {
-						$term = get_term_by('name', $name, ESC_Taxonomy::TAXONOMY_NAME);
-						if ($term && !is_wp_error($term)) {
-							$term_ids[] = $term->term_id;
-						}
-					}
-				}
-				// Add the term IDs to the response so JS can select them
-				$result['suggested_term_ids'] = $term_ids;
-
-				// Make sure we have a valid array to return
-				if (!is_array($result)) {
-					$result = array(
-						'seed_name' => $seed_name,
-						'variety_name' => $variety,
-						'description' => 'Information could not be properly formatted. Please try again or enter details manually.'
-					);
-				}
-
-				// Ensure seed_name and variety_name are set in the result
-				if (!isset($result['seed_name']) || empty($result['seed_name'])) {
-					$result['seed_name'] = $seed_name;
-				}
-
-				if (!isset($result['variety_name']) && !empty($variety)) {
-					$result['variety_name'] = $variety;
-				}
-
-				// Log the final data being sent
-				error_log('Sending final data to client: ' . print_r($result, true));
-
-				wp_send_json_success( $result );
+			if (!$result || is_wp_error($result)) {
+				throw new Exception('API request failed');
 			}
-		} catch (Exception $e) {
-			// Log any exceptions
-			error_log('Exception in handle_gemini_search: ' . $e->getMessage());
 
-			// Return a friendly error message
+			wp_send_json_success([
+				'data' => $result,
+				'message' => __('Seed information found!', 'erins-seed-catalog')
+			]);
+
+		} catch (Exception $e) {
 			wp_send_json_error([
-				'message' => __('An unexpected error occurred while processing your request.', 'erins-seed-catalog'),
-				'error' => $e->getMessage()
+				'message' => __('Error fetching seed information. Please try again or enter details manually.', 'erins-seed-catalog'),
+				'code' => 'api_error',
+				'debug' => WP_DEBUG ? $e->getMessage() : null
 			]);
 		}
-
-		// Always exit after processing AJAX
-		wp_die();
 	}
 
 
@@ -768,3 +720,4 @@ class ESC_Ajax {
     }
 
 } // End Class
+

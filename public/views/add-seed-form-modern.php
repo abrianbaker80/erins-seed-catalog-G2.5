@@ -157,7 +157,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <div class="esc-form-field">
                                     <label for="esc_seed_name_review"><?php esc_html_e('Seed Type', 'erins-seed-catalog'); ?> <span class="required">*</span></label>
                                     <div class="esc-input-with-confidence">
-                                        <input type="text" id="esc_seed_name_review" name="seed_name" required>
+                                        <input type="text" id="esc_seed_name_review" name="seed_name" placeholder=" " required>
                                         <div class="esc-confidence-indicator" data-confidence="high">
                                             <span class="dashicons dashicons-shield"></span>
                                             <span class="esc-confidence-tooltip"><?php esc_html_e('High confidence: This information comes from verified sources.', 'erins-seed-catalog'); ?></span>
@@ -168,7 +168,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <div class="esc-form-field">
                                     <label for="esc_variety_name_review"><?php esc_html_e('Variety', 'erins-seed-catalog'); ?></label>
                                     <div class="esc-input-with-confidence">
-                                        <input type="text" id="esc_variety_name_review" name="variety_name">
+                                        <input type="text" id="esc_variety_name_review" name="variety_name" placeholder=" ">
                                         <div class="esc-confidence-indicator" data-confidence="high">
                                             <span class="dashicons dashicons-shield"></span>
                                             <span class="esc-confidence-tooltip"><?php esc_html_e('High confidence: This information comes from verified sources.', 'erins-seed-catalog'); ?></span>
@@ -180,19 +180,28 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <div class="esc-form-row">
                                 <div class="esc-form-field">
                                     <label for="esc_brand"><?php esc_html_e('Seed Brand/Source', 'erins-seed-catalog'); ?></label>
-                                    <input type="text" id="esc_brand" name="brand">
+                                    <input type="text" id="esc_brand" name="brand" placeholder=" ">
                                 </div>
 
                                 <div class="esc-form-field">
                                     <label for="esc_sku_upc"><?php esc_html_e('Item / SKU / UPC', 'erins-seed-catalog'); ?></label>
-                                    <input type="text" id="esc_sku_upc" name="sku_upc">
+                                    <input type="text" id="esc_sku_upc" name="sku_upc" placeholder=" ">
                                 </div>
                             </div>
 
                             <div class="esc-form-row">
                                 <div class="esc-form-field esc-full-width">
                                     <label for="esc_description"><?php esc_html_e('Description', 'erins-seed-catalog'); ?></label>
-                                    <textarea id="esc_description" name="description"></textarea>
+                                    <textarea id="esc_description" name="description" placeholder=" "></textarea>
+                                </div>
+                            </div>
+
+                            <div class="esc-form-row">
+                                <div class="esc-form-field esc-full-width">
+                                    <?php
+                                    // Use the new image uploader component
+                                    ESC_Image_Uploader::render('image_url', 'esc_image_url', '', __('Image', 'erins-seed-catalog'));
+                                    ?>
                                 </div>
                             </div>
                         </div>
@@ -373,7 +382,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <div class="esc-form-row">
                                 <div class="esc-form-field esc-full-width">
                                     <label for="esc_notes"><?php esc_html_e('Personal Notes', 'erins-seed-catalog'); ?></label>
-                                    <textarea id="esc_notes" name="notes"></textarea>
+                                    <textarea id="esc_notes" name="notes" placeholder=" "></textarea>
                                     <p class="description"><?php esc_html_e('Your own observations, planting dates, results, etc.', 'erins-seed-catalog'); ?></p>
                                 </div>
                             </div>
