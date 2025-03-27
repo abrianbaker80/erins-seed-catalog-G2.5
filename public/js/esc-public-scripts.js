@@ -18,7 +18,7 @@ jQuery(document).ready(function($) {
         // Disable button and show loading state
         $button.prop('disabled', true).html('<span class="dashicons dashicons-update-alt"></span> ' + (esc_ajax_object.loading_text || 'Searching...'));
         $statusDiv.html('<div class="esc-loading">Searching for seed information...</div>');
-        
+
         // Hide extended form while searching
         $extendedForm.slideUp();
 
@@ -40,9 +40,12 @@ jQuery(document).ready(function($) {
                     $extendedForm.slideDown();
                     // Scroll to the results after a short delay to allow animation
                     setTimeout(function() {
-                        $('html, body').animate({
-                            scrollTop: $statusDiv.offset().top - 50
-                        }, 500);
+                        // Check if the element exists and has an offset before scrolling
+                        if ($statusDiv.length && $statusDiv.offset()) {
+                            $('html, body').animate({
+                                scrollTop: $statusDiv.offset().top - 50
+                            }, 500);
+                        }
                     }, 300);
                 } else {
                     let errorMsg = response.data.message || esc_ajax_object.gemini_error_text || 'Error finding seed information.';
@@ -101,7 +104,7 @@ jQuery(document).ready(function($) {
             if (value !== null && value !== '' && !skipFields.includes(key)) {
                 let $field = $('#esc_' + key);
                 console.log(`Processing field ${key}:`, { value, fieldExists: $field.length > 0 });
-                
+
                 if ($field.length > 0) {
                     if ($field.is(':checkbox')) {
                         $field.prop('checked', !!value);
@@ -128,10 +131,10 @@ jQuery(document).ready(function($) {
                 const $field = $('#esc_' + key);
                 if ($field.length > 0) {
                     const currentValue = $field.val();
-                    console.log(`Verification - Field ${key}:`, { 
-                        expected: value, 
+                    console.log(`Verification - Field ${key}:`, {
+                        expected: value,
                         actual: currentValue,
-                        matches: currentValue === value 
+                        matches: currentValue === value
                     });
                 }
             }
@@ -313,19 +316,19 @@ jQuery(document).ready(function($) {
     // --- Modal & Seed Detail Functionality ---
     const $modal = $('#esc-seed-detail-modal');
     const $modalContent = $('#esc-seed-detail-content');
-    
+
     // Handle clicking on seed cards
     $('.esc-seed-list').on('click', '.esc-seed-card', function(e) {
         const seedId = $(this).data('seed-id');
         if (!seedId) return;
-        
+
         // Show loading state in modal
         $modalContent.html('<div class="esc-loading">' + (esc_ajax_object.loading_text || 'Loading...') + '</div>');
         $modal.fadeIn(200).addClass('show');
 
         // Prevent body scrolling when modal is open
         $('body').css('overflow', 'hidden');
-        
+
         // Fetch seed details
         $.ajax({
             url: esc_ajax_object.ajax_url,

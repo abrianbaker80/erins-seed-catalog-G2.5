@@ -96,6 +96,8 @@
                 break;
             case 'review-edit':
                 $('#esc-phase-review-edit').show();
+                // Ensure form is properly initialized
+                initReviewPhase();
                 break;
             case 'manual-entry':
                 $('#esc-phase-manual-entry').show();
@@ -103,6 +105,22 @@
         }
 
         currentPhase = phase;
+    }
+
+    // Initialize the review phase
+    function initReviewPhase() {
+        // Make sure all elements are properly initialized
+        // This helps prevent errors when elements can't be found
+        setTimeout(function() {
+            // Trigger any necessary events
+            $('.esc-floating-label input').trigger('input');
+
+            // Update AI status badges
+            updateAIStatusBadges();
+
+            // Ensure proper tab is selected
+            $('.esc-mode-button.active').trigger('click');
+        }, 100);
     }
 
     // Handle AI fetch trigger
@@ -149,10 +167,14 @@
                     const displayName = varietyName ? seedName + ' (' + varietyName + ')' : seedName;
                     $('#esc-seed-name-display, #esc-seed-display-name').text(displayName);
 
+                    // Ensure the review phase is visible before populating
+                    // This fixes the issue with form not being found
+                    $('#esc-phase-review-edit').show();
+
                     // Populate the review form
                     populateReviewForm(response.data);
 
-                    // Show the review phase after a short delay
+                    // Show the review phase properly
                     setTimeout(function() {
                         showPhase('review-edit');
                     }, 1500);
@@ -217,8 +239,13 @@
 
     // Populate the review form
     function populateReviewForm(data) {
-        // Reset form
-        $('#esc-phase-review-edit form')[0].reset();
+        // Reset form - with error checking
+        const $form = $('#esc-phase-review-edit form');
+        if ($form.length && $form[0]) {
+            $form[0].reset();
+        } else {
+            console.warn('Form element not found for reset');
+        }
 
         // Clear previous changes list
         $('.esc-changes-list').empty();
