@@ -27,6 +27,7 @@ class ESC_Functions {
         // Only load scripts/styles if a shortcode is present on the page
         if ( is_a( $post, 'WP_Post' ) && (
                 has_shortcode( $post->post_content, 'erins_seed_catalog_add_form' ) ||
+                has_shortcode( $post->post_content, 'erins_seed_catalog_add_form_modern' ) ||
                 has_shortcode( $post->post_content, 'erins_seed_catalog_view' ) ||
                 has_shortcode( $post->post_content, 'erins_seed_catalog_search' ) ||
                 has_shortcode( $post->post_content, 'erins_seed_catalog_categories' )
