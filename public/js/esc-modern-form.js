@@ -7,7 +7,6 @@
     'use strict';
 
     // Variables
-    let aiPopulatedFields = {};
     let currentPhase = 'ai-input';
     let loadingStageInterval;
     let currentLoadingStage = 1;
@@ -104,9 +103,6 @@
         // Toggle AI changes
         $('.esc-toggle-changes').on('click', toggleAIChanges);
 
-        // Review mode toggle
-        $('.esc-mode-button').on('click', switchReviewMode);
-
         // Card toggle
         $('.esc-card-toggle').on('click', toggleCard);
 
@@ -161,8 +157,8 @@
             // Update AI status badges
             updateAIStatusBadges();
 
-            // Ensure proper tab is selected
-            $('.esc-mode-button.active').trigger('click');
+            // Make sure the detailed view is visible
+            $('.esc-review-mode').show();
         }, 100);
     }
 
@@ -200,8 +196,8 @@
                 console.log('AI response received:', response);
 
                 if (response.success) {
-                    // Store the AI populated fields
-                    aiPopulatedFields = response.data;
+                    // Process the AI data
+                    const aiData = response.data;
 
                     // Show success state
                     showAIStatus('success');
@@ -436,9 +432,6 @@
 
         // Update AI status badges
         updateAIStatusBadges();
-
-        // Populate AI summary in quick review mode
-        populateAISummary(data);
     }
 
     // Add to changes list
@@ -529,43 +522,7 @@
         });
     }
 
-    // Populate AI summary in quick review mode
-    function populateAISummary(data) {
-        console.log('Populating AI summary');
-        const $aiSummary = $('.esc-ai-summary');
-        $aiSummary.empty();
-
-        if (!data || typeof data !== 'object') {
-            console.error('Invalid data for AI summary:', data);
-            return;
-        }
-
-        // Create a summary of the AI-populated fields
-        const $summaryList = $('<div class="esc-summary-list"></div>');
-
-        // Count how many fields were populated
-        let populatedCount = 0;
-        for (const key in data) {
-            if (data.hasOwnProperty(key) && data[key] !== null && data[key] !== undefined) {
-                populatedCount++;
-            }
-        }
-
-        // Add a summary message
-        const $summaryMessage = $('<p class="esc-summary-message"></p>');
-        $summaryMessage.text('AI found information for ' + populatedCount + ' fields. Switch to Detailed Edit mode to review and edit all fields.');
-        $aiSummary.append($summaryMessage);
-
-        // Add a button to switch to detailed edit mode
-        const $detailedButton = $('<button type="button" class="esc-button esc-button-secondary">View All Fields</button>');
-        $detailedButton.on('click', function() {
-            $('.esc-mode-button[data-mode="detailed"]').trigger('click');
-        });
-        $aiSummary.append($detailedButton);
-
-        // Make sure the quick review tab is visible
-        $('.esc-mode-quick').show();
-    }
+    // Removed populateAISummary function as we no longer have a quick review mode
 
     // Toggle manual entry
     function toggleManualEntry(e) {
@@ -589,41 +546,7 @@
         $('.esc-changes-detail').slideToggle();
     }
 
-    // Switch review mode
-    function switchReviewMode() {
-        const mode = $(this).data('mode');
-        console.log('Switching to review mode: ' + mode);
-
-        // Update active button
-        $('.esc-mode-button').removeClass('active');
-        $(this).addClass('active');
-
-        // Show the selected mode
-        $('.esc-review-mode').hide();
-        $('.esc-mode-' + mode).show();
-
-        // If switching to quick mode, update the AI summary
-        if (mode === 'quick') {
-            populateAISummary(aiPopulatedFields);
-        }
-
-        // Ensure floating labels are properly initialized in the visible mode
-        setTimeout(function() {
-            $('.esc-mode-' + mode + ' .esc-floating-label input, .esc-mode-' + mode + ' .esc-floating-label textarea, .esc-mode-' + mode + ' .esc-floating-label select').each(function() {
-                var $field = $(this);
-
-                // Ensure placeholder attribute exists
-                if (!$field.attr('placeholder')) {
-                    $field.attr('placeholder', ' ');
-                }
-
-                // Add has-value class if the field has a value
-                if ($field.val() && $field.val().trim() !== '') {
-                    $field.addClass('has-value').trigger('input');
-                }
-            });
-        }, 100);
-    }
+    // Removed switchReviewMode function as we no longer have mode switching
 
     // Toggle card
     function toggleCard() {

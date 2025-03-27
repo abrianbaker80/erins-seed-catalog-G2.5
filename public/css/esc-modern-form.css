@@ -406,29 +406,7 @@
     padding-left: 20px;
 }
 
-/* Review Mode Toggle */
-.esc-review-mode-toggle {
-    display: flex;
-    margin-bottom: 24px;
-    border-radius: 4px;
-    overflow: hidden;
-    border: 1px solid #ddd;
-}
-
-.esc-mode-button {
-    flex: 1;
-    padding: 12px;
-    background-color: #f8f9fa;
-    border: none;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background-color 0.2s;
-}
-
-.esc-mode-button.active {
-    background-color: #3498db;
-    color: white;
-}
+/* Review Mode Toggle - Removed */
 
 /* AI Status Badge */
 .esc-ai-status-badge {
@@ -635,8 +613,8 @@
     border-radius: 2px 0 0 2px;
 }
 
-/* Make sure the quick review tab is always visible when active */
-.esc-mode-quick.active {
+/* Make sure the detailed view is always visible */
+.esc-review-mode {
     display: block !important;
 }
 

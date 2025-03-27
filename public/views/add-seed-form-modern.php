@@ -123,25 +123,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
             </div>
 
-            <div class="esc-review-mode-toggle">
-                <button type="button" class="esc-mode-button active" data-mode="quick"><?php esc_html_e('Quick Review', 'erins-seed-catalog'); ?></button>
-                <button type="button" class="esc-mode-button" data-mode="detailed"><?php esc_html_e('Detailed Edit', 'erins-seed-catalog'); ?></button>
-            </div>
+            <!-- Review mode toggle removed -->
 
             <div class="esc-review-modes">
-                <!-- Quick Review Mode -->
-                <div class="esc-review-mode esc-mode-quick active">
-                    <div class="esc-ai-populated">
-                        <h4><?php esc_html_e('AI-Populated Fields', 'erins-seed-catalog'); ?></h4>
-                        <p><?php esc_html_e('The AI has populated the form with information about this seed. Switch to Detailed Edit mode to review and edit all fields.', 'erins-seed-catalog'); ?></p>
-                        <div class="esc-ai-summary">
-                            <!-- Dynamically populated summary -->
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Detailed Edit Mode -->
-                <div class="esc-review-mode esc-mode-detailed" style="display: none;">
                     <!-- Basic Information Card -->
                     <div class="esc-form-card" data-ai-status="needs-review">
                         <div class="esc-card-header">
