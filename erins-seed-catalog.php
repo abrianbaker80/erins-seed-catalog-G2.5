@@ -65,6 +65,7 @@ require_once ESC_PLUGIN_DIR . 'includes/esc-functions.php';
 require_once ESC_PLUGIN_DIR . 'includes/class-esc-ajax.php';
 require_once ESC_PLUGIN_DIR . 'includes/class-esc-shortcodes.php';
 require_once ESC_PLUGIN_DIR . 'includes/class-esc-admin.php';
+require_once ESC_PLUGIN_DIR . 'includes/class-esc-update-checker.php';
 
 /**
  * Activation Hook: Create database table, register taxonomy, add default terms, flush rewrite rules.
@@ -122,6 +123,10 @@ function esc_init_plugin() {
     ESC_Ajax::init();
     ESC_Functions::init(); // For enqueueing
     ESC_Model_Updater::init(); // For model updates
+
+    // Initialize the update checker
+    $update_checker = new ESC_Update_Checker();
+    $update_checker->init();
 }
 add_action( 'plugins_loaded', 'esc_init_plugin' );
 

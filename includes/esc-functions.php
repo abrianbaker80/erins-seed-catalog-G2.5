@@ -102,6 +102,14 @@ class ESC_Functions {
                 ESC_VERSION
             );
 
+            // Enqueue Update Checker CSS
+            wp_enqueue_style(
+                'esc-update-checker-styles',
+                ESC_PLUGIN_URL . 'admin/css/esc-update-checker.css',
+                [],
+                ESC_VERSION
+            );
+
             // Enqueue Admin JS (if needed for interactions)
             wp_enqueue_script(
                 'esc-admin-scripts',

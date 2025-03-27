@@ -1,0 +1,55 @@
+/**
+ * Update Checker Styles
+ */
+
+/* Style the update notification */
+.esc-update-notification {
+    background-color: #f0f8ff;
+    border-left: 4px solid #00a0d2;
+    padding: 10px 12px;
+    margin: 5px 0 15px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.esc-update-notification h4 {
+    margin: 0 0 10px;
+    font-size: 14px;
+}
+
+.esc-update-notification p {
+    margin: 0 0 8px;
+}
+
+.esc-update-notification .button {
+    margin-right: 5px;
+}
+
+/* Style the check for updates link */
+.plugins .check-for-updates {
+    color: #0073aa;
+}
+
+.plugins .check-for-updates:hover {
+    color: #00a0d2;
+}
+
+/* Style the update available notification */
+.plugins tr.update td {
+    background-color: #f7fcfe !important;
+}
+
+.plugins tr.update .update-message {
+    background-color: #f7fcfe;
+    border-left-color: #00a0d2;
+}
+
+/* Style the GitHub links */
+.plugins .github-repository,
+.plugins .view-releases {
+    color: #0073aa;
+}
+
+.plugins .github-repository:hover,
+.plugins .view-releases:hover {
+    color: #00a0d2;
+}
