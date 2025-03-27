@@ -3,6 +3,11 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
+
+// Force-load the CSS directly in case of enqueuing issues
+$css_url = plugin_dir_url( dirname( __FILE__ ) ) . 'css/esc-modern-form.css';
+$css_version = ESC_VERSION . '.' . time(); // Force cache refresh
+echo '<link rel="stylesheet" href="' . esc_url( $css_url . '?ver=' . $css_version ) . '" type="text/css" media="all" />';
 ?>
 
 <div id="esc-add-seed-form-container" class="esc-container esc-modern-form">

@@ -40,12 +40,12 @@ class ESC_Functions {
                 ESC_VERSION
             );
 
-            // Enqueue Modern Form CSS
+            // Enqueue Modern Form CSS with forced cache refresh
             wp_enqueue_style(
                 'esc-modern-form',
                 ESC_PLUGIN_URL . 'public/css/esc-modern-form.css',
                 ['esc-public-styles'],
-                ESC_VERSION
+                ESC_VERSION . '.' . time() // Add timestamp to force cache refresh
             );
 
             // Enqueue Public JS
