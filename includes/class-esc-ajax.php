@@ -341,7 +341,7 @@ class ESC_Ajax {
         }
 
         // Get seed from database
-        $seed = ESC_DB::get_seed($seed_id);
+        $seed = ESC_DB::get_seed_by_id($seed_id);
         if (!$seed) {
             wp_send_json_error(['message' => __('Seed not found.', 'erins-seed-catalog')]);
             return;
