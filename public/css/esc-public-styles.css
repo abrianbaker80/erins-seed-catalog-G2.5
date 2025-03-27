@@ -7,13 +7,35 @@
 #esc-search-container,
 #esc-categories-container {
     width: 100%;
-    max-width: 1200px; /* Adjust max width as needed */
+    max-width: 1200px; /* Base max width */
     margin: 20px auto;
     padding: 15px;
     box-sizing: border-box;
     font-family: sans-serif; /* Basic font stack */
     line-height: 1.6;
     font-size: 16px;
+}
+
+/* Wider containers for larger screens */
+@media (min-width: 1600px) {
+    .esc-container,
+    #esc-add-seed-form-container,
+    #esc-catalog-view-container,
+    #esc-search-container,
+    #esc-categories-container {
+        max-width: 1600px;
+    }
+}
+
+/* Ultra-wide screens */
+@media (min-width: 2560px) {
+    .esc-container,
+    #esc-add-seed-form-container,
+    #esc-catalog-view-container,
+    #esc-search-container,
+    #esc-categories-container {
+        max-width: 2000px;
+    }
 }
 
 /* Form Styling */
