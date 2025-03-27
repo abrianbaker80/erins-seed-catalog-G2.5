@@ -55,7 +55,7 @@ echo Running release script with version increment: %VERSION_INCREMENT%
 if defined DRY_RUN echo DRY RUN MODE: No actual changes will be made
 
 REM Run the PowerShell script with the parsed arguments
-powershell -ExecutionPolicy Bypass -File "%~dp0release.ps1" -VersionIncrement %VERSION_INCREMENT% -ReleaseTitle "%RELEASE_TITLE%" -ReleaseDescription "%RELEASE_DESCRIPTION%" %DRY_RUN%
+powershell -ExecutionPolicy Bypass -File "%~dp0release-script.ps1" -VersionIncrement %VERSION_INCREMENT% -ReleaseTitle "%RELEASE_TITLE%" -ReleaseDescription "%RELEASE_DESCRIPTION%" %DRY_RUN%
 
 if %ERRORLEVEL% neq 0 (
     echo.

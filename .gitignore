@@ -8,6 +8,11 @@ phpdoc-templates.php
 .php-cs-fixer.php
 .php-cs-fixer.cache
 
+# Keep release automation files
+!release.ps1
+!release.bat
+!RELEASE.md
+
 # Composer
 /vendor/
 composer.lock
