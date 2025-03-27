@@ -1,7 +1,10 @@
 # Simple Release Script for Erin's Seed Catalog
 
 param (
-    [string]$VersionType = "patch"
+    [string]$VersionType = "patch",
+    [switch]$DryRun = $false,
+    [string]$ReleaseTitle = "",
+    [string]$ReleaseDescription = ""
 )
 
 # Configuration
@@ -47,6 +50,14 @@ function Update-Files {
         [string]$newVersion
     )
 
+    if ($DryRun) {
+        Write-Host "DRY RUN: Would update version from $oldVersion to $newVersion in $pluginFile" -ForegroundColor Yellow
+        if (Test-Path "readme.txt") {
+            Write-Host "DRY RUN: Would update version in readme.txt" -ForegroundColor Yellow
+        }
+        return
+    }
+
     # Update plugin file
     $content = Get-Content $pluginFile -Raw
     $content = $content -replace "Version:\s*$oldVersion", "Version: $newVersion"
@@ -68,10 +79,14 @@ Write-Host "Current version: $currentVersion" -ForegroundColor Cyan
 $newVersion = Increment-Version -version $currentVersion -type $VersionType
 Write-Host "New version: $newVersion" -ForegroundColor Green
 
-$confirmation = Read-Host "Do you want to update to version $newVersion? (y/n)"
-if ($confirmation -ne "y") {
-    Write-Host "Update cancelled" -ForegroundColor Yellow
-    exit 0
+if (-not $DryRun) {
+    $confirmation = Read-Host "Do you want to update to version $newVersion? (y/n)"
+    if ($confirmation -ne "y") {
+        Write-Host "Update cancelled" -ForegroundColor Yellow
+        exit 0
+    }
+} else {
+    Write-Host "DRY RUN: Would prompt for confirmation to update to version $newVersion" -ForegroundColor Yellow
 }
 
 Update-Files -oldVersion $currentVersion -newVersion $newVersion
@@ -162,18 +177,29 @@ $commitMessage = Generate-CommitMessage -version $newVersion
 Write-Host "Commit message:" -ForegroundColor Cyan
 Write-Host $commitMessage -ForegroundColor White
 
-git add .
-git commit -m "$commitMessage"
-git tag -a "v$newVersion" -m "Version $newVersion"
+if ($DryRun) {
+    Write-Host "DRY RUN: Would commit changes with the above message" -ForegroundColor Yellow
+    Write-Host "DRY RUN: Would create tag v$newVersion" -ForegroundColor Yellow
+} else {
+    git add .
+    git commit -m "$commitMessage"
+    git tag -a "v$newVersion" -m "Version $newVersion"
+}
 
 # Push changes
-$pushConfirmation = Read-Host "Do you want to push changes to GitHub? (y/n)"
-if ($pushConfirmation -eq "y") {
-    git push origin master
-    git push origin "v$newVersion"
-    Write-Host "Changes pushed to GitHub" -ForegroundColor Green
+if (-not $DryRun) {
+    $pushConfirmation = Read-Host "Do you want to push changes to GitHub? (y/n)"
+    if ($pushConfirmation -eq "y") {
+        git push origin master
+        git push origin "v$newVersion"
+        Write-Host "Changes pushed to GitHub" -ForegroundColor Green
+    }
+} else {
+    Write-Host "DRY RUN: Would push changes to GitHub if confirmed" -ForegroundColor Yellow
+}
 
-    # Create GitHub release
+# Create GitHub release
+if (-not $DryRun) {
     $releaseConfirmation = Read-Host "Do you want to create a GitHub release? (y/n)"
     if ($releaseConfirmation -eq "y") {
         # Check if GitHub CLI is installed
@@ -182,18 +208,29 @@ if ($pushConfirmation -eq "y") {
             $ghInstalled = Get-Command gh -ErrorAction SilentlyContinue
         } catch {}
 
+        # Prepare release title and notes
+        $title = if ($ReleaseTitle) { $ReleaseTitle } else { "Version $newVersion" }
+        $notes = if ($ReleaseDescription) { $ReleaseDescription } else { $commitMessage }
+
         if ($ghInstalled) {
             # Use GitHub CLI
-            gh release create "v$newVersion" --title "Version $newVersion" --notes "Release version $newVersion"
+            Write-Host "Creating GitHub release with title: $title" -ForegroundColor Cyan
+            gh release create "v$newVersion" --title "$title" --notes "$notes"
             Write-Host "GitHub release created using GitHub CLI" -ForegroundColor Green
         } else {
             # Provide instructions for manual release
             Write-Host "GitHub CLI (gh) is not installed or not in PATH." -ForegroundColor Yellow
             Write-Host "To create a release manually, go to:" -ForegroundColor Yellow
             Write-Host "https://github.com/abrianbaker80/erins-seed-catalog-G2.5/releases/new?tag=v$newVersion" -ForegroundColor Cyan
-            Write-Host "Title: Version $newVersion" -ForegroundColor Yellow
-            Write-Host "Description: Release version $newVersion" -ForegroundColor Yellow
+            Write-Host "Title: $title" -ForegroundColor Yellow
+            Write-Host "Description: Use the commit message or your custom description" -ForegroundColor Yellow
         }
+    }
+} else {
+    $title = if ($ReleaseTitle) { $ReleaseTitle } else { "Version $newVersion" }
+    Write-Host "DRY RUN: Would create GitHub release for v$newVersion with title '$title' if confirmed" -ForegroundColor Yellow
+    if ($ReleaseDescription) {
+        Write-Host "DRY RUN: Would use custom release description" -ForegroundColor Yellow
     }
 }
 
