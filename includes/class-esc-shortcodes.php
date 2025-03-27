@@ -18,6 +18,9 @@ class ESC_Shortcodes {
 		add_shortcode( 'erins_seed_catalog_view', [ __CLASS__, 'render_catalog_view' ] );
 		add_shortcode( 'erins_seed_catalog_search', [ __CLASS__, 'render_search_form' ] );
 		add_shortcode( 'erins_seed_catalog_categories', [ __CLASS__, 'render_category_list' ] );
+
+		// Add a test shortcode to verify modern form is working
+		add_shortcode( 'erins_seed_catalog_add_form_modern', [ __CLASS__, 'render_add_form_modern' ] );
 	}
 
 	/**
@@ -31,6 +34,9 @@ class ESC_Shortcodes {
 		// $atts = shortcode_atts( array(
 		// 	'redirect' => '',
 		// ), $atts, 'erins_seed_catalog_add_form' );
+
+		// Force debug output to help troubleshoot
+		echo '<!-- Using modern form template -->';
 
 		ob_start();
 		include ESC_PLUGIN_DIR . 'public/views/add-seed-form-modern.php';
@@ -106,6 +112,19 @@ class ESC_Shortcodes {
 
 		ob_start();
 		include ESC_PLUGIN_DIR . 'public/views/seed-category-list.php'; // Pass $atts to the view
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render the [erins_seed_catalog_add_form_modern] shortcode.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string HTML output for the modern form.
+	 */
+	public static function render_add_form_modern( $atts = [] ) {
+		// This is a dedicated shortcode that explicitly uses the modern form
+		ob_start();
+		include ESC_PLUGIN_DIR . 'public/views/add-seed-form-modern.php';
 		return ob_get_clean();
 	}
 }
