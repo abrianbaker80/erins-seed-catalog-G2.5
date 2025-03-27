@@ -209,12 +209,23 @@
                     // Ensure the review phase is visible before populating
                     // This fixes the issue with form not being found
                     $('#esc-phase-review-edit').show();
+                    $('.esc-review-mode').show();
 
-                    // Populate the review form
-                    populateReviewForm(response.data);
+                    // Add a small delay to ensure the DOM is ready
+                    setTimeout(function() {
+                        // Populate the review form
+                        populateReviewForm(response.data);
 
-                    // Switch to review phase
-                    showPhase('review-edit');
+                        // Switch to review phase
+                        showPhase('review-edit');
+
+                        // Ensure floating labels are properly initialized
+                        $('.esc-floating-label input, .esc-floating-label textarea').each(function() {
+                            if ($(this).val() && $(this).val().trim() !== '') {
+                                $(this).addClass('has-value');
+                            }
+                        });
+                    }, 100);
                 } else {
                     // Show error state
                     showAIStatus('error');
@@ -271,10 +282,19 @@
 
     // Populate the review form
     function populateReviewForm(data) {
+        // Add more detailed logging
+        console.log('Starting form population process...');
+        console.log('Form data to populate:', data);
+
+        // Make sure the review phase is visible
+        $('#esc-phase-review-edit').show();
+        $('.esc-review-mode').show();
+
         // Reset form - with error checking
         // The form element is the parent form that contains all phases
         const $form = $('#esc-add-seed-form');
         if ($form.length && $form[0]) {
+            console.log('Form found, resetting fields...');
             // Don't reset the entire form as it would clear the seed name and variety
             // Instead, just reset the fields in the review phase
             $('#esc-phase-review-edit input:not([id="esc_seed_name_review"]):not([id="esc_variety_name_review"])').val('');
@@ -289,9 +309,6 @@
         // Clear previous changes list
         $('.esc-changes-list').empty();
 
-        // Log the data we're populating
-        console.log('Populating form with data:', data);
-
         // Check if data is valid
         if (!data || typeof data !== 'object') {
             console.error('Invalid data received for form population:', data);
@@ -302,9 +319,24 @@
         for (const key in data) {
             if (data.hasOwnProperty(key)) {
                 const value = data[key];
+                console.log('Processing field:', key, 'with value:', value);
+
+                // Special handling for image_url
+                if (key === 'image_url' && value) {
+                    console.log('Setting image URL:', value);
+                    $('#esc_image_url').val(value);
+                    // Show the image preview
+                    $('.esc-image-preview').show();
+                    $('.esc-preview-image').attr('src', value);
+                    $('.esc-dropzone').addClass('has-image');
+                    $('.esc-form-field:has(#esc_image_url)').addClass('esc-ai-populated');
+                    addToChangesList('image', 'Image URL');
+                    continue;
+                }
 
                 // Handle null, undefined, or string "null" values
                 if (value === null || value === undefined || value === 'null' || value === "null") {
+                    console.log('Null/empty value for field:', key);
                     // For null values, clear the field but still mark it as processed by AI
                     let $field = $('#esc_' + key + '_review');
                     if (!$field.length) {
@@ -315,6 +347,7 @@
                     }
 
                     if ($field.length) {
+                        console.log('Found field for null value:', $field.attr('id'));
                         // Clear the field
                         if ($field.is('select')) {
                             $field.val('');
@@ -328,6 +361,8 @@
 
                         // Still mark as processed by AI
                         $field.closest('.esc-form-field').addClass('esc-ai-processed');
+                    } else {
+                        console.log('No field found for null value:', key);
                     }
 
                     continue;
@@ -345,60 +380,91 @@
                     $field = $('#esc_' + key + '_manual');
                 }
 
+                console.log('Looking for field:', key, 'Found:', $field.length ? $field.attr('id') : 'Not found');
+
                 if ($field.length) {
                     console.log('Setting field', key, 'to value:', value);
 
-                    // Set field value
-                    if ($field.is('select')) {
-                        $field.val(value);
-                    } else if ($field.is('input[type="checkbox"]')) {
-                        $field.prop('checked', value === '1' || value === true);
-                    } else if ($field.is('input[type="radio"]')) {
-                        // For radio buttons, we need to check the one with the matching value
-                        $('input[name="' + $field.attr('name') + '"][value="' + value + '"]').prop('checked', true);
-                    } else if ($field.is('input[type="range"]')) {
-                        // For range sliders, update both the slider and the number input
-                        $field.val(value);
-                        const sliderId = $field.attr('id') + '_slider';
-                        $('#' + sliderId).val(value);
-                    } else {
-                        $field.val(value);
-                    }
-
-                    // Mark as AI populated
-                    $field.closest('.esc-form-field').addClass('esc-ai-populated');
-
-                    // Ensure floating label behavior works
-                    if ($field.closest('.esc-floating-label').length) {
-                        $field.addClass('has-value');
-
-                        // Make sure the field has a placeholder attribute
-                        if (!$field.attr('placeholder')) {
-                            $field.attr('placeholder', ' ');
+                    try {
+                        // Set field value
+                        if ($field.is('select')) {
+                            $field.val(value).trigger('change');
+                            console.log('Set select field value:', value);
+                        } else if ($field.is('input[type="checkbox"]')) {
+                            const isChecked = value === '1' || value === true || value === 'true';
+                            $field.prop('checked', isChecked);
+                            console.log('Set checkbox field value:', isChecked);
+                        } else if ($field.is('input[type="radio"]')) {
+                            // For radio buttons, we need to check the one with the matching value
+                            $('input[name="' + $field.attr('name') + '"][value="' + value + '"]').prop('checked', true);
+                            console.log('Set radio field value:', value);
+                        } else if ($field.is('input[type="range"]')) {
+                            // For range sliders, update both the slider and the number input
+                            $field.val(value);
+                            const sliderId = $field.attr('id') + '_slider';
+                            $('#' + sliderId).val(value);
+                            console.log('Set range field value:', value);
+                        } else if ($field.is('textarea')) {
+                            $field.val(value).trigger('input');
+                            console.log('Set textarea field value:', value);
+                        } else {
+                            $field.val(value).trigger('input');
+                            console.log('Set input field value:', value);
                         }
-                    }
 
-                    // Add to changes list
-                    addToChangesList(key, value);
+                        // Mark as AI populated
+                        $field.closest('.esc-form-field').addClass('esc-ai-populated');
 
-                    // Also populate the corresponding field in other form phases
-                    // This ensures all instances of the field are populated
-                    if ($field.attr('id').includes('_review')) {
-                        // If we found a review field, also populate the manual field
-                        const manualId = $field.attr('id').replace('_review', '_manual');
-                        const $manualField = $('#' + manualId);
-                        if ($manualField.length) {
-                            $manualField.val(value);
-                            $manualField.closest('.esc-form-field').addClass('esc-ai-populated');
+                        // Ensure floating label behavior works
+                        if ($field.closest('.esc-floating-label').length) {
+                            $field.addClass('has-value');
+
+                            // Make sure the field has a placeholder attribute
+                            if (!$field.attr('placeholder')) {
+                                $field.attr('placeholder', ' ');
+                            }
                         }
-                    } else if ($field.attr('id').includes('_manual')) {
-                        // If we found a manual field, also populate the review field
-                        const reviewId = $field.attr('id').replace('_manual', '_review');
-                        const $reviewField = $('#' + reviewId);
-                        if ($reviewField.length) {
-                            $reviewField.val(value);
-                            $reviewField.closest('.esc-form-field').addClass('esc-ai-populated');
+
+                        // Add to changes list
+                        addToChangesList(key, value);
+
+                        // Also populate the corresponding field in other form phases
+                        // This ensures all instances of the field are populated
+                        if ($field.attr('id').includes('_review')) {
+                            // If we found a review field, also populate the manual field
+                            const manualId = $field.attr('id').replace('_review', '_manual');
+                            const $manualField = $('#' + manualId);
+                            if ($manualField.length) {
+                                if ($manualField.is('select')) {
+                                    $manualField.val(value).trigger('change');
+                                } else if ($manualField.is('input[type="checkbox"]')) {
+                                    $manualField.prop('checked', value === '1' || value === true || value === 'true');
+                                } else if ($manualField.is('textarea')) {
+                                    $manualField.val(value).trigger('input');
+                                } else {
+                                    $manualField.val(value).trigger('input');
+                                }
+                                $manualField.closest('.esc-form-field').addClass('esc-ai-populated');
+                            }
+                        } else if ($field.attr('id').includes('_manual')) {
+                            // If we found a manual field, also populate the review field
+                            const reviewId = $field.attr('id').replace('_manual', '_review');
+                            const $reviewField = $('#' + reviewId);
+                            if ($reviewField.length) {
+                                if ($reviewField.is('select')) {
+                                    $reviewField.val(value).trigger('change');
+                                } else if ($reviewField.is('input[type="checkbox"]')) {
+                                    $reviewField.prop('checked', value === '1' || value === true || value === 'true');
+                                } else if ($reviewField.is('textarea')) {
+                                    $reviewField.val(value).trigger('input');
+                                } else {
+                                    $reviewField.val(value).trigger('input');
+                                }
+                                $reviewField.closest('.esc-form-field').addClass('esc-ai-populated');
+                            }
                         }
+                    } catch (error) {
+                        console.error('Error setting field value:', error);
                     }
                 } else {
                     console.log('Field not found for key:', key);
@@ -422,11 +488,42 @@
 
         // Special handling for categories if present
         if (data.suggested_term_ids && Array.isArray(data.suggested_term_ids) && data.suggested_term_ids.length > 0) {
+            console.log('Setting categories from suggested_term_ids:', data.suggested_term_ids);
             const $categorySelect = $('#esc_seed_category, #esc_seed_category_review, #esc_seed_category_manual');
             if ($categorySelect.length) {
-                $categorySelect.val(data.suggested_term_ids);
+                $categorySelect.val(data.suggested_term_ids).trigger('change');
                 $categorySelect.closest('.esc-form-field').addClass('esc-ai-populated');
                 addToChangesList('categories', 'Suggested categories');
+            }
+        }
+
+        // Special handling for category suggestion from text
+        if (data.esc_seed_category_suggestion && typeof data.esc_seed_category_suggestion === 'string') {
+            console.log('Processing category suggestion:', data.esc_seed_category_suggestion);
+            // Try to find matching categories in the dropdown
+            const suggestions = data.esc_seed_category_suggestion.split(',').map(s => s.trim());
+            const $categorySelect = $('#esc_seed_category, #esc_seed_category_review, #esc_seed_category_manual');
+
+            if ($categorySelect.length) {
+                // Get all available options
+                const selectedValues = [];
+                $categorySelect.find('option').each(function() {
+                    const optionText = $(this).text().toLowerCase();
+                    // Check if any suggestion matches this option
+                    for (const suggestion of suggestions) {
+                        if (optionText.includes(suggestion.toLowerCase())) {
+                            selectedValues.push($(this).val());
+                            console.log('Found matching category:', optionText, 'for suggestion:', suggestion);
+                            break;
+                        }
+                    }
+                });
+
+                if (selectedValues.length > 0) {
+                    $categorySelect.val(selectedValues).trigger('change');
+                    $categorySelect.closest('.esc-form-field').addClass('esc-ai-populated');
+                    addToChangesList('categories', 'Categories from AI suggestion: ' + data.esc_seed_category_suggestion);
+                }
             }
         }
 
