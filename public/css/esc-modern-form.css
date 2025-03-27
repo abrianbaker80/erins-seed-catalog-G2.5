@@ -554,6 +554,85 @@
     text-align: center;
 }
 
+/* Quick Review Mode Styles */
+.esc-attention-needed h4 {
+    margin-bottom: 16px;
+}
+
+.esc-attention-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+    padding: 16px;
+}
+
+.esc-attention-card h5 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: #2c3e50;
+    font-size: 16px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 8px;
+}
+
+.esc-attention-field {
+    margin-bottom: 12px;
+}
+
+.esc-attention-field label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.esc-attention-field input:not([type="radio"]),
+.esc-attention-field textarea,
+.esc-attention-field select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Radio button styling in attention fields */
+.esc-radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.esc-radio-option {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.esc-radio-option input[type="radio"] {
+    margin-right: 5px;
+}
+
+.esc-radio-option label {
+    margin-bottom: 0 !important;
+    font-weight: normal !important;
+}
+
+.esc-attention-field-list {
+    margin-bottom: 16px;
+}
+
+.esc-ai-populated {
+    margin-top: 24px;
+}
+
+/* Make sure the quick review tab is always visible when active */
+.esc-mode-quick.active {
+    display: block !important;
+}
+
 /* Form Actions */
 .esc-form-actions {
     display: flex;

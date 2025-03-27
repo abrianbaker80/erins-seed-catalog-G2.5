@@ -267,9 +267,16 @@
     // Populate the review form
     function populateReviewForm(data) {
         // Reset form - with error checking
-        const $form = $('#esc-phase-review-edit form');
+        // The form element is the parent form that contains all phases
+        const $form = $('#esc-add-seed-form');
         if ($form.length && $form[0]) {
-            $form[0].reset();
+            // Don't reset the entire form as it would clear the seed name and variety
+            // Instead, just reset the fields in the review phase
+            $('#esc-phase-review-edit input:not([id="esc_seed_name_review"]):not([id="esc_variety_name_review"])').val('');
+            $('#esc-phase-review-edit textarea').val('');
+            $('#esc-phase-review-edit select').prop('selectedIndex', 0);
+            $('#esc-phase-review-edit input[type="checkbox"]').prop('checked', false);
+            $('#esc-phase-review-edit input[type="radio"]').prop('checked', false);
         } else {
             console.warn('Form element not found for reset');
         }
@@ -444,29 +451,70 @@
                 $fieldsNeedingAttention.each(function() {
                     const $field = $(this);
                     const fieldLabel = $field.find('label').text();
-                    const $input = $field.find('input, textarea, select');
-                    const fieldId = $input.attr('id');
 
-                    console.log('Processing field: ' + fieldLabel + ' (ID: ' + fieldId + ')');
+                    // Special handling for radio button groups
+                    if ($field.find('input[type="radio"]').length > 0) {
+                        // For radio buttons, we need to handle the entire group
+                        const radioName = $field.find('input[type="radio"]').first().attr('name');
+                        console.log('Processing radio field: ' + fieldLabel + ' (Name: ' + radioName + ')');
 
-                    if (fieldLabel && fieldId) {
-                        const $attentionField = $('<div class="esc-attention-field"></div>');
-                        $attentionField.append('<label for="' + fieldId + '_attention">' + fieldLabel + '</label>');
+                        if (fieldLabel && radioName) {
+                            const $attentionField = $('<div class="esc-attention-field"></div>');
+                            $attentionField.append('<label>' + fieldLabel + '</label>');
 
-                        // Clone the input field
-                        const $inputClone = $input.clone();
-                        $inputClone.attr('id', fieldId + '_attention');
+                            // Create a container for the radio buttons
+                            const $radioContainer = $('<div class="esc-radio-group"></div>');
 
-                        // Make sure the clone has the current value
-                        $inputClone.val($input.val());
+                            // Clone each radio button
+                            $field.find('input[type="radio"]').each(function() {
+                                const $radio = $(this);
+                                const radioValue = $radio.val();
+                                const radioId = $radio.attr('id') + '_attention';
+                                const radioLabel = $field.find('label[for="' + $radio.attr('id') + '"]').text();
 
-                        // Sync the cloned field with the original
-                        $inputClone.on('input change', function() {
-                            $('#' + fieldId).val($(this).val()).trigger('change');
-                        });
+                                const $radioClone = $('<div class="esc-radio-option"></div>');
+                                $radioClone.append('<input type="radio" id="' + radioId + '" name="' + radioName + '_attention" value="' + radioValue + '"' + ($radio.is(':checked') ? ' checked' : '') + '>');
+                                $radioClone.append('<label for="' + radioId + '">' + radioLabel + '</label>');
 
-                        $attentionField.append($inputClone);
-                        $fieldList.append($attentionField);
+                                // Sync the cloned radio with the original
+                                $radioClone.find('input').on('change', function() {
+                                    if ($(this).is(':checked')) {
+                                        $('input[name="' + radioName + '"][value="' + radioValue + '"]').prop('checked', true).trigger('change');
+                                    }
+                                });
+
+                                $radioContainer.append($radioClone);
+                            });
+
+                            $attentionField.append($radioContainer);
+                            $fieldList.append($attentionField);
+                        }
+                    } else {
+                        // Regular field handling
+                        const $input = $field.find('input, textarea, select');
+                        const fieldId = $input.attr('id');
+
+                        console.log('Processing field: ' + fieldLabel + ' (ID: ' + fieldId + ')');
+
+                        if (fieldLabel && fieldId) {
+                            const $attentionField = $('<div class="esc-attention-field"></div>');
+                            $attentionField.append('<label for="' + fieldId + '_attention">' + fieldLabel + '</label>');
+
+                            // Clone the input field
+                            const $inputClone = $input.clone();
+                            $inputClone.attr('id', fieldId + '_attention');
+
+                            // Make sure the clone has the current value
+                            $inputClone.val($input.val());
+
+                            // Sync the cloned field with the original
+                            $inputClone.on('input change', function() {
+                                $('#' + fieldId).val($(this).val()).trigger('change');
+                            });
+
+                            $attentionField.append($inputClone);
+                            $fieldList.append($attentionField);
+                        }
                     }
                 });
 
