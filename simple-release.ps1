@@ -60,7 +60,7 @@ function Update-Files {
 
     # Update plugin file
     $content = Get-Content $pluginFile -Raw
-    $content = $content -replace "Version:\s*$oldVersion", "Version: $newVersion"
+    $content = $content -replace "Version:\s*$oldVersion", "Version:           $newVersion"
     $content = $content -replace "define\(\s*'ESC_VERSION',\s*'$oldVersion'\s*\)", "define('ESC_VERSION', '$newVersion')"
     Set-Content -Path $pluginFile -Value $content
 
