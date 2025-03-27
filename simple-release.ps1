@@ -25,18 +25,18 @@ function Increment-Version {
         [string]$version,
         [string]$type
     )
-    
+
     $parts = $version -split "\."
     $major = [int]$parts[0]
     $minor = [int]$parts[1]
     $patch = [int]$parts[2]
-    
+
     switch ($type) {
         "major" { $major++; $minor = 0; $patch = 0 }
         "minor" { $minor++; $patch = 0 }
         "patch" { $patch++ }
     }
-    
+
     return "$major.$minor.$patch"
 }
 
@@ -46,13 +46,13 @@ function Update-Files {
         [string]$oldVersion,
         [string]$newVersion
     )
-    
+
     # Update plugin file
     $content = Get-Content $pluginFile -Raw
     $content = $content -replace "Version:\s*$oldVersion", "Version: $newVersion"
     $content = $content -replace "define\(\s*'ESC_VERSION',\s*'$oldVersion'\s*\)", "define('ESC_VERSION', '$newVersion')"
     Set-Content -Path $pluginFile -Value $content
-    
+
     # Update readme.txt if it exists
     if (Test-Path "readme.txt") {
         $readmeContent = Get-Content "readme.txt" -Raw
@@ -89,12 +89,28 @@ if ($pushConfirmation -eq "y") {
     git push origin master
     git push origin "v$newVersion"
     Write-Host "Changes pushed to GitHub" -ForegroundColor Green
-    
+
     # Create GitHub release
     $releaseConfirmation = Read-Host "Do you want to create a GitHub release? (y/n)"
     if ($releaseConfirmation -eq "y") {
-        gh release create "v$newVersion" --title "Version $newVersion" --notes "Release version $newVersion"
-        Write-Host "GitHub release created" -ForegroundColor Green
+        # Check if GitHub CLI is installed
+        $ghInstalled = $null
+        try {
+            $ghInstalled = Get-Command gh -ErrorAction SilentlyContinue
+        } catch {}
+
+        if ($ghInstalled) {
+            # Use GitHub CLI
+            gh release create "v$newVersion" --title "Version $newVersion" --notes "Release version $newVersion"
+            Write-Host "GitHub release created using GitHub CLI" -ForegroundColor Green
+        } else {
+            # Provide instructions for manual release
+            Write-Host "GitHub CLI (gh) is not installed or not in PATH." -ForegroundColor Yellow
+            Write-Host "To create a release manually, go to:" -ForegroundColor Yellow
+            Write-Host "https://github.com/abrianbaker80/erins-seed-catalog-G2.5/releases/new?tag=v$newVersion" -ForegroundColor Cyan
+            Write-Host "Title: Version $newVersion" -ForegroundColor Yellow
+            Write-Host "Description: Release version $newVersion" -ForegroundColor Yellow
+        }
     }
 }
 

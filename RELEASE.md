@@ -86,6 +86,23 @@ If you encounter issues with the release script:
 2. **Permission Issues**: Make sure you have write access to the repository
 3. **Execution Policy**: If PowerShell blocks script execution, run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
 
+## Simple Release Script
+
+If you encounter issues with the main release script, you can use the simplified version:
+
+```
+.\simple-release.bat [--major|--minor|--patch]
+```
+
+This script performs the basic release tasks:
+
+1. Updates version numbers in plugin files
+2. Commits changes with a standard release message
+3. Creates and pushes a version tag
+4. Creates a GitHub release (if GitHub CLI is installed)
+
+The simple script has fewer features but is more reliable and easier to use.
+
 ## Manual Release
 
 If you need to perform a manual release:
