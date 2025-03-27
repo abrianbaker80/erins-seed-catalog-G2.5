@@ -18,6 +18,7 @@ class ESC_Shortcodes {
 		add_shortcode( 'erins_seed_catalog_view', [ __CLASS__, 'render_catalog_view' ] );
 		add_shortcode( 'erins_seed_catalog_search', [ __CLASS__, 'render_search_form' ] );
 		add_shortcode( 'erins_seed_catalog_categories', [ __CLASS__, 'render_category_list' ] );
+		add_shortcode( 'erins_seed_catalog_export', [ __CLASS__, 'render_export_form' ] );
 
 		// Add a test shortcode to verify modern form is working
 		add_shortcode( 'erins_seed_catalog_add_form_modern', [ __CLASS__, 'render_add_form_modern' ] );
@@ -125,6 +126,47 @@ class ESC_Shortcodes {
 		// This is a dedicated shortcode that explicitly uses the modern form
 		ob_start();
 		include ESC_PLUGIN_DIR . 'public/views/add-seed-form-modern.php';
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render the [erins_seed_catalog_export] shortcode.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string HTML output for the export form.
+	 */
+	public static function render_export_form( $atts = [] ) {
+		// Enqueue export-specific scripts and styles
+		wp_enqueue_script(
+			'esc-export-scripts',
+			ESC_PLUGIN_URL . 'public/js/esc-export.js',
+			['jquery'],
+			ESC_VERSION,
+			true
+		);
+
+		wp_enqueue_style(
+			'esc-export-styles',
+			ESC_PLUGIN_URL . 'public/css/esc-export.css',
+			['esc-public-styles'],
+			ESC_VERSION
+		);
+
+		// Localize script with export data
+		wp_localize_script(
+			'esc-export-scripts',
+			'esc_export_object',
+			[
+				'export_url' => admin_url('admin-ajax.php'),
+				'nonce' => wp_create_nonce('esc_export_catalog_nonce'),
+				'loading_text' => __('Preparing export...', 'erins-seed-catalog'),
+				'success_text' => __('Export started! Your download should begin shortly.', 'erins-seed-catalog'),
+				'error_no_columns' => __('Please select at least one column to export.', 'erins-seed-catalog'),
+			]
+		);
+
+		ob_start();
+		include ESC_PLUGIN_DIR . 'public/views/seed-export-form.php';
 		return ob_get_clean();
 	}
 }

@@ -16,6 +16,10 @@ class ESC_Functions {
 	public static function init() {
 		add_action( 'wp_enqueue_scripts', [ __CLASS__, 'enqueue_public_scripts_styles' ] );
 		add_action( 'admin_enqueue_scripts', [ __CLASS__, 'enqueue_admin_scripts_styles' ] );
+
+		// Add AJAX handlers
+		add_action( 'wp_ajax_esc_export_catalog', [ __CLASS__, 'handle_export_catalog_ajax' ] );
+		add_action( 'wp_ajax_nopriv_esc_export_catalog', [ __CLASS__, 'handle_export_catalog_ajax' ] );
 	}
 
     /**
@@ -30,7 +34,8 @@ class ESC_Functions {
                 has_shortcode( $post->post_content, 'erins_seed_catalog_add_form_modern' ) ||
                 has_shortcode( $post->post_content, 'erins_seed_catalog_view' ) ||
                 has_shortcode( $post->post_content, 'erins_seed_catalog_search' ) ||
-                has_shortcode( $post->post_content, 'erins_seed_catalog_categories' )
+                has_shortcode( $post->post_content, 'erins_seed_catalog_categories' ) ||
+                has_shortcode( $post->post_content, 'erins_seed_catalog_export' )
             )) {
 
             // Enqueue Public CSS (Mobile-First)
@@ -274,6 +279,92 @@ class ESC_Functions {
 
         echo '  </span>';
         echo '</div>';
+    }
+
+    /**
+     * Handle the AJAX export catalog request.
+     */
+    public static function handle_export_catalog_ajax() {
+        // Check nonce
+        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'esc_export_catalog_nonce')) {
+            wp_send_json_error(['message' => __('Security check failed.', 'erins-seed-catalog')]);
+        }
+
+        // Get selected columns
+        $columns = isset($_POST['export_columns']) && is_array($_POST['export_columns'])
+            ? array_map('sanitize_text_field', $_POST['export_columns'])
+            : [];
+
+        if (empty($columns)) {
+            wp_send_json_error(['message' => __('No columns selected for export.', 'erins-seed-catalog')]);
+        }
+
+        // Get category filter if set
+        $category_id = isset($_POST['category_filter']) && !empty($_POST['category_filter'])
+            ? intval($_POST['category_filter'])
+            : 0;
+
+        // Get export format
+        $format = isset($_POST['export_format']) ? sanitize_text_field($_POST['export_format']) : 'csv';
+
+        // Get seeds based on filters
+        $args = ['limit' => -1]; // Get all seeds
+
+        if ($category_id > 0) {
+            $args['category'] = $category_id;
+        }
+
+        $seeds = ESC_DB::get_seeds($args);
+
+        if (empty($seeds)) {
+            wp_send_json_error(['message' => __('No seeds found to export.', 'erins-seed-catalog')]);
+        }
+
+        // Generate filename
+        $filename = 'erins-seed-catalog-export-' . date('Y-m-d') . '.csv';
+
+        // Set headers for download
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=' . $filename);
+
+        // Create output stream
+        $output = fopen('php://output', 'w');
+
+        // Add UTF-8 BOM for Excel compatibility
+        fputs($output, "\xEF\xBB\xBF");
+
+        // Write header row with selected columns
+        $header_row = [];
+        foreach ($columns as $column) {
+            // Convert snake_case to Title Case for display
+            $header_row[] = ucwords(str_replace('_', ' ', $column));
+        }
+        fputcsv($output, $header_row);
+
+        // Write data rows
+        foreach ($seeds as $seed) {
+            $row = [];
+            foreach ($columns as $column) {
+                if ($column === 'categories') {
+                    // Format categories as comma-separated names
+                    $cat_names = [];
+                    if (!empty($seed->categories)) {
+                        foreach ($seed->categories as $term) {
+                            $cat_names[] = $term->name;
+                        }
+                    }
+                    $row[] = implode(', ', $cat_names);
+                } elseif (isset($seed->$column)) {
+                    $row[] = $seed->$column;
+                } else {
+                    $row[] = ''; // Empty string for missing fields
+                }
+            }
+            fputcsv($output, $row);
+        }
+
+        fclose($output);
+        exit;
     }
 
 }

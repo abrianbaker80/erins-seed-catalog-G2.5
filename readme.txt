@@ -4,7 +4,7 @@ Tags: seed catalog, garden, vegetables, gemini api, ai, mobile first
 Requires at least: 6.0
 Tested up to: 6.7.2
 Requires PHP: 8.2
-Stable tag: 1.1.29
+Stable tag: 1.1.30
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,7 +20,7 @@ Erin's Seed Catalog allows WordPress users to easily catalog their garden seeds.
 *   **Frontend Display:** Use shortcodes to display an "Add New Seed" form, the full seed catalog, a search form, and seed categories on your public website.
 *   **Categorization:** Organize seeds using a hierarchical category system.
 *   **Admin Management:** Manage your seed catalog and plugin settings from the WordPress admin area.
-*   **Excel Export:** Easily export your entire seed catalog to a CSV file.
+*   **Excel Export:** Easily export your seed catalog to Excel with customizable column selection.
 
 Requires a Google Gemini API key.
 
@@ -35,6 +35,7 @@ Requires a Google Gemini API key.
     *   `[erins_seed_catalog_view]` - Displays the seed catalog.
     *   `[erins_seed_catalog_search]` - Displays the search form for the catalog.
     *   `[erins_seed_catalog_categories]` - Displays the list of seed categories.
+    *   `[erins_seed_catalog_export]` - Displays a form to export the catalog to Excel with column selection.
 
 == Frequently Asked Questions ==
 
@@ -93,6 +94,7 @@ This update adds the ability to select different Gemini models, model testing, u
 
 = 1.0.0 =
 Initial release.
+
 
 
 
