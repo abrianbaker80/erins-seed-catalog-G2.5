@@ -19,6 +19,31 @@
 
         // Initialize form phases
         initFormPhases();
+
+        // Initialize floating labels
+        initFloatingLabels();
+    }
+
+    // Initialize floating labels
+    function initFloatingLabels() {
+        // Add has-value class to inputs that already have values
+        $('.esc-floating-label input').each(function() {
+            if ($(this).val().trim() !== '') {
+                $(this).addClass('has-value');
+            }
+        });
+
+        // Add event listeners for input changes
+        $('.esc-floating-label input').on('input change blur', function() {
+            if ($(this).val().trim() !== '') {
+                $(this).addClass('has-value');
+            } else {
+                $(this).removeClass('has-value');
+            }
+        });
+
+        // Trigger the input event on page load to set initial state
+        $('.esc-floating-label input').trigger('input');
     }
 
     // Initialize event listeners
@@ -244,6 +269,11 @@
 
                     // Mark as AI populated
                     $field.closest('.esc-form-field').addClass('esc-ai-populated');
+
+                    // Ensure floating label behavior works
+                    if ($field.closest('.esc-floating-label').length) {
+                        $field.addClass('has-value');
+                    }
 
                     // Add to changes list
                     addToChangesList(key, value);

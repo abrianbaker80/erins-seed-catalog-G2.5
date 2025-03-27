@@ -19,16 +19,16 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
                 <div class="esc-card-content">
                     <p class="esc-card-description"><?php esc_html_e('Enter the seed type and variety to automatically retrieve detailed information.', 'erins-seed-catalog'); ?></p>
-                    
+
                     <div class="esc-floating-label">
-                        <input type="text" id="esc_seed_name" name="seed_name" placeholder=" " required>
+                        <input type="text" id="esc_seed_name" name="seed_name" placeholder=" " required autocomplete="off">
                         <label for="esc_seed_name"><?php esc_html_e('Seed Type', 'erins-seed-catalog'); ?> <span class="required">*</span></label>
                         <p class="description"><?php esc_html_e('The main name, e.g., "Tomato", "Bean", "Zinnia".', 'erins-seed-catalog'); ?></p>
                     </div>
-                    
+
                     <div class="esc-variety-field-container">
                         <div class="esc-floating-label">
-                            <input type="text" id="esc_variety_name" name="variety_name" placeholder=" ">
+                            <input type="text" id="esc_variety_name" name="variety_name" placeholder=" " autocomplete="off">
                             <label for="esc_variety_name"><?php esc_html_e('Variety (Optional)', 'erins-seed-catalog'); ?></label>
                             <p class="description"><?php esc_html_e('Specific variety, e.g., "Brandywine", "Kentucky Wonder", "California Giant".', 'erins-seed-catalog'); ?></p>
                         </div>
@@ -37,18 +37,18 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <span class="dashicons dashicons-update-alt esc-spin"></span> <?php esc_html_e('Loading varieties...', 'erins-seed-catalog'); ?>
                         </div>
                     </div>
-                    
+
                     <button type="button" id="esc-ai-fetch-trigger" class="esc-button esc-button-primary esc-button-large">
                         <span class="dashicons dashicons-superhero"></span>
                         <span><?php esc_html_e('Generate Seed Details with AI', 'erins-seed-catalog'); ?></span>
                     </button>
-                    
+
                     <div class="esc-ai-status-container">
                         <!-- Initial State -->
                         <div class="esc-ai-initial">
                             <p><?php esc_html_e('AI will search for detailed information about your seeds.', 'erins-seed-catalog'); ?></p>
                         </div>
-                        
+
                         <!-- Loading State with Stages -->
                         <div class="esc-ai-loading" style="display: none;">
                             <div class="esc-loading-animation">
@@ -60,7 +60,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <div class="esc-loading-stage" data-stage="3"><?php esc_html_e('Compiling seed details...', 'erins-seed-catalog'); ?></div>
                             </div>
                         </div>
-                        
+
                         <!-- Success State -->
                         <div class="esc-ai-success" style="display: none;">
                             <div class="esc-success-icon">
@@ -72,7 +72,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <p><?php esc_html_e('Review the information below and make any necessary adjustments.', 'erins-seed-catalog'); ?></p>
                             </div>
                         </div>
-                        
+
                         <!-- Error State -->
                         <div class="esc-ai-error" style="display: none;">
                             <div class="esc-error-icon">
@@ -89,14 +89,14 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="esc-manual-toggle">
                         <a href="#" id="esc-toggle-manual-entry"><?php esc_html_e('Prefer to enter details manually?', 'erins-seed-catalog'); ?></a>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <!-- Phase 2: Review & Edit AI Results -->
         <div class="esc-phase esc-phase-review" id="esc-phase-review-edit" style="display: none;">
             <div class="esc-ai-result-summary">
@@ -108,13 +108,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <p><?php esc_html_e('Review the details below and make any necessary adjustments.', 'erins-seed-catalog'); ?></p>
                 </div>
             </div>
-            
+
             <div class="esc-ai-changes-summary">
                 <button type="button" class="esc-toggle-changes">
                     <span class="dashicons dashicons-visibility"></span>
                     <?php esc_html_e('Show AI Changes', 'erins-seed-catalog'); ?>
                 </button>
-                
+
                 <div class="esc-changes-detail" style="display: none;">
                     <h4><?php esc_html_e('Fields Populated by AI', 'erins-seed-catalog'); ?></h4>
                     <ul class="esc-changes-list">
@@ -122,12 +122,12 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </ul>
                 </div>
             </div>
-            
+
             <div class="esc-review-mode-toggle">
                 <button type="button" class="esc-mode-button active" data-mode="quick"><?php esc_html_e('Quick Review', 'erins-seed-catalog'); ?></button>
                 <button type="button" class="esc-mode-button" data-mode="detailed"><?php esc_html_e('Detailed Edit', 'erins-seed-catalog'); ?></button>
             </div>
-            
+
             <div class="esc-review-modes">
                 <!-- Quick Review Mode -->
                 <div class="esc-review-mode esc-mode-quick active">
@@ -137,13 +137,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <!-- Dynamically populated -->
                         </div>
                     </div>
-                    
+
                     <div class="esc-ai-populated">
                         <h4><?php esc_html_e('AI-Populated Fields', 'erins-seed-catalog'); ?></h4>
                         <p><?php esc_html_e('All other fields have been populated by AI. Switch to Detailed Edit mode to review all fields.', 'erins-seed-catalog'); ?></p>
                     </div>
                 </div>
-                
+
                 <!-- Detailed Edit Mode -->
                 <div class="esc-review-mode esc-mode-detailed" style="display: none;">
                     <!-- Basic Information Card -->
@@ -155,7 +155,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <span class="esc-badge-text"><?php esc_html_e('AI Complete', 'erins-seed-catalog'); ?></span>
                             </div>
                         </div>
-                        
+
                         <div class="esc-card-content">
                             <div class="esc-form-row">
                                 <div class="esc-form-field">
@@ -168,7 +168,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="esc-form-field">
                                     <label for="esc_variety_name_review"><?php esc_html_e('Variety', 'erins-seed-catalog'); ?></label>
                                     <div class="esc-input-with-confidence">
@@ -180,19 +180,19 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="esc-form-row">
                                 <div class="esc-form-field">
                                     <label for="esc_brand"><?php esc_html_e('Seed Brand/Source', 'erins-seed-catalog'); ?></label>
                                     <input type="text" id="esc_brand" name="brand">
                                 </div>
-                                
+
                                 <div class="esc-form-field">
                                     <label for="esc_sku_upc"><?php esc_html_e('Item / SKU / UPC', 'erins-seed-catalog'); ?></label>
                                     <input type="text" id="esc_sku_upc" name="sku_upc">
                                 </div>
                             </div>
-                            
+
                             <div class="esc-form-row">
                                 <div class="esc-form-field esc-full-width">
                                     <label for="esc_description"><?php esc_html_e('Description', 'erins-seed-catalog'); ?></label>
@@ -201,7 +201,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Plant Characteristics Card -->
                     <div class="esc-form-card" data-ai-status="partially-populated">
                         <div class="esc-card-header">
@@ -211,7 +211,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <span class="esc-badge-text"><?php esc_html_e('Needs Review', 'erins-seed-catalog'); ?></span>
                             </div>
                         </div>
-                        
+
                         <div class="esc-card-content">
                             <div class="esc-form-row">
                                 <div class="esc-form-field">
@@ -224,13 +224,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="esc-form-field">
                                     <label for="esc_growth_habit"><?php esc_html_e('Growth Habit', 'erins-seed-catalog'); ?></label>
                                     <input type="text" id="esc_growth_habit" name="growth_habit" placeholder="e.g., Bush, Vining, Upright">
                                 </div>
                             </div>
-                            
+
                             <div class="esc-form-row">
                                 <div class="esc-form-field">
                                     <label for="esc_days_to_maturity"><?php esc_html_e('Days to Maturity', 'erins-seed-catalog'); ?></label>
@@ -242,20 +242,20 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="esc-form-field">
                                     <label for="esc_plant_size"><?php esc_html_e('Plant Size (H x W)', 'erins-seed-catalog'); ?></label>
                                     <input type="text" id="esc_plant_size" name="plant_size" placeholder="e.g., 4-6 ft x 2-3 ft">
                                 </div>
                             </div>
-                            
+
                             <div class="esc-form-row">
                                 <div class="esc-form-field esc-full-width">
                                     <label for="esc_special_characteristics"><?php esc_html_e('Special Characteristics', 'erins-seed-catalog'); ?></label>
                                     <textarea id="esc_special_characteristics" name="special_characteristics" placeholder="e.g., Disease resistant (VFN), Heat tolerant, Heirloom"></textarea>
                                 </div>
                             </div>
-                            
+
                             <div class="esc-ai-suggestions">
                                 <div class="esc-suggestion-header">
                                     <span class="dashicons dashicons-lightbulb"></span>
@@ -269,7 +269,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Growing Instructions Card -->
                     <div class="esc-form-card" data-ai-status="fully-populated">
                         <div class="esc-card-header">
@@ -279,7 +279,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <span class="esc-badge-text"><?php esc_html_e('AI Complete', 'erins-seed-catalog'); ?></span>
                             </div>
                         </div>
-                        
+
                         <div class="esc-card-content">
                             <div class="esc-form-row">
                                 <div class="esc-form-field">
@@ -291,13 +291,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         <option value="Both"><?php esc_html_e('Both', 'erins-seed-catalog'); ?></option>
                                     </select>
                                 </div>
-                                
+
                                 <div class="esc-form-field">
                                     <label for="esc_sowing_depth"><?php esc_html_e('Sowing Depth', 'erins-seed-catalog'); ?></label>
                                     <input type="text" id="esc_sowing_depth" name="sowing_depth" placeholder="e.g., 1/4 inch">
                                 </div>
                             </div>
-                            
+
                             <div class="esc-form-row">
                                 <div class="esc-form-field">
                                     <label for="esc_sunlight"><?php esc_html_e('Sunlight Requirements', 'erins-seed-catalog'); ?></label>
@@ -316,7 +316,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                         </label>
                                     </div>
                                 </div>
-                                
+
                                 <div class="esc-form-field">
                                     <label for="esc_watering"><?php esc_html_e('Watering Needs', 'erins-seed-catalog'); ?></label>
                                     <textarea id="esc_watering" name="watering" placeholder="e.g., Keep consistently moist"></textarea>
@@ -324,7 +324,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Additional Information Card -->
                     <div class="esc-form-card" data-ai-status="not-populated">
                         <div class="esc-card-header">
@@ -334,20 +334,20 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <span class="esc-badge-text"><?php esc_html_e('Not Found', 'erins-seed-catalog'); ?></span>
                             </div>
                         </div>
-                        
+
                         <div class="esc-card-content">
                             <div class="esc-form-row">
                                 <div class="esc-form-field">
                                     <label for="esc_usda_zones"><?php esc_html_e('USDA Hardiness Zones', 'erins-seed-catalog'); ?></label>
                                     <input type="text" id="esc_usda_zones" name="usda_zones" placeholder="e.g., 3-9">
                                 </div>
-                                
+
                                 <div class="esc-form-field">
                                     <label for="esc_pollinator_info"><?php esc_html_e('Pollinator Information', 'erins-seed-catalog'); ?></label>
                                     <textarea id="esc_pollinator_info" name="pollinator_info" placeholder="e.g., Attracts bees and butterflies"></textarea>
                                 </div>
                             </div>
-                            
+
                             <div class="esc-retry-ai">
                                 <button type="button" class="esc-button esc-button-secondary" data-section="additional">
                                     <span class="dashicons dashicons-update"></span>
@@ -356,13 +356,13 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Categories & Notes Card -->
                     <div class="esc-form-card">
                         <div class="esc-card-header">
                             <h3><?php esc_html_e('Categories & Notes', 'erins-seed-catalog'); ?></h3>
                         </div>
-                        
+
                         <div class="esc-card-content">
                             <div class="esc-form-row">
                                 <div class="esc-form-field esc-full-width">
@@ -373,7 +373,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                                     <p class="description"><?php esc_html_e('Select one or more relevant categories.', 'erins-seed-catalog'); ?></p>
                                 </div>
                             </div>
-                            
+
                             <div class="esc-form-row">
                                 <div class="esc-form-field esc-full-width">
                                     <label for="esc_notes"><?php esc_html_e('Personal Notes', 'erins-seed-catalog'); ?></label>
@@ -385,27 +385,27 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </div>
                 </div>
             </div>
-            
+
             <div class="esc-form-actions">
                 <button type="button" id="esc-back-to-ai" class="esc-button esc-button-secondary">
                     <span class="dashicons dashicons-arrow-left-alt"></span>
                     <?php esc_html_e('Back to AI Search', 'erins-seed-catalog'); ?>
                 </button>
-                
+
                 <button type="submit" class="esc-button esc-button-primary">
                     <span class="dashicons dashicons-saved"></span>
                     <?php esc_html_e('Save Seed', 'erins-seed-catalog'); ?>
                 </button>
             </div>
         </div>
-        
+
         <!-- Manual Entry Mode -->
         <div class="esc-phase esc-phase-manual" id="esc-phase-manual-entry" style="display: none;">
             <div class="esc-manual-header">
                 <h3><?php esc_html_e('Manual Seed Entry', 'erins-seed-catalog'); ?></h3>
                 <p><?php esc_html_e('Fill in the details manually or', 'erins-seed-catalog'); ?> <a href="#" id="esc-back-to-ai-search"><?php esc_html_e('switch back to AI search', 'erins-seed-catalog'); ?></a>.</p>
             </div>
-            
+
             <!-- Include the original form fields here -->
             <div id="esc-manual-form-fields">
                 <?php include ESC_PLUGIN_DIR . 'public/views/add-seed-form-fields.php'; ?>
