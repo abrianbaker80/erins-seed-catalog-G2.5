@@ -391,8 +391,8 @@
         // Update AI status badges
         updateAIStatusBadges();
 
-        // Populate attention needed fields
-        populateAttentionNeededFields();
+        // Populate AI summary in quick review mode
+        populateAISummary(data);
     }
 
     // Add to changes list
@@ -483,133 +483,39 @@
         });
     }
 
-    // Populate attention needed fields
-    function populateAttentionNeededFields() {
-        console.log('Populating attention needed fields');
-        const $attentionFields = $('.esc-attention-fields');
-        $attentionFields.empty();
+    // Populate AI summary in quick review mode
+    function populateAISummary(data) {
+        console.log('Populating AI summary');
+        const $aiSummary = $('.esc-ai-summary');
+        $aiSummary.empty();
 
-        // First check if we have any cards that need attention
-        const $needsAttentionCards = $('.esc-form-card[data-ai-status="not-populated"], .esc-form-card[data-ai-status="partially-populated"]');
-        console.log('Found ' + $needsAttentionCards.length + ' cards needing attention');
-
-        // If we have cards that need attention, process them
-        if ($needsAttentionCards.length > 0) {
-            $needsAttentionCards.each(function() {
-                const $card = $(this);
-                const cardTitle = $card.find('.esc-card-header h3').text();
-                console.log('Processing card: ' + cardTitle);
-
-                const $attentionCard = $('<div class="esc-attention-card"></div>');
-                $attentionCard.append('<h5>' + cardTitle + '</h5>');
-
-                const $fieldList = $('<div class="esc-attention-field-list"></div>');
-
-                // Find fields that need attention - only those that have no value
-                const $fieldsNeedingAttention = $card.find('.esc-form-field:not(.esc-ai-populated)');
-                console.log('Found ' + $fieldsNeedingAttention.length + ' fields needing attention in ' + cardTitle);
-
-                $fieldsNeedingAttention.each(function() {
-                    const $field = $(this);
-                    const fieldLabel = $field.find('label').text();
-                    const $input = $field.find('input, textarea, select');
-
-                    // Skip fields that already have values
-                    if ($input.is('input[type="radio"]')) {
-                        // For radio buttons, check if any in the group is checked
-                        const radioName = $input.attr('name');
-                        if ($('input[name="' + radioName + '"]:checked').length > 0) {
-                            // A radio in this group is already checked, skip it
-                            return;
-                        }
-                    } else if ($input.val() && $input.val().trim() !== '') {
-                        // Field already has a value, skip it
-                        return;
-                    }
-
-                    // Special handling for radio button groups
-                    if ($field.find('input[type="radio"]').length > 0) {
-                        // For radio buttons, we need to handle the entire group
-                        const radioName = $field.find('input[type="radio"]').first().attr('name');
-                        console.log('Processing radio field: ' + fieldLabel + ' (Name: ' + radioName + ')');
-
-                        if (fieldLabel && radioName) {
-                            const $attentionField = $('<div class="esc-attention-field"></div>');
-                            $attentionField.append('<label>' + fieldLabel + '</label>');
-
-                            // Create a container for the radio buttons
-                            const $radioContainer = $('<div class="esc-radio-group"></div>');
-
-                            // Clone each radio button
-                            $field.find('input[type="radio"]').each(function() {
-                                const $radio = $(this);
-                                const radioValue = $radio.val();
-                                const radioId = $radio.attr('id') + '_attention';
-                                const radioLabel = $('label[for="' + $radio.attr('id') + '"]').text();
-
-                                const $radioClone = $('<div class="esc-radio-option"></div>');
-                                $radioClone.append('<input type="radio" id="' + radioId + '" name="' + radioName + '_attention" value="' + radioValue + '"' + ($radio.is(':checked') ? ' checked' : '') + '>');
-                                $radioClone.append('<label for="' + radioId + '">' + radioLabel + '</label>');
-
-                                // Sync the cloned radio with the original
-                                $radioClone.find('input').on('change', function() {
-                                    if ($(this).is(':checked')) {
-                                        $('input[name="' + radioName + '"][value="' + radioValue + '"]').prop('checked', true).trigger('change');
-                                        // Mark as AI populated when user selects a value
-                                        $field.addClass('esc-ai-populated');
-                                    }
-                                });
-
-                                $radioContainer.append($radioClone);
-                            });
-
-                            $attentionField.append($radioContainer);
-                            $fieldList.append($attentionField);
-                        }
-                    } else {
-                        // Regular field handling
-                        const fieldId = $input.attr('id');
-
-                        console.log('Processing field: ' + fieldLabel + ' (ID: ' + fieldId + ')');
-
-                        if (fieldLabel && fieldId) {
-                            const $attentionField = $('<div class="esc-attention-field"></div>');
-                            $attentionField.append('<label for="' + fieldId + '_attention">' + fieldLabel + '</label>');
-
-                            // Clone the input field
-                            const $inputClone = $input.clone();
-                            $inputClone.attr('id', fieldId + '_attention');
-
-                            // Make sure the clone has the current value
-                            $inputClone.val($input.val());
-
-                            // Sync the cloned field with the original
-                            $inputClone.on('input change', function() {
-                                $('#' + fieldId).val($(this).val()).trigger('change');
-                                // Mark as AI populated when user enters a value
-                                if ($(this).val() && $(this).val().trim() !== '') {
-                                    $field.addClass('esc-ai-populated');
-                                }
-                            });
-
-                            $attentionField.append($inputClone);
-                            $fieldList.append($attentionField);
-                        }
-                    }
-                });
-
-                // Only add the card if it has fields
-                if ($fieldList.children().length > 0) {
-                    $attentionCard.append($fieldList);
-                    $attentionFields.append($attentionCard);
-                }
-            });
+        if (!data || typeof data !== 'object') {
+            console.error('Invalid data for AI summary:', data);
+            return;
         }
 
-        // If no attention needed fields, show a message
-        if ($attentionFields.children().length === 0) {
-            $attentionFields.append('<p>All fields have been populated by AI. You can review them in Detailed Edit mode.</p>');
+        // Create a summary of the AI-populated fields
+        const $summaryList = $('<div class="esc-summary-list"></div>');
+
+        // Count how many fields were populated
+        let populatedCount = 0;
+        for (const key in data) {
+            if (data.hasOwnProperty(key) && data[key] !== null && data[key] !== undefined) {
+                populatedCount++;
+            }
         }
+
+        // Add a summary message
+        const $summaryMessage = $('<p class="esc-summary-message"></p>');
+        $summaryMessage.text('AI found information for ' + populatedCount + ' fields. Switch to Detailed Edit mode to review and edit all fields.');
+        $aiSummary.append($summaryMessage);
+
+        // Add a button to switch to detailed edit mode
+        const $detailedButton = $('<button type="button" class="esc-button esc-button-secondary">View All Fields</button>');
+        $detailedButton.on('click', function() {
+            $('.esc-mode-button[data-mode="detailed"]').trigger('click');
+        });
+        $aiSummary.append($detailedButton);
 
         // Make sure the quick review tab is visible
         $('.esc-mode-quick').show();
@@ -650,9 +556,9 @@
         $('.esc-review-mode').hide();
         $('.esc-mode-' + mode).show();
 
-        // If switching to quick mode, make sure attention fields are populated
+        // If switching to quick mode, update the AI summary
         if (mode === 'quick') {
-            populateAttentionNeededFields();
+            populateAISummary(aiPopulatedFields);
         }
 
         // Ensure floating labels are properly initialized in the visible mode

@@ -131,16 +131,12 @@ if ( ! defined( 'ABSPATH' ) ) {
             <div class="esc-review-modes">
                 <!-- Quick Review Mode -->
                 <div class="esc-review-mode esc-mode-quick active">
-                    <div class="esc-attention-needed">
-                        <h4><?php esc_html_e('Fields Needing Your Attention', 'erins-seed-catalog'); ?></h4>
-                        <div class="esc-attention-fields">
-                            <!-- Dynamically populated -->
-                        </div>
-                    </div>
-
                     <div class="esc-ai-populated">
                         <h4><?php esc_html_e('AI-Populated Fields', 'erins-seed-catalog'); ?></h4>
-                        <p><?php esc_html_e('All other fields have been populated by AI. Switch to Detailed Edit mode to review all fields.', 'erins-seed-catalog'); ?></p>
+                        <p><?php esc_html_e('The AI has populated the form with information about this seed. Switch to Detailed Edit mode to review and edit all fields.', 'erins-seed-catalog'); ?></p>
+                        <div class="esc-ai-summary">
+                            <!-- Dynamically populated summary -->
+                        </div>
                     </div>
                 </div>
 
