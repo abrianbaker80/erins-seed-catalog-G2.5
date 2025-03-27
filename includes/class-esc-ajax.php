@@ -70,39 +70,71 @@ class ESC_Ajax {
 			return;
 		}
 
-		// 3. Call the Gemini API Class
-		$result = ESC_Gemini_API::fetch_seed_info( $seed_name, $variety, $brand, $sku_upc );
+		try {
+			// 3. Call the Gemini API Class
+			$result = ESC_Gemini_API::fetch_seed_info( $seed_name, $variety, $brand, $sku_upc );
 
-		 // Log the API response for debugging
-        error_log('Gemini API Response for ' . $seed_name . ': ' . print_r($result, true));
+			// Log the API response for debugging
+			error_log('Gemini API Response for ' . $seed_name . ': ' . print_r($result, true));
 
-		// 4. Process result and send JSON response
-		if ( is_wp_error( $result ) ) {
-			wp_send_json_error( [
-                'message' => $result->get_error_message(),
-                'code' => $result->get_error_code(),
-                'data' => $result->get_error_data()
-            ] );
-		} else {
-			// Successfully got data from API
-            // Add category term_ids based on suggestion
-            $suggested_category_names = [];
-            if (!empty($result['esc_seed_category_suggestion'])) {
-                $suggested_category_names = array_map('trim', explode(',', $result['esc_seed_category_suggestion']));
-            }
-            $term_ids = [];
-            if (!empty($suggested_category_names)) {
-                foreach ($suggested_category_names as $name) {
-                    $term = get_term_by('name', $name, ESC_Taxonomy::TAXONOMY_NAME);
-                    if ($term && !is_wp_error($term)) {
-                        $term_ids[] = $term->term_id;
-                    }
-                }
-            }
-            // Add the term IDs to the response so JS can select them
-            $result['suggested_term_ids'] = $term_ids;
+			// 4. Process result and send JSON response
+			if ( is_wp_error( $result ) ) {
+				wp_send_json_error( [
+					'message' => $result->get_error_message(),
+					'code' => $result->get_error_code(),
+					'data' => $result->get_error_data()
+				] );
+			} else {
+				// Successfully got data from API
+				// Add category term_ids based on suggestion
+				$suggested_category_names = [];
+				if (!empty($result['esc_seed_category_suggestion'])) {
+					$suggested_category_names = array_map('trim', explode(',', $result['esc_seed_category_suggestion']));
+				}
+				$term_ids = [];
+				if (!empty($suggested_category_names)) {
+					foreach ($suggested_category_names as $name) {
+						$term = get_term_by('name', $name, ESC_Taxonomy::TAXONOMY_NAME);
+						if ($term && !is_wp_error($term)) {
+							$term_ids[] = $term->term_id;
+						}
+					}
+				}
+				// Add the term IDs to the response so JS can select them
+				$result['suggested_term_ids'] = $term_ids;
 
-			wp_send_json_success( $result );
+				// Make sure we have a valid array to return
+				if (!is_array($result)) {
+					$result = array(
+						'seed_name' => $seed_name,
+						'variety_name' => $variety,
+						'description' => 'Information could not be properly formatted. Please try again or enter details manually.'
+					);
+				}
+
+				// Ensure seed_name and variety_name are set in the result
+				if (!isset($result['seed_name']) || empty($result['seed_name'])) {
+					$result['seed_name'] = $seed_name;
+				}
+
+				if (!isset($result['variety_name']) && !empty($variety)) {
+					$result['variety_name'] = $variety;
+				}
+
+				// Log the final data being sent
+				error_log('Sending final data to client: ' . print_r($result, true));
+
+				wp_send_json_success( $result );
+			}
+		} catch (Exception $e) {
+			// Log any exceptions
+			error_log('Exception in handle_gemini_search: ' . $e->getMessage());
+
+			// Return a friendly error message
+			wp_send_json_error([
+				'message' => __('An unexpected error occurred while processing your request.', 'erins-seed-catalog'),
+				'error' => $e->getMessage()
+			]);
 		}
 
 		// Always exit after processing AJAX
