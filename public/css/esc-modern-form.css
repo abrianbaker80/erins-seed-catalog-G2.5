@@ -1,0 +1,708 @@
+/**
+ * Modern Form Styles for Erin's Seed Catalog
+ */
+
+/* Base Form Styles */
+.esc-modern-form {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+    color: #333;
+}
+
+.esc-modern-form h2 {
+    font-size: 28px;
+    margin-bottom: 24px;
+    color: #2c3e50;
+}
+
+.esc-modern-form h3 {
+    font-size: 20px;
+    margin: 0;
+    color: #2c3e50;
+}
+
+.esc-modern-form h4 {
+    font-size: 16px;
+    margin: 0 0 12px;
+    color: #2c3e50;
+}
+
+/* Card Layout */
+.esc-form-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 24px;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.esc-form-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.esc-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.esc-card-content {
+    padding: 24px;
+}
+
+.esc-card-description {
+    margin-top: 0;
+    margin-bottom: 24px;
+    color: #666;
+}
+
+/* AI Card Styling */
+.esc-ai-card {
+    border-left: 4px solid #3498db;
+}
+
+.esc-ai-card .esc-card-header {
+    background-color: #ebf5fb;
+}
+
+/* Form Layout */
+.esc-form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -12px 24px;
+}
+
+.esc-form-field {
+    flex: 1 1 calc(50% - 24px);
+    margin: 0 12px;
+    min-width: 200px;
+}
+
+.esc-form-field.esc-full-width {
+    flex: 1 1 calc(100% - 24px);
+}
+
+/* Input Styling */
+.esc-modern-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #444;
+}
+
+.esc-modern-form input[type="text"],
+.esc-modern-form input[type="url"],
+.esc-modern-form input[type="number"],
+.esc-modern-form input[type="date"],
+.esc-modern-form textarea,
+.esc-modern-form select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 14px;
+    line-height: 1.5;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.esc-modern-form input[type="text"]:focus,
+.esc-modern-form input[type="url"]:focus,
+.esc-modern-form input[type="number"]:focus,
+.esc-modern-form input[type="date"]:focus,
+.esc-modern-form textarea:focus,
+.esc-modern-form select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    outline: none;
+}
+
+.esc-modern-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.esc-modern-form .description {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+
+/* Floating Labels */
+.esc-floating-label {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.esc-floating-label input {
+    height: 56px;
+    padding: 20px 12px 8px;
+}
+
+.esc-floating-label label {
+    position: absolute;
+    top: 18px;
+    left: 12px;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    color: #666;
+    margin: 0;
+}
+
+.esc-floating-label input:focus + label,
+.esc-floating-label input:not(:placeholder-shown) + label {
+    top: 8px;
+    font-size: 12px;
+    color: #3498db;
+}
+
+/* Button Styling */
+.esc-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.esc-button:active {
+    transform: translateY(1px);
+}
+
+.esc-button .dashicons {
+    margin-right: 8px;
+}
+
+.esc-button-primary {
+    background-color: #3498db;
+    color: white;
+}
+
+.esc-button-primary:hover {
+    background-color: #2980b9;
+}
+
+.esc-button-secondary {
+    background-color: #f1f1f1;
+    color: #333;
+}
+
+.esc-button-secondary:hover {
+    background-color: #e1e1e1;
+}
+
+.esc-button-large {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 16px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+/* AI Status Container */
+.esc-ai-status-container {
+    margin: 16px 0;
+    padding: 16px;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+}
+
+.esc-ai-loading {
+    display: flex;
+    align-items: flex-start;
+}
+
+.esc-loading-animation {
+    margin-right: 16px;
+}
+
+.esc-loading-pulse {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #3498db;
+    animation: esc-pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes esc-pulse {
+    0% { transform: scale(0.8); opacity: 0.5; }
+    50% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0.8); opacity: 0.5; }
+}
+
+.esc-loading-stages {
+    flex: 1;
+}
+
+.esc-loading-stage {
+    padding: 8px 0;
+    color: #666;
+    opacity: 0.5;
+    transition: opacity 0.3s, color 0.3s;
+}
+
+.esc-loading-stage.active {
+    color: #3498db;
+    opacity: 1;
+    font-weight: 500;
+}
+
+/* Success and Error States */
+.esc-ai-success, .esc-ai-error {
+    display: flex;
+    align-items: flex-start;
+}
+
+.esc-success-icon, .esc-error-icon {
+    margin-right: 16px;
+}
+
+.esc-success-icon .dashicons {
+    color: #2ecc71;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.esc-error-icon .dashicons {
+    color: #e74c3c;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.esc-success-message h4, .esc-error-message h4 {
+    margin-bottom: 8px;
+}
+
+.esc-success-message p, .esc-error-message p {
+    margin: 0 0 8px;
+}
+
+/* Manual Toggle */
+.esc-manual-toggle {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+}
+
+.esc-manual-toggle a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.esc-manual-toggle a:hover {
+    text-decoration: underline;
+}
+
+/* Phase 2: Review & Edit */
+.esc-ai-result-summary {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 16px;
+    background-color: #ebf5fb;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+}
+
+.esc-ai-result-icon {
+    margin-right: 16px;
+}
+
+.esc-ai-result-icon .dashicons {
+    color: #3498db;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.esc-ai-result-text h3 {
+    margin-bottom: 4px;
+}
+
+.esc-ai-result-text p {
+    margin: 0;
+    color: #666;
+}
+
+/* AI Changes Summary */
+.esc-ai-changes-summary {
+    margin-bottom: 24px;
+}
+
+.esc-toggle-changes {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    color: #3498db;
+    padding: 0;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.esc-toggle-changes .dashicons {
+    margin-right: 8px;
+}
+
+.esc-changes-detail {
+    margin-top: 16px;
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.esc-changes-list {
+    margin: 0;
+    padding-left: 20px;
+}
+
+/* Review Mode Toggle */
+.esc-review-mode-toggle {
+    display: flex;
+    margin-bottom: 24px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.esc-mode-button {
+    flex: 1;
+    padding: 12px;
+    background-color: #f8f9fa;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.esc-mode-button.active {
+    background-color: #3498db;
+    color: white;
+}
+
+/* AI Status Badge */
+.esc-ai-status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.esc-form-card[data-ai-status="fully-populated"] .esc-ai-status-badge {
+    background-color: #e8f8f5;
+    color: #27ae60;
+}
+
+.esc-form-card[data-ai-status="partially-populated"] .esc-ai-status-badge {
+    background-color: #fef9e7;
+    color: #f39c12;
+}
+
+.esc-form-card[data-ai-status="not-populated"] .esc-ai-status-badge {
+    background-color: #fdedec;
+    color: #e74c3c;
+}
+
+.esc-form-card[data-ai-status="needs-review"] .esc-ai-status-badge {
+    background-color: #ebf5fb;
+    color: #3498db;
+}
+
+.esc-ai-status-badge .dashicons {
+    margin-right: 4px;
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* Confidence Indicators */
+.esc-input-with-confidence {
+    display: flex;
+    align-items: center;
+}
+
+.esc-confidence-indicator {
+    margin-left: 8px;
+    position: relative;
+}
+
+.esc-confidence-indicator[data-confidence="high"] {
+    color: #27ae60;
+}
+
+.esc-confidence-indicator[data-confidence="medium"] {
+    color: #f39c12;
+}
+
+.esc-confidence-indicator[data-confidence="low"] {
+    color: #e74c3c;
+}
+
+.esc-confidence-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    z-index: 100;
+    pointer-events: none;
+    width: 200px;
+    text-align: center;
+}
+
+.esc-confidence-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+.esc-confidence-indicator:hover .esc-confidence-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* AI Suggestions */
+.esc-ai-suggestions {
+    margin-top: 16px;
+    padding: 12px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border-left: 3px solid #3498db;
+}
+
+.esc-suggestion-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    color: #3498db;
+    font-weight: 500;
+}
+
+.esc-suggestion-header .dashicons {
+    margin-right: 8px;
+}
+
+.esc-suggestions-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.esc-suggestion {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.esc-suggestion:hover {
+    background-color: #ebf5fb;
+    border-color: #3498db;
+}
+
+/* Retry AI Button */
+.esc-retry-ai {
+    margin-top: 16px;
+    text-align: center;
+}
+
+/* Form Actions */
+.esc-form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+}
+
+/* Range Slider */
+.esc-range-slider {
+    display: flex;
+    flex-direction: column;
+}
+
+.esc-slider {
+    width: 100%;
+    margin: 8px 0;
+}
+
+.esc-slider-value {
+    display: flex;
+    align-items: center;
+}
+
+.esc-slider-value input {
+    width: 60px;
+    text-align: center;
+    margin-right: 8px;
+}
+
+.esc-unit {
+    color: #666;
+}
+
+/* Toggle Group */
+.esc-toggle-group {
+    display: flex;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.esc-toggle {
+    flex: 1;
+    position: relative;
+    margin: 0;
+}
+
+.esc-toggle input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.esc-toggle-label {
+    display: block;
+    padding: 8px 12px;
+    text-align: center;
+    background-color: #f8f9fa;
+    transition: background-color 0.2s;
+}
+
+.esc-toggle input:checked + .esc-toggle-label {
+    background-color: #3498db;
+    color: white;
+}
+
+/* Select Multiple */
+.esc-select-multiple {
+    height: 150px !important;
+}
+
+/* Variety Dropdown Enhancements */
+.esc-variety-field-container {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.esc-variety-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    z-index: 100;
+}
+
+.esc-variety-option {
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.esc-variety-option:hover {
+    background-color: #ebf5fb;
+}
+
+.esc-variety-option.selected {
+    background-color: #ebf5fb;
+    font-weight: 500;
+}
+
+/* Spinner Animation */
+.esc-spin {
+    animation: esc-spin 2s linear infinite;
+}
+
+@keyframes esc-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Image Upload */
+.esc-image-upload-container {
+    display: flex;
+}
+
+.esc-upload-button {
+    margin-left: 8px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .esc-form-row {
+        flex-direction: column;
+    }
+    
+    .esc-form-field {
+        flex: 1 1 100%;
+        margin-bottom: 16px;
+    }
+    
+    .esc-button-large {
+        padding: 16px;
+    }
+    
+    .esc-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .esc-ai-status-badge {
+        margin-top: 8px;
+    }
+    
+    .esc-form-actions {
+        flex-direction: column;
+    }
+    
+    .esc-form-actions .esc-button {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+    
+    .esc-ai-result-summary {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .esc-ai-result-icon {
+        margin-right: 0;
+        margin-bottom: 8px;
+    }
+}

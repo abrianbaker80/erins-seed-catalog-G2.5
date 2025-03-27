@@ -40,6 +40,14 @@ class ESC_Functions {
                 ESC_VERSION
             );
 
+            // Enqueue Modern Form CSS
+            wp_enqueue_style(
+                'esc-modern-form',
+                ESC_PLUGIN_URL . 'public/css/esc-modern-form.css',
+                ['esc-public-styles'],
+                ESC_VERSION
+            );
+
             // Enqueue Public JS
             wp_enqueue_script(
                 'esc-public-scripts',
@@ -54,6 +62,15 @@ class ESC_Functions {
                 'esc-variety-suggestions',
                 ESC_PLUGIN_URL . 'public/js/esc-variety-suggestions.js',
                 [ 'jquery', 'esc-public-scripts' ],
+                ESC_VERSION,
+                true // Load in footer
+            );
+
+            // Enqueue Modern Form JS
+            wp_enqueue_script(
+                'esc-modern-form',
+                ESC_PLUGIN_URL . 'public/js/esc-modern-form.js',
+                [ 'jquery', 'esc-public-scripts', 'esc-variety-suggestions' ],
                 ESC_VERSION,
                 true // Load in footer
             );

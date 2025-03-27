@@ -33,7 +33,7 @@ class ESC_Shortcodes {
 		// ), $atts, 'erins_seed_catalog_add_form' );
 
 		ob_start();
-		include ESC_PLUGIN_DIR . 'public/views/add-seed-form.php';
+		include ESC_PLUGIN_DIR . 'public/views/add-seed-form-modern.php';
 		return ob_get_clean();
 	}
 
