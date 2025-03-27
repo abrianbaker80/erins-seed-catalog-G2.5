@@ -4,7 +4,7 @@ Tags: seed catalog, garden, vegetables, gemini api, ai, mobile first
 Requires at least: 6.0
 Tested up to: 6.7.2
 Requires PHP: 8.2
-Stable tag: 1.1.5
+Stable tag: 1.1.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,6 +59,16 @@ When adding a seed, enter the Seed Name (and optionally Variety, Brand, SKU). Cl
 
 == Changelog ==
 
+= 1.1.6 =
+*   Fixed plugin update detection
+*   Added improved GitHub update checker
+*   Enhanced add seed form with modern UI
+*   Added AI-powered variety suggestions
+*   Improved user experience with floating labels and card-based layout
+
+= 1.1.5 =
+*   Updated version numbers and documentation
+
 = 1.1.2 =
 *   Added ability to select different Gemini models
 *   Added model testing functionality
@@ -71,6 +81,12 @@ When adding a seed, enter the Seed Name (and optionally Variety, Brand, SKU). Cl
 *   Initial release.
 
 == Upgrade Notice ==
+
+= 1.1.6 =
+This update fixes plugin update detection and adds an improved add seed form with modern UI and AI-powered variety suggestions.
+
+= 1.1.5 =
+This update includes version number updates and documentation improvements.
 
 = 1.1.2 =
 This update adds the ability to select different Gemini models, model testing, usage statistics, and more.

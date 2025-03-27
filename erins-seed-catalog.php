@@ -3,7 +3,7 @@
  * Plugin Name:       Erin's Seed Catalog
  * Plugin URI:        https://github.com/abrianbaker80/erins-seed-catalog-G2.5.git
  * Description:       Catalog and track your vegetable garden seeds with AI-assisted information retrieval via the Gemini API. Mobile-first design.
- * Version:           1.1.5
+ * Version:           1.1.6
  * Requires at least: 6.0
  * Requires PHP:      8.2
  * Author:            Allen Baker
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define Constants
-define('ESC_VERSION', '1.1.5');
+define('ESC_VERSION', '1.1.6');
 define( 'ESC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ESC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'ESC_PLUGIN_FILE', __FILE__ );
@@ -126,8 +126,24 @@ function esc_init_plugin() {
     ESC_Model_Updater::init(); // For model updates
 
     // Initialize the update checker
-    $update_checker = new ESC_Update_Checker();
-    $update_checker->init();
+    if (file_exists(ESC_PLUGIN_DIR . 'plugin-update-checker/plugin-update-checker.php')) {
+        require_once ESC_PLUGIN_DIR . 'plugin-update-checker/plugin-update-checker.php';
+        $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
+            'https://github.com/abrianbaker80/erins-seed-catalog-G2.5/',
+            __FILE__,
+            'erins-seed-catalog'
+        );
+
+        // Set the branch that contains the stable release
+        $myUpdateChecker->setBranch('master');
+
+        // Optional: Enable release assets
+        $myUpdateChecker->getVcsApi()->enableReleaseAssets();
+    } else {
+        // Fallback to the old update checker if the library is not available
+        $update_checker = new ESC_Update_Checker();
+        $update_checker->init();
+    }
 }
 add_action( 'plugins_loaded', 'esc_init_plugin' );
 
