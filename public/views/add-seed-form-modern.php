@@ -8,7 +8,291 @@ if ( ! defined( 'ABSPATH' ) ) {
 $css_url = plugin_dir_url( dirname( __FILE__ ) ) . 'css/esc-modern-form.css';
 $css_version = ESC_VERSION . '.' . time(); // Force cache refresh
 echo '<link rel="stylesheet" href="' . esc_url( $css_url . '?ver=' . $css_version ) . '" type="text/css" media="all" />';
+
+// Add critical inline styles to ensure proper display
 ?>
+<style>
+/* Critical inline styles to ensure proper display */
+.esc-modern-form {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    max-width: 1400px;
+    margin: 0 auto;
+    color: #2d3748;
+    padding: 30px;
+    background-color: #f7fafc;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.03);
+}
+
+.esc-form-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    margin-bottom: 40px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    position: relative;
+}
+
+.esc-form-card:hover {
+    box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    transform: translateY(-4px);
+    border-color: rgba(203, 213, 224, 0.9);
+}
+
+.esc-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 30px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #edf2f7;
+    position: relative;
+}
+
+.esc-card-content {
+    padding: 35px 30px;
+    position: relative;
+}
+
+.esc-form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -15px 35px;
+    position: relative;
+    align-items: flex-start;
+}
+
+.esc-form-field {
+    flex: 1 1 calc(50% - 30px);
+    margin: 0 15px 20px;
+    min-width: 250px;
+    position: relative;
+}
+
+.esc-modern-form input[type="text"],
+.esc-modern-form input[type="url"],
+.esc-modern-form input[type="number"],
+.esc-modern-form input[type="date"],
+.esc-modern-form textarea,
+.esc-modern-form select {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    background-color: #fff;
+    font-size: 16px;
+    line-height: 1.5;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    color: #2d3748;
+}
+
+.esc-modern-form input[type="text"]:hover,
+.esc-modern-form input[type="url"]:hover,
+.esc-modern-form input[type="number"]:hover,
+.esc-modern-form input[type="date"]:hover,
+.esc-modern-form textarea:hover,
+.esc-modern-form select:hover {
+    border-color: #cbd5e0;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+
+.esc-modern-form input[type="text"]:focus,
+.esc-modern-form input[type="url"]:focus,
+.esc-modern-form input[type="number"]:focus,
+.esc-modern-form input[type="date"]:focus,
+.esc-modern-form textarea:focus,
+.esc-modern-form select:focus {
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+    outline: none;
+    transform: translateY(-2px);
+}
+
+.esc-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    letter-spacing: 0.3px;
+}
+
+.esc-button-primary {
+    background-color: #4299e1;
+    color: white;
+    background-image: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+}
+
+.esc-button-primary:hover {
+    background-color: #3182ce;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(66, 153, 225, 0.2), 0 2px 4px rgba(66, 153, 225, 0.1);
+}
+
+.esc-floating-label {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.esc-floating-label input,
+.esc-floating-label textarea,
+.esc-floating-label select {
+    height: 62px;
+    padding: 28px 18px 12px;
+    font-size: 16px;
+    position: relative;
+    z-index: 1;
+    background-color: #fff;
+    color: #2d3748;
+    transition: all 0.3s ease;
+    width: 100%;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+}
+
+.esc-floating-label label {
+    position: absolute;
+    top: 20px;
+    left: 18px;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    color: #718096;
+    margin: 0;
+    background-color: transparent;
+    z-index: 2;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.esc-floating-label input:focus + label,
+.esc-floating-label input:not(:placeholder-shown) + label,
+.esc-floating-label input.has-value + label,
+.esc-floating-label textarea:focus + label,
+.esc-floating-label textarea:not(:placeholder-shown) + label,
+.esc-floating-label textarea.has-value + label,
+.esc-floating-label select:focus + label,
+.esc-floating-label select:not([value=""]):not([value="0"]) + label,
+.esc-floating-label select.has-value + label {
+    top: 10px;
+    font-size: 12px;
+    color: #4299e1;
+    transform: translateY(-5px);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.esc-floating-label textarea {
+    height: auto;
+    min-height: 120px;
+    padding-top: 32px;
+}
+
+/* AI Card Styling */
+.esc-ai-card {
+    border-left: 4px solid #4299e1;
+}
+
+.esc-ai-card .esc-card-header {
+    background-color: #ebf8ff;
+}
+
+/* Success and Error States */
+.esc-ai-success, .esc-ai-error {
+    display: flex;
+    align-items: flex-start;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.esc-ai-success {
+    background-color: #f0fff4;
+    border: 1px solid #c6f6d5;
+}
+
+.esc-ai-error {
+    background-color: #fff5f5;
+    border: 1px solid #fed7d7;
+}
+
+.esc-success-icon, .esc-error-icon {
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.esc-success-icon {
+    background-color: #9ae6b4;
+    color: #22543d;
+}
+
+.esc-error-icon {
+    background-color: #feb2b2;
+    color: #742a2a;
+}
+
+/* Button Styling Enhancements */
+.esc-button-secondary {
+    background-color: #edf2f7;
+    color: #4a5568;
+    border: 1px solid #e2e8f0;
+}
+
+.esc-button-secondary:hover {
+    background-color: #e2e8f0;
+    color: #2d3748;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.esc-button-large {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 16px;
+}
+
+/* Desktop Optimizations */
+@media screen and (min-width: 1200px) {
+    .esc-modern-form {
+        padding: 40px 50px;
+    }
+
+    .esc-card-content {
+        padding: 40px 40px;
+    }
+
+    .esc-form-row {
+        margin: 0 -20px 40px;
+    }
+
+    .esc-form-field {
+        flex: 1 1 calc(50% - 40px);
+        margin: 0 20px 25px;
+    }
+
+    .esc-button-large {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+}
+</style>
 
 <div id="esc-add-seed-form-container" class="esc-container esc-modern-form">
     <h2><?php esc_html_e( 'Add New Seed to Catalog', 'erins-seed-catalog' ); ?></h2>
@@ -418,3 +702,42 @@ echo '<link rel="stylesheet" href="' . esc_url( $css_url . '?ver=' . $css_versio
         </div>
     </form>
 </div>
+
+<script>
+// Ensure floating labels work properly
+jQuery(document).ready(function($) {
+    // Process all form elements with floating labels
+    $('.esc-floating-label input, .esc-floating-label textarea, .esc-floating-label select').each(function() {
+        var $field = $(this);
+
+        // Check if the field has a value
+        if ($field.val() && $field.val().trim() !== '') {
+            $field.addClass('has-value');
+
+            // Ensure the label is properly positioned
+            var $label = $field.siblings('label');
+            if ($label.length) {
+                $label.addClass('active');
+            }
+        }
+
+        // Ensure placeholder attribute exists (critical for CSS selectors)
+        if (!$field.attr('placeholder')) {
+            $field.attr('placeholder', ' ');
+        }
+    });
+
+    // Handle input events for floating labels
+    $('.esc-floating-label input, .esc-floating-label textarea, .esc-floating-label select').on('input change focus blur', function() {
+        var $field = $(this);
+        if ($field.val() && $field.val().trim() !== '') {
+            $field.addClass('has-value');
+        } else {
+            $field.removeClass('has-value');
+        }
+    });
+
+    // Trigger the input event on page load to set initial state
+    $('.esc-floating-label input, .esc-floating-label textarea, .esc-floating-label select').trigger('input');
+});
+</script>
