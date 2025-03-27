@@ -30,6 +30,10 @@ class ESC_Ajax {
 		// AJAX hook for dismissing notices
 		add_action( 'wp_ajax_esc_dismiss_notice', [ __CLASS__, 'handle_dismiss_notice' ] );
 
+		// AJAX hook for getting variety suggestions
+		add_action( 'wp_ajax_esc_get_varieties', [ __CLASS__, 'handle_get_varieties' ] );
+		add_action( 'wp_ajax_nopriv_esc_get_varieties', [ __CLASS__, 'handle_get_varieties' ] );
+
 		// AJAX hook for testing models
 		add_action( 'wp_ajax_esc_test_model', [ __CLASS__, 'handle_test_model' ] );
 
@@ -54,9 +58,12 @@ class ESC_Ajax {
 
 		// 2. Get data from $_POST
 		$seed_name = isset( $_POST['seed_name'] ) ? sanitize_text_field( wp_unslash( $_POST['seed_name'] ) ) : '';
-		$variety   = isset( $_POST['variety'] ) ? sanitize_text_field( wp_unslash( $_POST['variety'] ) ) : null;
-		$brand     = isset( $_POST['brand'] ) ? sanitize_text_field( wp_unslash( $_POST['brand'] ) ) : null;
+		$variety   = isset( $_POST['variety_name'] ) ? sanitize_text_field( wp_unslash( $_POST['variety_name'] ) ) : null;
+		$brand     = isset( $_POST['brand_name'] ) ? sanitize_text_field( wp_unslash( $_POST['brand_name'] ) ) : null;
 		$sku_upc   = isset( $_POST['sku_upc'] ) ? sanitize_text_field( wp_unslash( $_POST['sku_upc'] ) ) : null;
+
+		// Log the search parameters
+		error_log('ESC Gemini Search - Seed Name: ' . $seed_name . ', Variety: ' . $variety);
 
 		if ( empty( $seed_name ) ) {
 			wp_send_json_error( [ 'message' => __( 'Seed Name is required for AI search.', 'erins-seed-catalog' ) ] );
@@ -145,6 +152,13 @@ class ESC_Ajax {
                 'field' => 'seed_name'
             ]);
             return;
+        }
+
+        // If variety is provided, include it in the seed name for display
+        if (!empty($seed_data['variety_name'])) {
+            // Store the original seed name and variety separately
+            $seed_data['original_seed_name'] = $seed_data['seed_name'];
+            $seed_data['seed_name'] = sprintf('%s (%s)', $seed_data['seed_name'], $seed_data['variety_name']);
         }
 
         // 5. Add seed to database
@@ -337,6 +351,39 @@ class ESC_Ajax {
         } else {
             wp_send_json_error( [ 'message' => __( 'Invalid notice type.', 'erins-seed-catalog' ) ] );
         }
+    }
+
+    /**
+     * Handle the AJAX request for getting variety suggestions.
+     */
+    public static function handle_get_varieties() {
+        // Verify nonce
+        check_ajax_referer( 'esc_ajax_nonce', 'nonce' );
+
+        // Get the seed type
+        $seed_type = isset( $_POST['seed_type'] ) ? sanitize_text_field( wp_unslash( $_POST['seed_type'] ) ) : '';
+
+        if ( empty( $seed_type ) ) {
+            wp_send_json_error( [ 'message' => __( 'Seed type is required.', 'erins-seed-catalog' ) ] );
+            return;
+        }
+
+        // Get variety suggestions
+        $varieties = ESC_Variety_Suggestions::get_variety_suggestions( $seed_type );
+
+        if ( is_wp_error( $varieties ) ) {
+            wp_send_json_error( [
+                'message' => $varieties->get_error_message(),
+                'seed_type' => $seed_type
+            ] );
+            return;
+        }
+
+        // Send the response
+        wp_send_json_success( [
+            'varieties' => $varieties,
+            'seed_type' => $seed_type
+        ] );
     }
 
     /**

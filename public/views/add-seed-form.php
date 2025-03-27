@@ -20,9 +20,16 @@ if ( ! defined( 'ABSPATH' ) ) {
                 <input type="text" id="esc_seed_name" name="seed_name" required>
                 <p class="description"><?php esc_html_e('The main name, e.g., "Tomato", "Bean", "Zinnia".', 'erins-seed-catalog'); ?></p>
             </div>
-            <div>
-                <label for="esc_variety_name"><?php esc_html_e( 'Variety', 'erins-seed-catalog' ); ?></label>
-                <input type="text" id="esc_variety_name" name="variety_name">
+
+            <div id="esc-variety-container">
+                <label for="esc_variety_name"><?php esc_html_e('Variety', 'erins-seed-catalog'); ?></label>
+                <div class="esc-variety-field-container">
+                    <input type="text" id="esc_variety_name" name="variety_name" placeholder="<?php esc_attr_e('Enter variety name', 'erins-seed-catalog'); ?>">
+                    <div id="esc-variety-dropdown" style="display: none;" class="esc-variety-dropdown"></div>
+                </div>
+                <div class="esc-variety-loading" style="display: none;">
+                    <span class="dashicons dashicons-update-alt esc-spin"></span> <?php esc_html_e('Loading varieties...', 'erins-seed-catalog'); ?>
+                </div>
                 <p class="description"><?php esc_html_e('Specific variety, e.g., "Brandywine", "Kentucky Wonder", "California Giant".', 'erins-seed-catalog'); ?></p>
             </div>
             <div class="esc-search-button-container">
@@ -31,9 +38,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </button>
             </div>
         </fieldset>
-        
+
         <div id="esc-ai-status"></div>
-        
+
         <?php // Hidden until AI search is performed ?>
         <div id="esc-extended-form" style="display: none;">
             <?php // Optional identification fields ?>

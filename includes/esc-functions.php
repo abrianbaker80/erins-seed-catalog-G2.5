@@ -49,6 +49,15 @@ class ESC_Functions {
                 true // Load in footer
             );
 
+            // Enqueue Variety Suggestions JS
+            wp_enqueue_script(
+                'esc-variety-suggestions',
+                ESC_PLUGIN_URL . 'public/js/esc-variety-suggestions.js',
+                [ 'jquery', 'esc-public-scripts' ],
+                ESC_VERSION,
+                true // Load in footer
+            );
+
             // Localize script for AJAX calls
             wp_localize_script(
                 'esc-public-scripts',
