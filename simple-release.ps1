@@ -88,17 +88,69 @@ function Generate-CommitMessage {
     # Get list of changed files
     $changedFiles = git diff --name-only HEAD
 
+    # Categorize changes
+    $features = @()
+    $fixes = @()
+    $docs = @()
+    $other = @()
+
+    foreach ($file in $changedFiles) {
+        $extension = [System.IO.Path]::GetExtension($file)
+        $directory = [System.IO.Path]::GetDirectoryName($file)
+
+        if ($file -match "README|readme|RELEASE|\.md$|\.txt$") {
+            $docs += $file
+        }
+        elseif ($directory -match "admin|includes" -and $extension -match "\.php$") {
+            # Try to determine if it's a feature or fix based on git diff
+            $diff = git diff HEAD $file
+            if ($diff -match "fix|bug|issue|error|warning|notice") {
+                $fixes += $file
+            } else {
+                $features += $file
+            }
+        }
+        else {
+            $other += $file
+        }
+    }
+
     # Build commit message
     $message = "Release v$version`n`n"
 
-    if ($changedFiles.Count -gt 0) {
-        $message += "Changed files:`n"
-        foreach ($file in $changedFiles) {
-            # Get a summary of changes for each file
-            $fileDiff = git diff --stat HEAD -- $file
-            $message += "- $file`n"
+    if ($features.Count -gt 0) {
+        $message += "Features:`n"
+        foreach ($feature in $features) {
+            $message += "- Updated $feature`n"
         }
-    } else {
+        $message += "`n"
+    }
+
+    if ($fixes.Count -gt 0) {
+        $message += "Fixes:`n"
+        foreach ($fix in $fixes) {
+            $message += "- Fixed $fix`n"
+        }
+        $message += "`n"
+    }
+
+    if ($docs.Count -gt 0) {
+        $message += "Documentation:`n"
+        foreach ($doc in $docs) {
+            $message += "- Updated $doc`n"
+        }
+        $message += "`n"
+    }
+
+    if ($other.Count -gt 0) {
+        $message += "Other Changes:`n"
+        foreach ($change in $other) {
+            $message += "- Modified $change`n"
+        }
+    }
+
+    # If no changes were categorized, add a generic message
+    if ($features.Count -eq 0 -and $fixes.Count -eq 0 -and $docs.Count -eq 0 -and $other.Count -eq 0) {
         $message += "Version bump only`n"
     }
 
