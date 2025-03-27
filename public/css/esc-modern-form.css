@@ -158,6 +158,12 @@
     background-color: #fff;
     color: #333; /* Ensure text is visible */
     transition: all 0.3s ease;
+    width: 100%;
+}
+
+/* Adjust padding for inputs with confidence indicators */
+.esc-input-with-confidence input {
+    padding-right: 40px; /* Make room for the confidence indicator */
 }
 
 .esc-floating-label textarea {
@@ -469,11 +475,35 @@
 .esc-input-with-confidence {
     display: flex;
     align-items: center;
+    position: relative;
+    width: 100%;
+}
+
+.esc-input-with-confidence input {
+    width: 100%;
 }
 
 .esc-confidence-indicator {
     margin-left: 8px;
-    position: relative;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.esc-confidence-indicator:hover {
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
 .esc-confidence-indicator[data-confidence="high"] {
@@ -490,31 +520,31 @@
 
 .esc-confidence-tooltip {
     position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 130%;
+    right: -10px;
+    transform: translateX(0);
     background-color: #333;
     color: white;
-    padding: 8px 12px;
-    border-radius: 4px;
+    padding: 10px 14px;
+    border-radius: 8px;
     font-size: 12px;
     white-space: nowrap;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.2s, visibility 0.2s;
+    transition: all 0.3s ease;
     z-index: 100;
     pointer-events: none;
-    width: 200px;
+    width: 220px;
     text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .esc-confidence-tooltip::after {
     content: '';
     position: absolute;
     top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 5px;
+    right: 15px;
+    border-width: 6px;
     border-style: solid;
     border-color: #333 transparent transparent transparent;
 }
