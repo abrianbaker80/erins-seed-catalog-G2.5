@@ -77,10 +77,41 @@ if ($confirmation -ne "y") {
 Update-Files -oldVersion $currentVersion -newVersion $newVersion
 Write-Host "Version updated successfully!" -ForegroundColor Green
 
+# Generate detailed commit message
+function Generate-CommitMessage {
+    param (
+        [string]$version
+    )
+
+    Write-Host "Generating detailed commit message..." -ForegroundColor Cyan
+
+    # Get list of changed files
+    $changedFiles = git diff --name-only HEAD
+
+    # Build commit message
+    $message = "Release v$version`n`n"
+
+    if ($changedFiles.Count -gt 0) {
+        $message += "Changed files:`n"
+        foreach ($file in $changedFiles) {
+            # Get a summary of changes for each file
+            $fileDiff = git diff --stat HEAD -- $file
+            $message += "- $file`n"
+        }
+    } else {
+        $message += "Version bump only`n"
+    }
+
+    return $message
+}
+
 # Commit changes
-$commitMessage = "Release v$newVersion"
+$commitMessage = Generate-CommitMessage -version $newVersion
+Write-Host "Commit message:" -ForegroundColor Cyan
+Write-Host $commitMessage -ForegroundColor White
+
 git add .
-git commit -m $commitMessage
+git commit -m "$commitMessage"
 git tag -a "v$newVersion" -m "Version $newVersion"
 
 # Push changes

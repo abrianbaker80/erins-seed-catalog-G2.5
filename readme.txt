@@ -66,3 +66,4 @@ When adding a seed, enter the Seed Name (and optionally Variety, Brand, SKU). Cl
 
 = 1.0.0 =
 Initial release.
+
