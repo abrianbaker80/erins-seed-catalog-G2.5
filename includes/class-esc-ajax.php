@@ -190,7 +190,8 @@ class ESC_Ajax {
         $search_term = isset($_POST['search']) ? sanitize_text_field(wp_unslash($_POST['search'])) : '';
         $category_id = isset($_POST['category']) ? absint($_POST['category']) : 0;
         $paged = isset($_POST['paged']) ? absint($_POST['paged']) : 1;
-        $per_page = 12; // Or get from a setting
+        $per_page = isset($_POST['per_page']) ? absint($_POST['per_page']) : 12;
+        $use_enhanced = isset($_POST['enhanced']) && ($_POST['enhanced'] === 'true' || $_POST['enhanced'] === true);
 
          // 3. Prepare arguments for DB query
         $args = [
@@ -214,7 +215,11 @@ class ESC_Ajax {
              foreach ( $seeds as $seed ) {
                 // Use a template part or include the view directly
                 // Ensure the view file can handle a single $seed object
-                 include( ESC_PLUGIN_DIR . 'public/views/_seed-card.php' ); // Create a reusable card template
+                if ($use_enhanced) {
+                    include( ESC_PLUGIN_DIR . 'public/views/_enhanced-seed-card.php' );
+                } else {
+                    include( ESC_PLUGIN_DIR . 'public/views/_seed-card.php' );
+                }
              }
              echo '</div>'; // esc-seed-list
 
@@ -304,7 +309,7 @@ class ESC_Ajax {
         }
 
         // Check if enhanced template should be used
-        $use_enhanced = isset($_POST['enhanced']) && $_POST['enhanced'] === 'true';
+        $use_enhanced = isset($_POST['enhanced']) && ($_POST['enhanced'] === 'true' || $_POST['enhanced'] === true);
 
         // Get the HTML using the appropriate detail template
         ob_start();

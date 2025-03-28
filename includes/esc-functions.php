@@ -33,6 +33,7 @@ class ESC_Functions {
                 has_shortcode( $post->post_content, 'erins_seed_catalog_add_form' ) ||
                 has_shortcode( $post->post_content, 'erins_seed_catalog_add_form_modern' ) ||
                 has_shortcode( $post->post_content, 'erins_seed_catalog_view' ) ||
+                has_shortcode( $post->post_content, 'erins_seed_catalog_enhanced_view' ) ||
                 has_shortcode( $post->post_content, 'erins_seed_catalog_search' ) ||
                 has_shortcode( $post->post_content, 'erins_seed_catalog_categories' ) ||
                 has_shortcode( $post->post_content, 'erins_seed_catalog_export' )

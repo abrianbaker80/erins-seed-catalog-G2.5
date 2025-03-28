@@ -193,6 +193,18 @@ class ESC_Shortcodes {
 			true
 		);
 
+		// Localize script with AJAX data
+		wp_localize_script(
+			'esc-enhanced-cards-scripts',
+			'esc_ajax_object',
+			[
+				'ajax_url' => admin_url('admin-ajax.php'),
+				'nonce' => wp_create_nonce('esc_ajax_nonce'),
+				'loading_text' => __('Loading...', 'erins-seed-catalog'),
+				'error_text' => __('An error occurred.', 'erins-seed-catalog'),
+			]
+		);
+
 		wp_enqueue_style(
 			'esc-enhanced-cards-styles',
 			ESC_PLUGIN_URL . 'public/css/esc-enhanced-cards.css',
