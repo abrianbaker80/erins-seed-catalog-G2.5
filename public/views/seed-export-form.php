@@ -26,7 +26,7 @@ $field_categories = [
     ],
     'growing' => [
         'title' => 'Growing Information',
-        'fields' => ['growth_habit', 'days_to_maturity', 'sunlight', 'watering', 'sowing_method', 'sowing_depth', 'sowing_spacing', 'germination_temp', 'germination_rate']
+        'fields' => ['growth_habit', 'days_to_maturity', 'sunlight', 'watering', 'sowing_method', 'sowing_depth', 'sowing_spacing', 'germination_temp']
     ],
     'harvest' => [
         'title' => 'Harvest & Use',
@@ -38,11 +38,11 @@ $field_categories = [
     ],
     'storage' => [
         'title' => 'Storage & Inventory',
-        'fields' => ['seed_quantity', 'seed_treatment', 'storage_recommendations', 'seed_saving_info']
+        'fields' => ['storage_recommendations', 'seed_saving_info']
     ],
     'meta' => [
         'title' => 'Metadata',
-        'fields' => ['id', 'categories', 'date_added', 'last_updated', 'usda_zones', 'price', 'availability', 'brand', 'sku_upc', 'company_info']
+        'fields' => ['id', 'categories', 'date_added', 'last_updated', 'usda_zones', 'brand', 'sku_upc']
     ],
     'other' => [
         'title' => 'Other',

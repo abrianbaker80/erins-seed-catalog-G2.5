@@ -63,17 +63,27 @@ class ESC_Taxonomy {
 	 */
 	public static function add_default_terms() {
 		$parent_terms = [
-			'Vegetables',
-			'Herbs',
-			'Flowers',
+			'Field & Forage Crops',
 			'Fruits',
+			'Grains & Cereals',
+			'Grasses',
+			'Herbs',
+			'Ornamental Flowers',
+			'Specialty Seeds',
+			'Trees & Shrubs',
+			'Vegetables',
 		];
 
 		$child_terms = [
-			'Vegetables' => [ 'Root', 'Leafy Green', 'Legume', 'Brassica', 'Solanaceous (Nightshade)', 'Cucurbit (Gourd)', 'Allium (Onion family)' ],
-			'Herbs'      => [ 'Culinary', 'Medicinal', 'Aromatic' ],
-            'Flowers'    => [ 'Annual', 'Perennial', 'Cut Flower' ],
-            'Fruits'     => [ 'Berries', 'Melons', 'Tree Fruit (seeds)' ], // e.g., apple seeds, though less common to catalog maybe?
+			'Field & Forage Crops' => [ 'Cover Crops', 'Fiber Crops', 'Forage Crops', 'Oilseeds' ],
+			'Fruits'              => [ 'Berries', 'Melons' ],
+			'Grains & Cereals'     => [],
+			'Grasses'             => [ 'Forage Grasses', 'Lawn/Turf Grasses', 'Ornamental Grasses' ],
+			'Herbs'               => [ 'Aromatic Herbs', 'Culinary Herbs', 'Medicinal Herbs' ],
+			'Ornamental Flowers'   => [ 'Cut Flowers', 'General Garden Flowers', 'Native/Wildflower Seeds' ],
+			'Specialty Seeds'      => [ 'Sprouts/Microgreens' ],
+			'Trees & Shrubs'       => [ 'Fruit Trees/Shrubs', 'Ornamental Trees', 'Ornamental Shrubs' ],
+			'Vegetables'           => [ 'Allium (Onion family)', 'Brassica (Cabbage family)', 'Cucurbit (Gourd family)', 'Leafy Greens', 'Legumes', 'Root Crops', 'Solanaceous' ],
 		];
 
 		foreach ( $parent_terms as $term_name ) {

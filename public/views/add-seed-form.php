@@ -168,19 +168,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             <?php // Seed Packet Info Group ?>
             <fieldset class="esc-field-group">
                 <legend><?php esc_html_e('Seed Packet Information', 'erins-seed-catalog'); ?></legend>
-                <div>
-                    <label for="esc_seed_quantity"><?php esc_html_e( 'Seed Count/Weight', 'erins-seed-catalog' ); ?></label>
-                    <input type="text" id="esc_seed_quantity" name="seed_quantity" placeholder="e.g., Approx 25 seeds; 500mg">
-                </div>
-                <div>
-                    <label for="esc_seed_treatment"><?php esc_html_e( 'Seed Type/Treatment', 'erins-seed-catalog' ); ?></label>
-                    <input type="text" id="esc_seed_treatment" name="seed_treatment" placeholder="e.g., Organic, Heirloom, Hybrid, Pelleted, Treated">
-                    <p class="description"><?php esc_html_e('Comma-separated if multiple apply.', 'erins-seed-catalog'); ?></p>
-                </div>
-                <div>
-                    <label for="esc_germination_rate"><?php esc_html_e( 'Germination Rate (%)', 'erins-seed-catalog' ); ?></label>
-                    <input type="text" id="esc_germination_rate" name="germination_rate" placeholder="e.g., 85%">
-                </div>
+
                 <div>
                     <label for="esc_purchase_date"><?php esc_html_e( 'Purchase Date', 'erins-seed-catalog' ); ?></label>
                     <input type="date" id="esc_purchase_date" name="purchase_date" class="regular-text">
@@ -193,18 +181,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <label for="esc_quantity_on_hand"><?php esc_html_e( 'Quantity On Hand (Packets)', 'erins-seed-catalog' ); ?></label>
                     <input type="number" id="esc_quantity_on_hand" name="quantity_on_hand" min="0" step="1" class="small-text">
                 </div>
-                <div>
-                    <label for="esc_price"><?php esc_html_e( 'Price Paid', 'erins-seed-catalog' ); ?></label>
-                    <input type="text" id="esc_price" name="price" placeholder="e.g., $3.50">
-                </div>
-                <div>
-                    <label for="esc_availability"><?php esc_html_e( 'Availability', 'erins-seed-catalog' ); ?></label>
-                    <input type="text" id="esc_availability" name="availability" placeholder="e.g., In stock, Discontinued">
-                </div>
-                <div>
-                    <label for="esc_company_info"><?php esc_html_e( 'Company Info / Website', 'erins-seed-catalog' ); ?></label>
-                    <textarea id="esc_company_info" name="company_info"></textarea>
-                </div>
+
             </fieldset>
 
             <?php // Additional Info Group ?>
@@ -236,26 +213,17 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <label for="esc_historical_background"><?php esc_html_e( 'Historical Background', 'erins-seed-catalog' ); ?></label>
                     <textarea id="esc_historical_background" name="historical_background"></textarea>
                 </div>
-                <div>
-                    <label for="esc_recipes"><?php esc_html_e( 'Recipes / Uses', 'erins-seed-catalog' ); ?></label>
-                    <textarea id="esc_recipes" name="recipes"></textarea>
-                </div>
+
                 <div>
                     <label for="esc_companion_plants"><?php esc_html_e( 'Companion Plants', 'erins-seed-catalog' ); ?></label>
                     <textarea id="esc_companion_plants" name="companion_plants"></textarea>
                 </div>
-                <div>
-                    <label for="esc_customer_reviews"><?php esc_html_e( 'Customer Reviews Summary/Link', 'erins-seed-catalog' ); ?></label>
-                    <textarea id="esc_customer_reviews" name="customer_reviews"></textarea>
-                </div>
+
                 <div>
                     <label for="esc_regional_tips"><?php esc_html_e( 'Regional Growing Tips', 'erins-seed-catalog' ); ?></label>
                     <textarea id="esc_regional_tips" name="regional_tips"></textarea>
                 </div>
-                <div>
-                    <label for="esc_producer_info"><?php esc_html_e( 'Seed Producer Info', 'erins-seed-catalog' ); ?></label>
-                    <textarea id="esc_producer_info" name="producer_info" placeholder="e.g., Grown on our farm; Sourced from certified organic grower"></textarea>
-                </div>
+
                 <div>
                     <label for="esc_seed_saving_info"><?php esc_html_e( 'Seed Saving Info', 'erins-seed-catalog' ); ?></label>
                     <textarea id="esc_seed_saving_info" name="seed_saving_info" placeholder="e.g., Open-pollinated. Isolate by X feet. Dry seeds fully..."></textarea>

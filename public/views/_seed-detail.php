@@ -12,8 +12,8 @@ if ( ! isset( $seed ) || ! is_object( $seed ) ) {
     <div class="esc-seed-detail-header">
         <?php if ( ! empty( $seed->image_url ) ) : ?>
             <div class="esc-seed-detail-image">
-                <img src="<?php echo esc_url( $seed->image_url ); ?>" 
-                     alt="<?php echo esc_attr( $seed->seed_name ); ?><?php echo $seed->variety_name ? ' - ' . esc_attr( $seed->variety_name ) : ''; ?>" 
+                <img src="<?php echo esc_url( $seed->image_url ); ?>"
+                     alt="<?php echo esc_attr( $seed->seed_name ); ?><?php echo $seed->variety_name ? ' - ' . esc_attr( $seed->variety_name ) : ''; ?>"
                      loading="lazy">
             </div>
         <?php endif; ?>
@@ -78,15 +78,13 @@ if ( ! isset( $seed ) || ! is_object( $seed ) ) {
                 <h3><?php esc_html_e( 'Additional Information', 'erins-seed-catalog' ); ?></h3>
                 <?php ESC_Functions::display_seed_field( $seed, 'companion_plants', __( 'Companion Plants', 'erins-seed-catalog' ) ); ?>
                 <?php ESC_Functions::display_seed_field( $seed, 'historical_background', __( 'History', 'erins-seed-catalog' ) ); ?>
-                <?php ESC_Functions::display_seed_field( $seed, 'recipes', __( 'Uses & Recipes', 'erins-seed-catalog' ) ); ?>
+
             </div>
         <?php endif; ?>
 
-        <?php if ( ! empty( $seed->seed_saving_info ) || ! empty( $seed->germination_rate ) ) : ?>
+        <?php if ( ! empty( $seed->seed_saving_info ) ) : ?>
             <div class="esc-seed-detail-section">
                 <h3><?php esc_html_e( 'Seed Information', 'erins-seed-catalog' ); ?></h3>
-                <?php ESC_Functions::display_seed_field( $seed, 'seed_treatment', __( 'Seed Type/Treatment', 'erins-seed-catalog' ) ); ?>
-                <?php ESC_Functions::display_seed_field( $seed, 'germination_rate', __( 'Germination Rate', 'erins-seed-catalog' ) ); ?>
                 <?php ESC_Functions::display_seed_field( $seed, 'seed_saving_info', __( 'Seed Saving', 'erins-seed-catalog' ) ); ?>
             </div>
         <?php endif; ?>

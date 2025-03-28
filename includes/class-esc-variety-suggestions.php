@@ -40,7 +40,7 @@ class ESC_Variety_Suggestions {
 
         // Build the prompt for variety suggestions
         $prompt = sprintf(
-            "Please provide a list of 10 common varieties of %s for gardening. "
+            "Please provide a list of 15 common varieties of %s for gardening. "
             . "Return the response as a JSON array of strings containing only the variety names. "
             . "For example: [\"Variety 1\", \"Variety 2\", ...]. "
             . "Do not include any explanations or additional text outside the JSON array.",

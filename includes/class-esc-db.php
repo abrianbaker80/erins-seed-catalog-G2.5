@@ -65,25 +65,16 @@ class ESC_DB {
 			pest_disease_info TEXT NULL,
 			harvesting_tips TEXT NULL,
 			sowing_method VARCHAR(50) NULL,
-			seed_quantity VARCHAR(100) NULL,
-			seed_treatment VARCHAR(255) NULL,
 			usda_zones VARCHAR(100) NULL,
 			pollinator_info TEXT NULL,
 			container_suitability TINYINT(1) DEFAULT 0 NULL,
 			cut_flower_potential TINYINT(1) DEFAULT 0 NULL,
 			storage_recommendations TEXT NULL,
 			edible_parts VARCHAR(255) NULL,
-			price VARCHAR(50) NULL,
-			availability VARCHAR(100) NULL,
-			company_info TEXT NULL,
 			historical_background TEXT NULL,
-			recipes TEXT NULL,
 			companion_plants TEXT NULL,
-			customer_reviews TEXT NULL,
 			regional_tips TEXT NULL,
-			producer_info TEXT NULL,
 			seed_saving_info TEXT NULL,
-			germination_rate VARCHAR(50) NULL,
             notes TEXT NULL,
             purchase_date DATE NULL,
             expiration_date DATE NULL,
@@ -179,7 +170,7 @@ class ESC_DB {
 
             // Format a user-friendly error message
             $error_message = __('Could not insert seed data into the database.', 'erins-seed-catalog');
-            
+
             // Add specific error details based on MySQL error number
             switch ($db_errno) {
                 case 1146: // Table doesn't exist
@@ -685,25 +676,16 @@ class ESC_DB {
 			'pest_disease_info'       => 'text',
 			'harvesting_tips'         => 'text',
 			'sowing_method'           => 'string',
-			'seed_quantity'           => 'string',
-			'seed_treatment'          => 'string', // Could be comma-separated list
 			'usda_zones'              => 'string',
 			'pollinator_info'         => 'text',
 			'container_suitability'   => 'bool',
 			'cut_flower_potential'    => 'bool',
 			'storage_recommendations' => 'text',
 			'edible_parts'            => 'string',
-			'price'                   => 'string', // Could be formatted string
-			'availability'            => 'string',
-			'company_info'            => 'text',
 			'historical_background'   => 'text',
-			'recipes'                 => 'text',
 			'companion_plants'        => 'text',
-			'customer_reviews'        => 'text', // Or url? Kept as text for now.
 			'regional_tips'           => 'text',
-			'producer_info'           => 'text',
 			'seed_saving_info'        => 'text',
-			'germination_rate'        => 'string',
             'notes'                   => 'text',
             'purchase_date'           => 'date',
             'expiration_date'         => 'date',

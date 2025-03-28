@@ -24,76 +24,102 @@ class ESC_Gemini_API {
     }
 
     /**
-     * Get available Gemini models.
+     * Get available Gemini models for the dropdown.
      *
-     * @return array Array of available models with model ID as key and model data as value.
+     * @return array Associative array of model IDs and names.
      */
     public static function get_available_models() {
-        // Define default models with their properties
-        $default_models = [
-            'gemini-2.0-flash-lite' => [
-                'name' => __('Gemini 2.0 Flash Lite (Fastest)', 'erins-seed-catalog'),
+        $models = [
+            'gemini-1.0-pro' => [
+                'name' => 'Gemini 1.0 Pro',
                 'type' => 'free',
-                'description' => __('Fastest response, most cost-effective', 'erins-seed-catalog'),
-                'recommended' => true
+                'available' => true,
+                'recommended' => false,
             ],
-            'gemini-2.0-flash' => [
-                'name' => __('Gemini 2.0 Flash (Fast)', 'erins-seed-catalog'),
+            'gemini-1.0-pro-latest' => [
+                'name' => 'Gemini 1.0 Pro (Latest)',
                 'type' => 'free',
-                'description' => __('Fast response, good balance of speed and quality', 'erins-seed-catalog'),
-                'recommended' => false
+                'available' => true,
+                'recommended' => false,
             ],
-            'gemini-2.0-pro' => [
-                'name' => __('Gemini 2.0 Pro (Most Accurate)', 'erins-seed-catalog'),
+            'gemini-1.5-flash' => [
+                'name' => 'Gemini 1.5 Flash',
                 'type' => 'free',
-                'description' => __('Most detailed responses, slower but more accurate', 'erins-seed-catalog'),
-                'recommended' => false
+                'available' => true,
+                'recommended' => false,
             ],
             'gemini-1.5-flash-latest' => [
-                'name' => __('Gemini 1.5 Flash (Legacy)', 'erins-seed-catalog'),
-                'type' => 'legacy',
-                'description' => __('Legacy model, may be deprecated in the future', 'erins-seed-catalog'),
-                'recommended' => false
+                'name' => 'Gemini 1.5 Flash (Latest)',
+                'type' => 'free',
+                'available' => true,
+                'recommended' => true,
+            ],
+            'gemini-1.5-pro' => [
+                'name' => 'Gemini 1.5 Pro',
+                'type' => 'free',
+                'available' => true,
+                'recommended' => false,
             ],
             'gemini-1.5-pro-latest' => [
-                'name' => __('Gemini 1.5 Pro (Legacy)', 'erins-seed-catalog'),
-                'type' => 'legacy',
-                'description' => __('Legacy model, may be deprecated in the future', 'erins-seed-catalog'),
-                'recommended' => false
+                'name' => 'Gemini 1.5 Pro (Latest)',
+                'type' => 'free',
+                'available' => true,
+                'recommended' => false,
             ],
-            // Experimental models can be added here
-            'gemini-ultra-latest' => [
-                'name' => __('Gemini Ultra (Experimental)', 'erins-seed-catalog'),
+            'gemini-2.0-flash-lite' => [
+                'name' => 'Gemini 2.0 Flash Lite',
                 'type' => 'experimental',
-                'description' => __('Most powerful model, may require special access', 'erins-seed-catalog'),
-                'recommended' => false
+                'available' => true,
+                'recommended' => false,
+            ],
+            'gemini-2.0-flash-lite-latest' => [
+                'name' => 'Gemini 2.0 Flash Lite (Latest)',
+                'type' => 'experimental',
+                'available' => true,
+                'recommended' => false,
+            ],
+            'gemini-2.0-flash' => [
+                'name' => 'Gemini 2.0 Flash',
+                'type' => 'experimental',
+                'available' => true,
+                'recommended' => false,
+            ],
+            'gemini-2.0-flash-latest' => [
+                'name' => 'Gemini 2.0 Flash (Latest)',
+                'type' => 'experimental',
+                'available' => true,
+                'recommended' => false,
+            ],
+            'gemini-2.0-pro' => [
+                'name' => 'Gemini 2.0 Pro',
+                'type' => 'experimental',
+                'available' => true,
+                'recommended' => false,
+            ],
+            'gemini-2.0-pro-latest' => [
+                'name' => 'Gemini 2.0 Pro (Latest)',
+                'type' => 'experimental',
+                'available' => true,
+                'recommended' => false,
             ],
         ];
 
-        // Allow other plugins or themes to modify the list of available models
-        // This makes it easy to add new models or remove deprecated ones
-        return apply_filters('esc_gemini_available_models', $default_models);
+        return $models;
     }
 
     /**
-     * Get a simplified list of available models for the settings dropdown.
+     * Get models for dropdown in settings.
      *
-     * @return array Array of available models with model ID as key and display name as value.
+     * @return array Associative array for dropdown.
      */
     public static function get_models_for_dropdown() {
         $models = self::get_available_models();
         $dropdown_options = [];
 
         // Group models by type
-        $grouped_models = [
-            'free' => [],
-            'experimental' => [],
-            'legacy' => []
-        ];
-
+        $grouped_models = [];
         foreach ($models as $model_id => $model_data) {
-            // Skip metadata entries (those starting with _)
-            if (strpos($model_id, '_') === 0) {
+            if (!isset($model_data['name'])) {
                 continue;
             }
 
@@ -157,7 +183,6 @@ class ESC_Gemini_API {
         return $dropdown_options;
     }
 
-
     /**
      * Fetch seed information from the Gemini API.
      *
@@ -204,27 +229,28 @@ class ESC_Gemini_API {
              ]
         ];
 
+        // Construct the API endpoint URL
+        $api_url = add_query_arg(
+            'key',
+            $api_key,
+            self::get_api_endpoint()
+        );
 
-        $args = [
-            'method'      => 'POST',
-            'headers'     => [
-                'Content-Type' => 'application/json',
-            ],
-            'body'        => wp_json_encode( $request_body ),
-            'timeout'     => 60, // Increase timeout for potentially long API calls
-        ];
+        // Make the API request
+        $response = wp_remote_post(
+            $api_url,
+            [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+                'body'    => json_encode( $request_body ),
+                'timeout' => 30, // Increase timeout for potentially longer responses
+            ]
+        );
 
-        // Append API key to the dynamic endpoint URL
-        $api_url = add_query_arg( 'key', $api_key, self::get_api_endpoint() );
-
-        $response = wp_remote_post( $api_url, $args );
-
-        // Log raw response for debugging
-        error_log('Gemini API Raw Response: ' . print_r($response, true));
-
+        // Check for HTTP errors
         if ( is_wp_error( $response ) ) {
-            // WordPress HTTP API error
-            return new WP_Error( 'http_error', __( 'Error communicating with the Gemini API.', 'erins-seed-catalog' ), $response->get_error_message() );
+            return new WP_Error( 'api_http_error', __( 'Error communicating with the Gemini API.', 'erins-seed-catalog' ), $response->get_error_message() );
         }
 
         $response_code = wp_remote_retrieve_response_code( $response );
@@ -234,9 +260,6 @@ class ESC_Gemini_API {
         error_log('Gemini API Response Body: ' . $response_body);
 
         $result_data = json_decode( $response_body, true );
-
-        // Log parsed data
-        error_log('Gemini API Parsed Data: ' . print_r($result_data, true));
 
         if ( $response_code !== 200 ) {
             // Gemini API returned an error
@@ -249,13 +272,13 @@ class ESC_Gemini_API {
                  $error_message .= ' Reason: ' . $result_data['promptFeedback']['blockReason'];
                  return new WP_Error('api_error_blocked', __('Gemini API request blocked due to safety settings.', 'erins-seed-catalog'), $error_message);
             }
-
-            return new WP_Error( 'api_error', sprintf( __( 'Gemini API Error (Code: %d):', 'erins-seed-catalog' ), $response_code ), $error_message );
+            return new WP_Error(
+                'api_error',
+                sprintf( __( 'Gemini API Error (Code: %d):', 'erins-seed-catalog' ), $response_code ),
+                $error_message
+            );
         }
 
-
-        // --- Extract Content ---
-        // The exact structure depends on the Gemini API version and response format.
         // Adjust this based on actual API responses. We expect JSON directly in the 'text' part if responseMimeType worked.
         $generated_text = $result_data['candidates'][0]['content']['parts'][0]['text'] ?? null;
         error_log('Gemini API Raw Response: ' . print_r($result_data, true));
@@ -271,9 +294,8 @@ class ESC_Gemini_API {
             return new WP_Error( 'api_no_content', __( 'Gemini API did not return usable content for this seed.', 'erins-seed-catalog' ), $response_body );
         }
 
-        // Attempt to decode the JSON string returned by the API
+        // Try to parse the JSON from the response
         $extracted_data = json_decode( $generated_text, true );
-        error_log('Gemini API Parsed Data: ' . print_r($extracted_data, true));
 
         if ( json_last_error() !== JSON_ERROR_NONE ) {
             // If Gemini didn't return valid JSON despite the prompt/config
@@ -281,13 +303,13 @@ class ESC_Gemini_API {
             return new WP_Error( 'api_json_error', __( 'Could not parse the JSON data from the Gemini API response.', 'erins-seed-catalog' ), json_last_error_msg() . ' | Raw text: ' . substr($generated_text, 0, 200) . '...' );
         }
 
-        // Process the extracted data to handle string "null" values
-        $processed_data = self::process_api_data($extracted_data);
-        error_log('Gemini API Processed Data: ' . print_r($processed_data, true));
+        // Process the data to handle string "null" values and other formatting
+        $processed_data = self::process_api_data( $extracted_data );
 
-        // Return processed data, sanitization happens during DB insert/update
+        // Add suggested term IDs based on category suggestions
+        $processed_data = self::add_suggested_term_ids( $processed_data );
+
         return $processed_data;
-
     }
 
     /**
@@ -315,14 +337,10 @@ class ESC_Gemini_API {
             $prompt .= "- Item/SKU/UPC: \"{$sku_upc}\"\n";
         }
         $prompt .= "\n";
-
-        $prompt .= "Prioritize finding information for the specific Brand and Item/SKU/UPC if provided. ";
-        $prompt .= "If only Seed Name and Variety are given, find general, accurate information for that specific variety. ";
-        $prompt .= "If only Seed Name is given, find general information for that type of plant.\n\n";
-
+        $prompt .= "If Seed Name and Variety are given, find the most accurate information for that specific variety. ";
+        $prompt .= "If only Seed Name is given, find general information for that type of seed.\n\n";
         $prompt .= "Extract and return the following information ONLY in JSON format. Use snake_case for keys matching the database fields. ";
         $prompt .= "If a specific piece of information cannot be found or is not applicable, return `null` for that field's value (do not omit the key).\n\n";
-
         $prompt .= "{\n";
         $prompt .= "  \"variety_name\": \"string|null - The accurate variety name. If not specified or found, use the input variety or derive from name.\",\n";
         $prompt .= "  \"image_url\": \"string|null - Suggest one high-quality image URL (HTTPS preferred) of the mature plant, fruit/flower, or seeds, suitable for display. Provide only the direct image URL string.\",\n";
@@ -345,28 +363,18 @@ class ESC_Gemini_API {
         $prompt .= "  \"pest_disease_info\": \"string|null - Common pests/diseases and management tips, e.g., Susceptible to aphids, monitor regularly; Resistant to powdery mildew.\",\n";
         $prompt .= "  \"harvesting_tips\": \"string|null - When and how to harvest, e.g., Harvest tomatoes when fully colored; Pick beans when pods are tender.\",\n";
         $prompt .= "  \"sowing_method\": \"string|null - Indicate if best 'Direct Sow', 'Start Indoors', or 'Both'.\",\n";
-        $prompt .= "  \"seed_quantity\": \"string|null - Seeds per packet or weight, if available from brand/sku info. e.g., Approx 25 seeds; 500mg.\",\n";
-        $prompt .= "  \"seed_treatment\": \"string|null - Comma-separated list if applicable: treated (e.g., fungicide), organic, heirloom, hybrid, open-pollinated, pelleted.\",\n";
         $prompt .= "  \"usda_zones\": \"string|null - Recommended USDA Hardiness Zones, especially for perennials. e.g., Zones 3-9.\",\n";
         $prompt .= "  \"pollinator_info\": \"string|null - Is it beneficial for pollinators? e.g., Attracts bees and butterflies.\",\n";
         $prompt .= "  \"container_suitability\": \"boolean|null - True if suitable for container growing, false or null otherwise.\",\n";
         $prompt .= "  \"cut_flower_potential\": \"boolean|null - True if suitable as a cut flower, false or null otherwise.\",\n";
         $prompt .= "  \"storage_recommendations\": \"string|null - How to store harvested produce, e.g., Store carrots in cool, damp conditions.\",\n";
         $prompt .= "  \"edible_parts\": \"string|null - Which parts of the plant are edible, e.g., Leaves and stems; Fruit; Root.\",\n";
-        $prompt .= "  \"price\": \"string|null - Price if available from brand/sku info. Note this might be outdated.\",\n";
-        $prompt .= "  \"availability\": \"string|null - Availability status if available from brand/sku info. Note this might be outdated.\",\n";
-        $prompt .= "  \"company_info\": \"string|null - Contact info (website URL primarily) if available from brand/sku info.\",\n";
         $prompt .= "  \"historical_background\": \"string|null - Brief origin or history of the variety.\",\n";
-        $prompt .= "  \"recipes\": \"string|null - Suggestion for a simple recipe or use (avoid complex instructions).\",\n";
         $prompt .= "  \"companion_plants\": \"string|null - List a few suggested companion plants.\",\n";
-        $prompt .= "  \"customer_reviews\": \"string|null - Summarize common review points or provide a URL to reviews if easily found for the specific brand/sku.\",\n";
         $prompt .= "  \"regional_tips\": \"string|null - Any specific growing tips for certain regions if known.\",\n";
-        $prompt .= "  \"producer_info\": \"string|null - Information about who grows the seed, if available (e.g., grown on company farm).\",\n";
         $prompt .= "  \"seed_saving_info\": \"string|null - If open-pollinated or heirloom, provide brief seed saving guidance (isolation distance, how to collect/dry).\",\n";
-        $prompt .= "  \"germination_rate\": \"string|null - Typical or tested germination rate if published by the brand.\",\n";
-        $prompt .= "  \"esc_seed_category_suggestion\": \"string|null - Suggest one or two most relevant category names from this list: Vegetables, Herbs, Flowers, Fruits, Root, Leafy Green, Legume, Brassica, Solanaceous (Nightshade), Cucurbit (Gourd), Allium (Onion family), Culinary, Medicinal, Aromatic, Annual, Perennial, Cut Flower, Berries, Melons. Return as a simple comma-separated string, e.g., 'Vegetables, Solanaceous (Nightshade)'.\"\n";
+        $prompt .= "  \"esc_seed_category_suggestion\": \"string|null - Suggest the most relevant category and subcategory from this hierarchical list:\\n\\n- Field & Forage Crops: Cover Crops, Fiber Crops, Forage Crops, Oilseeds\\n- Fruits: Berries, Melons\\n- Grains & Cereals\\n- Grasses: Forage Grasses, Lawn/Turf Grasses, Ornamental Grasses\\n- Herbs: Aromatic Herbs, Culinary Herbs, Medicinal Herbs\\n- Ornamental Flowers: Cut Flowers, General Garden Flowers, Native/Wildflower Seeds\\n- Specialty Seeds: Sprouts/Microgreens\\n- Trees & Shrubs: Fruit Trees/Shrubs, Ornamental Trees, Ornamental Shrubs\\n- Vegetables: Allium (Onion family), Brassica (Cabbage family), Cucurbit (Gourd family), Leafy Greens, Legumes, Root Crops, Solanaceous\\n\\nReturn as a simple comma-separated string with parent category first, then subcategory if applicable, e.g., 'Vegetables, Solanaceous' or 'Herbs, Culinary Herbs'.\"\n";
         $prompt .= "}\n";
-
         return $prompt;
     }
 
@@ -415,68 +423,54 @@ class ESC_Gemini_API {
     }
 
     /**
-     * Sanitize data extracted from API response.
-     * Deprecated: Sanitization now happens in ESC_DB::add_seed/update_seed.
-     * Kept here for potential future use or reference.
+     * Add suggested term IDs based on category suggestions.
      *
-     * @param array $data Raw data from API.
-     * @return array Sanitized data.
+     * @param array $data Processed data from API.
+     * @return array Data with suggested term IDs added.
      */
-    /*
-    private static function sanitize_extracted_data( array $data ) : array {
-        $sanitized_data = [];
-        $allowed_fields = ESC_DB::get_allowed_fields(); // Use the definition from DB class
+    private static function add_suggested_term_ids(array $data): array {
+        if (empty($data['esc_seed_category_suggestion'])) {
+            return $data;
+        }
 
-        foreach ( $allowed_fields as $ field => $type ) {
-            if ( isset( $data[$field] ) ) {
-                // Apply basic sanitization based on expected type
-                // More specific sanitization might be needed depending on the field
-                 switch ( $type ) {
-                    case 'string':
-                        $sanitized_data[$field] = sanitize_text_field( $data[$field] );
-                        break;
-                    case 'text':
-                        // Allow some basic HTML? Use wp_kses_post for more control
-                        $sanitized_data[$field] = sanitize_textarea_field( $data[$field] );
-                        break;
-                    case 'int':
-                        $sanitized_data[$field] = absint( $data[$field] );
-                        break;
-                    case 'bool':
-                        // Ensure it's a proper boolean or null
-                        if ($data[$field] === null) {
-                            $sanitized_data[$field] = null;
-                        } else {
-                            $sanitized_data[$field] = filter_var( $data[$field], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
-                        }
-                        break;
-                    case 'url':
-                        $sanitized_data[$field] = esc_url_raw( $data[$field] );
-                        break;
-                    case 'date': // Dates are usually string YYYY-MM-DD
-                         if ( preg_match( "/^\d{4}-\d{2}-\d{2}$/", $data[$field] ) ) {
-                             $sanitized_data[$field] = sanitize_text_field( $data[$field] );
-                         } else {
-                             $sanitized_data[$field] = null; // Invalid format
-                         }
-                         break;
-                    default:
-                        $sanitized_data[$field] = sanitize_text_field( $data[$field] );
+        $suggested_categories = explode(',', $data['esc_seed_category_suggestion']);
+        $suggested_categories = array_map('trim', $suggested_categories);
+
+        // Get all terms
+        $all_terms = get_terms([
+            'taxonomy' => ESC_Taxonomy::TAXONOMY_NAME,
+            'hide_empty' => false,
+        ]);
+
+        if (is_wp_error($all_terms) || empty($all_terms)) {
+            return $data;
+        }
+
+        $suggested_term_ids = [];
+
+        // First, try to find exact matches
+        foreach ($suggested_categories as $category) {
+            foreach ($all_terms as $term) {
+                if (strtolower($term->name) === strtolower($category)) {
+                    $suggested_term_ids[] = $term->term_id;
+                    break;
                 }
-            } else {
-                 // Ensure field exists in output array, even if null from API
-                 $sanitized_data[$field] = null;
             }
         }
 
-         // Handle category suggestion separately if needed
-         if (isset($data['esc_seed_category_suggestion'])) {
-             $sanitized_data['esc_seed_category_suggestion'] = sanitize_text_field($data['esc_seed_category_suggestion']);
-         }
+        // If no exact matches, try partial matches
+        if (empty($suggested_term_ids)) {
+            foreach ($suggested_categories as $category) {
+                foreach ($all_terms as $term) {
+                    if (stripos($term->name, $category) !== false || stripos($category, $term->name) !== false) {
+                        $suggested_term_ids[] = $term->term_id;
+                        break;
+                    }
+                }
+            }
+        }
 
-
-        return $sanitized_data;
+        $data['suggested_term_ids'] = $suggested_term_ids;
+        return $data;
     }
-    */
-
 }
