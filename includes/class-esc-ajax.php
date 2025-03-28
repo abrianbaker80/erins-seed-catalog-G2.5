@@ -303,9 +303,16 @@ class ESC_Ajax {
             return;
         }
 
-        // Get the HTML using the detail template
+        // Check if enhanced template should be used
+        $use_enhanced = isset($_POST['enhanced']) && $_POST['enhanced'] === 'true';
+
+        // Get the HTML using the appropriate detail template
         ob_start();
-        include ESC_PLUGIN_DIR . 'public/views/_seed-detail.php';
+        if ($use_enhanced) {
+            include ESC_PLUGIN_DIR . 'public/views/_enhanced-seed-detail.php';
+        } else {
+            include ESC_PLUGIN_DIR . 'public/views/_seed-detail.php';
+        }
         $html = ob_get_clean();
 
         wp_send_json_success([

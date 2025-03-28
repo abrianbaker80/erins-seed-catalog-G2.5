@@ -19,6 +19,7 @@ class ESC_Shortcodes {
 		add_shortcode( 'erins_seed_catalog_search', [ __CLASS__, 'render_search_form' ] );
 		add_shortcode( 'erins_seed_catalog_categories', [ __CLASS__, 'render_category_list' ] );
 		add_shortcode( 'erins_seed_catalog_export', [ __CLASS__, 'render_export_form' ] );
+		add_shortcode( 'erins_seed_catalog_enhanced_view', [ __CLASS__, 'render_enhanced_catalog_view' ] );
 
 		// Add a test shortcode to verify modern form is working
 		add_shortcode( 'erins_seed_catalog_add_form_modern', [ __CLASS__, 'render_add_form_modern' ] );
@@ -167,6 +168,65 @@ class ESC_Shortcodes {
 
 		ob_start();
 		include ESC_PLUGIN_DIR . 'public/views/seed-export-form.php';
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render the [erins_seed_catalog_enhanced_view] shortcode.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string HTML output for the enhanced catalog view.
+	 */
+	public static function render_enhanced_catalog_view( $atts = [] ) {
+		// Attributes could define initial state e.g. default category, items per page
+		$atts = shortcode_atts( [
+			'per_page' => 12,
+			'category' => '', // Allow filtering by category slug/ID initially
+		], $atts, 'erins_seed_catalog_enhanced_view' );
+
+		// Enqueue enhanced card scripts and styles
+		wp_enqueue_script(
+			'esc-enhanced-cards-scripts',
+			ESC_PLUGIN_URL . 'public/js/esc-enhanced-cards.js',
+			['jquery'],
+			ESC_VERSION,
+			true
+		);
+
+		wp_enqueue_style(
+			'esc-enhanced-cards-styles',
+			ESC_PLUGIN_URL . 'public/css/esc-enhanced-cards.css',
+			['esc-public-styles'],
+			ESC_VERSION
+		);
+
+		// Enqueue dashicons if not already loaded
+		wp_enqueue_style('dashicons');
+
+		$paged = get_query_var('paged') ? absint(get_query_var('paged')) : 1;
+		$per_page = absint($atts['per_page']);
+		$initial_category_id = 0;
+
+		if (!empty($atts['category'])) {
+			$term = get_term_by('slug', $atts['category'], ESC_Taxonomy::TAXONOMY_NAME) ?: get_term_by('id', $atts['category'], ESC_Taxonomy::TAXONOMY_NAME);
+			if ($term && !is_wp_error($term)) {
+				$initial_category_id = $term->term_id;
+			}
+		}
+
+		// Initial query args
+		$args = [
+			'limit'    => $per_page,
+			'offset'   => ($paged - 1) * $per_page,
+			'category' => $initial_category_id, // Pass term_id
+		];
+
+		$seeds = ESC_DB::get_seeds($args);
+		$total_seeds = ESC_DB::count_seeds(['category' => $initial_category_id]); // Count matching initial filter
+		$total_pages = ceil($total_seeds / $per_page);
+
+		ob_start();
+		include ESC_PLUGIN_DIR . 'public/views/enhanced-seed-catalog-display.php'; // Pass $seeds, $paged, $total_pages, $initial_category_id to the view
 		return ob_get_clean();
 	}
 }

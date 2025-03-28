@@ -4,7 +4,7 @@ Tags: seed catalog, garden, vegetables, gemini api, ai, mobile first
 Requires at least: 6.0
 Tested up to: 6.7.2
 Requires PHP: 8.2
-Stable tag: 1.1.31
+Stable tag: 1.1.32
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,6 +33,7 @@ Requires a Google Gemini API key.
 5.  Use the shortcodes on your pages/posts:
     *   `[erins_seed_catalog_add_form]` - Displays the form to add a new seed.
     *   `[erins_seed_catalog_view]` - Displays the seed catalog.
+    *   `[erins_seed_catalog_enhanced_view]` - Displays the seed catalog with enhanced visual cards.
     *   `[erins_seed_catalog_search]` - Displays the search form for the catalog.
     *   `[erins_seed_catalog_categories]` - Displays the list of seed categories.
     *   `[erins_seed_catalog_export]` - Displays a form to export the catalog to Excel with column selection.
@@ -51,8 +52,10 @@ When adding a seed, enter the Seed Name (and optionally Variety, Brand, SKU). Cl
 
 *   `[erins_seed_catalog_add_form]`
 *   `[erins_seed_catalog_view]`
+*   `[erins_seed_catalog_enhanced_view]`
 *   `[erins_seed_catalog_search]`
 *   `[erins_seed_catalog_categories]`
+*   `[erins_seed_catalog_export]`
 
 == Screenshots ==
 
@@ -94,6 +97,7 @@ This update adds the ability to select different Gemini models, model testing, u
 
 = 1.0.0 =
 Initial release.
+
 
 
 
