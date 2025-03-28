@@ -49,7 +49,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 <!-- Enhanced Seed Detail Modal -->
 <div id="esc-seed-detail-modal" class="esc-modal" style="display: none;">
     <div class="esc-modal-content">
-        <span class="esc-modal-close">&times;</span>
-        <div id="esc-seed-detail-content"></div>
+        <div class="esc-modal-close">
+            <span class="dashicons dashicons-no-alt"></span>
+        </div>
+        <div id="esc-seed-detail-content">
+            <!-- Content will be loaded via AJAX -->
+            <div class="esc-loading"><?php esc_html_e('Loading...', 'erins-seed-catalog'); ?></div>
+        </div>
     </div>
 </div>
