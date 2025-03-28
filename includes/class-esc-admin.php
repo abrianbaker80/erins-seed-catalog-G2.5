@@ -221,6 +221,21 @@ class ESC_Admin {
 		$current_model = get_option( ESC_GEMINI_MODEL_OPTION, 'gemini-2.0-flash-lite' );
 		$available_models = ESC_Gemini_API::get_models_for_dropdown();
 
+		// Add some CSS for the model dropdown
+		echo '<style>
+			.esc-model-select {
+				min-width: 300px;
+				max-width: 100%;
+				margin-right: 10px;
+			}
+			.esc-model-select option[disabled] {
+				font-weight: bold;
+				color: #23282d;
+				background-color: #f0f0f0;
+				padding: 5px;
+			}
+		</style>';
+
 		echo '<select id="' . esc_attr( ESC_GEMINI_MODEL_OPTION ) . '" name="' . esc_attr( ESC_GEMINI_MODEL_OPTION ) . '" class="esc-model-select">';
 
 		foreach ( $available_models as $model_id => $model_name ) {

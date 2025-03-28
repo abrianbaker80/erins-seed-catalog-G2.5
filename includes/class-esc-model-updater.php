@@ -43,6 +43,9 @@ class ESC_Model_Updater {
 
         // Add admin notice for new models
         add_action('admin_notices', [__CLASS__, 'show_new_models_notice']);
+
+        // Force a refresh of the model cache on plugin load
+        self::clear_cache();
     }
 
     /**
@@ -485,7 +488,7 @@ Erin\'s Seed Catalog Plugin', 'erins-seed-catalog'),
      * Determine the type of a model based on its ID.
      *
      * @param string $model_id The model ID.
-     * @return string The model type (free, experimental, legacy).
+     * @return string The model type (free, advanced, experimental, legacy).
      */
     private static function determine_model_type($model_id) {
         // Default to experimental for unknown models
@@ -494,13 +497,19 @@ Erin\'s Seed Catalog Plugin', 'erins-seed-catalog'),
         // Check for known patterns
         if (strpos($model_id, 'flash-lite') !== false) {
             $type = 'free';
-        } elseif (strpos($model_id, 'flash') !== false) {
+        } elseif (strpos($model_id, 'flash') !== false && strpos($model_id, '1.5') !== false) {
             $type = 'free';
-        } elseif (strpos($model_id, 'pro') !== false) {
+        } elseif (strpos($model_id, 'pro') !== false && strpos($model_id, 'vision') !== false && strpos($model_id, '1.5') !== false) {
+            $type = 'advanced';
+        } elseif (strpos($model_id, 'pro') !== false && strpos($model_id, '1.5') !== false) {
+            $type = 'free';
+        } elseif (strpos($model_id, 'pro') !== false && strpos($model_id, 'vision') !== false) {
+            $type = 'experimental';
+        } elseif (strpos($model_id, 'pro') !== false && strpos($model_id, '1.0') !== false) {
             $type = 'free';
         } elseif (strpos($model_id, 'ultra') !== false) {
             $type = 'experimental';
-        } elseif (strpos($model_id, '1.0') !== false || strpos($model_id, '1.5') !== false) {
+        } elseif (strpos($model_id, '1.0') !== false) {
             $type = 'legacy';
         }
 

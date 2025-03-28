@@ -29,7 +29,9 @@ class ESC_Gemini_API {
      * @return array Associative array of model IDs and names.
      */
     public static function get_available_models() {
-        $models = [
+        // Apply filter to allow model updater to modify this list
+        $models = apply_filters('esc_gemini_available_models', [
+            // Free models
             'gemini-1.0-pro' => [
                 'name' => 'Gemini 1.0 Pro',
                 'type' => 'free',
@@ -66,6 +68,20 @@ class ESC_Gemini_API {
                 'available' => true,
                 'recommended' => false,
             ],
+            // Advanced models
+            'gemini-1.5-pro-vision' => [
+                'name' => 'Gemini 1.5 Pro Vision',
+                'type' => 'advanced',
+                'available' => true,
+                'recommended' => false,
+            ],
+            'gemini-1.5-pro-vision-latest' => [
+                'name' => 'Gemini 1.5 Pro Vision (Latest)',
+                'type' => 'advanced',
+                'available' => true,
+                'recommended' => false,
+            ],
+            // Experimental models
             'gemini-2.0-flash-lite' => [
                 'name' => 'Gemini 2.0 Flash Lite',
                 'type' => 'experimental',
@@ -102,7 +118,43 @@ class ESC_Gemini_API {
                 'available' => true,
                 'recommended' => false,
             ],
-        ];
+            'gemini-2.0-pro-vision' => [
+                'name' => 'Gemini 2.0 Pro Vision',
+                'type' => 'experimental',
+                'available' => true,
+                'recommended' => false,
+            ],
+            'gemini-2.0-pro-vision-latest' => [
+                'name' => 'Gemini 2.0 Pro Vision (Latest)',
+                'type' => 'experimental',
+                'available' => true,
+                'recommended' => false,
+            ],
+            'gemini-2.0-ultra' => [
+                'name' => 'Gemini 2.0 Ultra',
+                'type' => 'experimental',
+                'available' => true,
+                'recommended' => false,
+            ],
+            'gemini-2.0-ultra-latest' => [
+                'name' => 'Gemini 2.0 Ultra (Latest)',
+                'type' => 'experimental',
+                'available' => true,
+                'recommended' => false,
+            ],
+            'gemini-2.0-ultra-vision' => [
+                'name' => 'Gemini 2.0 Ultra Vision',
+                'type' => 'experimental',
+                'available' => true,
+                'recommended' => false,
+            ],
+            'gemini-2.0-ultra-vision-latest' => [
+                'name' => 'Gemini 2.0 Ultra Vision (Latest)',
+                'type' => 'experimental',
+                'available' => true,
+                'recommended' => false,
+            ],
+        ]);
 
         return $models;
     }
@@ -123,7 +175,7 @@ class ESC_Gemini_API {
                 continue;
             }
 
-            $type = isset($model_data['type']) ? $model_data['type'] : 'free';
+            $type = $model_data['type'] ?? 'free';
             if (!isset($grouped_models[$type])) {
                 $grouped_models[$type] = [];
             }
@@ -134,7 +186,27 @@ class ESC_Gemini_API {
         if (!empty($grouped_models['free'])) {
             $dropdown_options['free_header'] = __('--- Free Models ---', 'erins-seed-catalog');
             foreach ($grouped_models['free'] as $model_id => $model_data) {
-                $name = isset($model_data['name']) ? $model_data['name'] : $model_id;
+                $name = $model_data['name'] ?? $model_id;
+
+                // Check if the model is available with the current API key
+                if (isset($model_data['available']) && $model_data['available'] === false) {
+                    $name .= ' ' . __('(Not available with your API key)', 'erins-seed-catalog');
+                }
+
+                // Add a recommended indicator
+                if (isset($model_data['recommended']) && $model_data['recommended']) {
+                    $name .= ' ' . __('(Recommended)', 'erins-seed-catalog');
+                }
+
+                $dropdown_options[$model_id] = $name;
+            }
+        }
+
+        // Add advanced models
+        if (!empty($grouped_models['advanced'])) {
+            $dropdown_options['advanced_header'] = __('--- Advanced Models ---', 'erins-seed-catalog');
+            foreach ($grouped_models['advanced'] as $model_id => $model_data) {
+                $name = $model_data['name'] ?? $model_id;
 
                 // Check if the model is available with the current API key
                 if (isset($model_data['available']) && $model_data['available'] === false) {
@@ -154,11 +226,16 @@ class ESC_Gemini_API {
         if (!empty($grouped_models['experimental'])) {
             $dropdown_options['experimental_header'] = __('--- Experimental Models ---', 'erins-seed-catalog');
             foreach ($grouped_models['experimental'] as $model_id => $model_data) {
-                $name = isset($model_data['name']) ? $model_data['name'] : $model_id;
+                $name = $model_data['name'] ?? $model_id;
 
                 // Check if the model is available with the current API key
                 if (isset($model_data['available']) && $model_data['available'] === false) {
                     $name .= ' ' . __('(Not available with your API key)', 'erins-seed-catalog');
+                }
+
+                // Add a recommended indicator
+                if (isset($model_data['recommended']) && $model_data['recommended']) {
+                    $name .= ' ' . __('(Recommended)', 'erins-seed-catalog');
                 }
 
                 $dropdown_options[$model_id] = $name;
@@ -169,11 +246,16 @@ class ESC_Gemini_API {
         if (!empty($grouped_models['legacy'])) {
             $dropdown_options['legacy_header'] = __('--- Legacy Models ---', 'erins-seed-catalog');
             foreach ($grouped_models['legacy'] as $model_id => $model_data) {
-                $name = isset($model_data['name']) ? $model_data['name'] : $model_id;
+                $name = $model_data['name'] ?? $model_id;
 
                 // Check if the model is available with the current API key
                 if (isset($model_data['available']) && $model_data['available'] === false) {
                     $name .= ' ' . __('(Not available with your API key)', 'erins-seed-catalog');
+                }
+
+                // Add a recommended indicator
+                if (isset($model_data['recommended']) && $model_data['recommended']) {
+                    $name .= ' ' . __('(Recommended)', 'erins-seed-catalog');
                 }
 
                 $dropdown_options[$model_id] = $name;
