@@ -17,37 +17,51 @@
             initSearchForm();
         }
 
-        // Handle clicking on seed cards
-        $('.esc-seed-list').on('click', '.esc-seed-card', function(e) {
+        // Handle clicking on seed cards - use document to ensure it works with AJAX loaded content
+        $(document).on('click', '.esc-enhanced-catalog .esc-seed-card', function(e) {
+            console.log('Card clicked with ID: ' + $(this).data('seed-id'));
+
             // Don't trigger if clicking on a link inside the card
             if ($(e.target).closest('a').length) {
+                console.log('Link clicked, ignoring card click');
                 return;
             }
 
             const seedId = $(this).data('seed-id');
-            if (!seedId) return;
+            if (!seedId) {
+                console.log('No seed ID found');
+                return;
+            }
 
+            console.log('Opening seed detail for ID: ' + seedId);
             openSeedDetail(seedId);
         });
 
-        // Handle clicking on the view details button specifically
-        $('.esc-seed-list').on('click', '.esc-view-details', function(e) {
+        // Handle clicking on the view details button specifically - use document for AJAX loaded content
+        $(document).on('click', '.esc-enhanced-catalog .esc-view-details', function(e) {
             e.stopPropagation(); // Prevent the card click handler from firing
+            console.log('View details button clicked');
 
             const seedId = $(this).closest('.esc-seed-card').data('seed-id');
-            if (!seedId) return;
+            if (!seedId) {
+                console.log('No seed ID found for view details button');
+                return;
+            }
 
+            console.log('Opening seed detail from view button for ID: ' + seedId);
             openSeedDetail(seedId);
         });
 
-        // Close modal when clicking the close button
-        $modal.on('click', '.esc-modal-close', function() {
+        // Close modal when clicking the close button - use document for better event delegation
+        $(document).on('click', '.esc-modal-close', function() {
+            console.log('Close button clicked');
             closeModal();
         });
 
-        // Close modal when clicking outside the content
-        $modal.on('click', function(e) {
-            if ($(e.target).is($modal)) {
+        // Close modal when clicking outside the content - use document for better event delegation
+        $(document).on('click', '#esc-seed-detail-modal', function(e) {
+            if ($(e.target).is('#esc-seed-detail-modal')) {
+                console.log('Modal background clicked');
                 closeModal();
             }
         });
@@ -61,9 +75,18 @@
 
         // Function to open seed detail modal
         function openSeedDetail(seedId) {
+            console.log('Opening seed detail modal for ID: ' + seedId);
+
+            // Get fresh references to modal elements
+            const $modal = $('#esc-seed-detail-modal');
+            const $modalContent = $('#esc-seed-detail-content');
+            const $body = $('body');
+
             // Show loading state in modal
             $modalContent.html('<div class="esc-loading">' + (esc_ajax_object.loading_text || 'Loading...') + '</div>');
-            $modal.fadeIn(200).addClass('show');
+
+            // Make sure modal is visible with proper styling
+            $modal.css('display', 'block').addClass('show');
 
             // Prevent body scrolling when modal is open
             $body.css('overflow', 'hidden');
@@ -101,7 +124,16 @@
 
         // Function to close the modal
         function closeModal() {
-            $modal.removeClass('show').fadeOut(200);
+            console.log('Closing modal');
+
+            // Get fresh references to modal elements
+            const $modal = $('#esc-seed-detail-modal');
+            const $body = $('body');
+
+            // Hide modal with proper styling
+            $modal.removeClass('show').css('display', 'none');
+
+            // Restore body scrolling
             $body.css('overflow', '');
 
             // Remove seed_id from URL
@@ -199,7 +231,14 @@
 
     // Initialize when document is ready
     $(document).ready(function() {
+        console.log('Enhanced cards script initialized');
         initEnhancedCards();
+
+        // Add a test click handler to verify event binding
+        console.log('Adding test click handler to seed cards');
+        $('.esc-seed-card').on('click', function() {
+            console.log('Direct click handler fired for card: ' + $(this).data('seed-id'));
+        });
     });
 
 })(jQuery);

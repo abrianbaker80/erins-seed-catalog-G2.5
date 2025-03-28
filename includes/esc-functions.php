@@ -107,6 +107,15 @@ class ESC_Functions {
                 true // Load in footer
             );
 
+            // Enqueue Debug JS
+            wp_enqueue_script(
+                'esc-debug',
+                ESC_PLUGIN_URL . 'public/js/esc-debug.js',
+                [ 'jquery' ],
+                ESC_VERSION . '.' . time(), // Force cache refresh
+                true // Load in footer
+            );
+
             // Localize script for AJAX calls
             wp_localize_script(
                 'esc-public-scripts',
