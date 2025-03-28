@@ -241,8 +241,10 @@
                             }
 
                             // Special handling for variety name
-                            if (!response.data.variety_name && varietyName) {
+                            if (varietyName) {
+                                // If user entered a variety name, use it
                                 response.data.variety_name = varietyName;
+                                console.log('Using user-entered variety name:', varietyName);
                             }
 
                             // Populate the review form with the seed data
@@ -555,6 +557,30 @@
             addToChangesList('sowing_method', data.sowing_method);
         }
 
+        // Special handling for container_suitability - default to No if null or not true
+        if (data.container_suitability === true || data.container_suitability === 1 || data.container_suitability === '1') {
+            // Only set to Yes if explicitly true
+            $('#esc_container_suitability, #esc_container_suitability_review, #esc_container_suitability_manual').val('1');
+            addToChangesList('container_suitability', 'Yes');
+        } else {
+            // For null, false, or any other value, set to No
+            $('#esc_container_suitability, #esc_container_suitability_review, #esc_container_suitability_manual').val('0');
+            addToChangesList('container_suitability', 'No');
+        }
+        $('#esc_container_suitability, #esc_container_suitability_review, #esc_container_suitability_manual').closest('.esc-form-field').addClass('esc-ai-populated');
+
+        // Special handling for cut_flower_potential - default to No if null or not true
+        if (data.cut_flower_potential === true || data.cut_flower_potential === 1 || data.cut_flower_potential === '1') {
+            // Only set to Yes if explicitly true
+            $('#esc_cut_flower_potential, #esc_cut_flower_potential_review, #esc_cut_flower_potential_manual').val('1');
+            addToChangesList('cut_flower_potential', 'Yes');
+        } else {
+            // For null, false, or any other value, set to No
+            $('#esc_cut_flower_potential, #esc_cut_flower_potential_review, #esc_cut_flower_potential_manual').val('0');
+            addToChangesList('cut_flower_potential', 'No');
+        }
+        $('#esc_cut_flower_potential, #esc_cut_flower_potential_review, #esc_cut_flower_potential_manual').closest('.esc-form-field').addClass('esc-ai-populated');
+
         // Special handling for pollinator information
         if (data.pollinator_info) {
             $('#esc_pollinator_info').val(data.pollinator_info).trigger('input');
@@ -574,7 +600,7 @@
                 addToChangesList('categories', 'Selected category from AI');
 
                 // Add a visual indicator that this was AI-selected
-                $categorySelect.closest('.esc-form-field').find('label').append(' <span class="esc-ai-badge">AI</span>');
+                $categorySelect.closest('.esc-form-field').find('label:not(:has(.esc-ai-badge))').append(' <span class="esc-ai-badge">AI</span>');
             }
         }
 
@@ -615,17 +641,23 @@
             console.log('Setting seed name:', data.seed_name);
             $('#esc_seed_name_review').val(data.seed_name).trigger('input');
             $('#esc_seed_name_review').closest('.esc-form-field').addClass('esc-ai-populated');
-            $('#esc_seed_name_review').closest('.esc-form-field').find('label').append(' <span class="esc-ai-badge">AI</span>');
+            $('#esc_seed_name_review').closest('.esc-form-field').find('label:not(:has(.esc-ai-badge))').append(' <span class="esc-ai-badge">AI</span>');
             addToChangesList('seed_name', 'Seed name');
         }
 
         // Special handling for variety_name
         if (data.variety_name) {
-            console.log('Setting variety name:', data.variety_name);
-            $('#esc_variety_name_review').val(data.variety_name).trigger('input');
-            $('#esc_variety_name_review').closest('.esc-form-field').addClass('esc-ai-populated');
-            $('#esc_variety_name_review').closest('.esc-form-field').find('label').append(' <span class="esc-ai-badge">AI</span>');
-            addToChangesList('variety_name', 'Variety name');
+            // Make sure variety_name is not the same as seed_name (which can happen with some AI responses)
+            if (data.seed_name && data.variety_name === data.seed_name) {
+                console.log('Variety name is same as seed name, not using:', data.variety_name);
+                // Don't use the variety name if it's the same as the seed name
+            } else {
+                console.log('Setting variety name:', data.variety_name);
+                $('#esc_variety_name_review').val(data.variety_name).trigger('input');
+                $('#esc_variety_name_review').closest('.esc-form-field').addClass('esc-ai-populated');
+                $('#esc_variety_name_review').closest('.esc-form-field').find('label:not(:has(.esc-ai-badge))').append(' <span class="esc-ai-badge">AI</span>');
+                addToChangesList('variety_name', 'Variety name');
+            }
         }
 
         // Update AI status badges
