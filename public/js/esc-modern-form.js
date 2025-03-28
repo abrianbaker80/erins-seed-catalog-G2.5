@@ -240,6 +240,11 @@
                                 response.data.seed_name = seedName;
                             }
 
+                            // Special handling for variety name
+                            if (!response.data.variety_name && varietyName) {
+                                response.data.variety_name = varietyName;
+                            }
+
                             // Populate the review form with the seed data
                             populateReviewForm(response.data);
 
@@ -423,6 +428,11 @@
                     // 2. Main form fields without suffix
                     $field = $('#esc_' + key);
                 }
+
+                // Add this field to the changes list if it's not a system field
+                if (!key.startsWith('esc_') && !key.startsWith('suggested_') && key !== 'seed_name' && key !== 'variety_name') {
+                    addToChangesList(key, key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()));
+                }
                 if (!$field.length) {
                     // 3. Manual form fields
                     $field = $('#esc_' + key + '_manual');
@@ -562,6 +572,9 @@
                 $categorySelect.val(firstCategory).trigger('change');
                 $categorySelect.closest('.esc-form-field').addClass('esc-ai-populated');
                 addToChangesList('categories', 'Selected category from AI');
+
+                // Add a visual indicator that this was AI-selected
+                $categorySelect.closest('.esc-form-field').find('label').append(' <span class="esc-ai-badge">AI</span>');
             }
         }
 
@@ -595,6 +608,24 @@
                     addToChangesList('categories', 'Category from AI suggestion');
                 }
             }
+        }
+
+        // Special handling for seed_name
+        if (data.seed_name) {
+            console.log('Setting seed name:', data.seed_name);
+            $('#esc_seed_name_review').val(data.seed_name).trigger('input');
+            $('#esc_seed_name_review').closest('.esc-form-field').addClass('esc-ai-populated');
+            $('#esc_seed_name_review').closest('.esc-form-field').find('label').append(' <span class="esc-ai-badge">AI</span>');
+            addToChangesList('seed_name', 'Seed name');
+        }
+
+        // Special handling for variety_name
+        if (data.variety_name) {
+            console.log('Setting variety name:', data.variety_name);
+            $('#esc_variety_name_review').val(data.variety_name).trigger('input');
+            $('#esc_variety_name_review').closest('.esc-form-field').addClass('esc-ai-populated');
+            $('#esc_variety_name_review').closest('.esc-form-field').find('label').append(' <span class="esc-ai-badge">AI</span>');
+            addToChangesList('variety_name', 'Variety name');
         }
 
         // Update AI status badges

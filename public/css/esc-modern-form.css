@@ -1283,6 +1283,29 @@ body.wp-admin #wpbody-content {
     transform: translateY(0);
 }
 
+/* AI Badge for labels */
+.esc-ai-badge {
+    display: inline-block;
+    background-color: #27ae60;
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-left: 6px;
+    vertical-align: middle;
+    box-shadow: 0 2px 4px rgba(39, 174, 96, 0.2);
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Highlight the variety field when populated by AI */
+#esc_variety_name.has-value,
+#esc_variety_name_review.has-value {
+    border-color: #27ae60;
+    background-color: rgba(39, 174, 96, 0.03);
+    box-shadow: 0 0 0 1px rgba(39, 174, 96, 0.2);
+}
+
 .esc-ai-processed {
     margin-top: 24px;
     position: relative;

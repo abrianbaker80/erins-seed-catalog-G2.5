@@ -234,6 +234,30 @@ if ( ! defined( 'ABSPATH' ) ) {
                             </div>
 
                             <div class="esc-form-row">
+                                <div class="esc-form-field">
+                                    <label for="esc_fruit_info"><?php esc_html_e('Fruit/Flower Info', 'erins-seed-catalog'); ?></label>
+                                    <input type="text" id="esc_fruit_info" name="fruit_info" placeholder="e.g., 6-8 oz red globe tomato">
+                                </div>
+
+                                <div class="esc-form-field">
+                                    <label for="esc_flavor_profile"><?php esc_html_e('Flavor Profile', 'erins-seed-catalog'); ?></label>
+                                    <input type="text" id="esc_flavor_profile" name="flavor_profile" placeholder="e.g., Sweet and tangy">
+                                </div>
+                            </div>
+
+                            <div class="esc-form-row">
+                                <div class="esc-form-field">
+                                    <label for="esc_scent"><?php esc_html_e('Scent', 'erins-seed-catalog'); ?></label>
+                                    <input type="text" id="esc_scent" name="scent" placeholder="e.g., Strong lavender scent">
+                                </div>
+
+                                <div class="esc-form-field">
+                                    <label for="esc_bloom_time"><?php esc_html_e('Bloom Time', 'erins-seed-catalog'); ?></label>
+                                    <input type="text" id="esc_bloom_time" name="bloom_time" placeholder="e.g., Early Summer to Fall">
+                                </div>
+                            </div>
+
+                            <div class="esc-form-row">
                                 <div class="esc-form-field esc-full-width">
                                     <label for="esc_special_characteristics"><?php esc_html_e('Special Characteristics', 'erins-seed-catalog'); ?></label>
                                     <textarea id="esc_special_characteristics" name="special_characteristics" placeholder="e.g., Disease resistant (VFN), Heat tolerant, Heirloom"></textarea>
@@ -274,6 +298,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 
                             <div class="esc-form-row">
                                 <div class="esc-form-field">
+                                    <label for="esc_sowing_spacing"><?php esc_html_e('Sowing Spacing', 'erins-seed-catalog'); ?></label>
+                                    <input type="text" id="esc_sowing_spacing" name="sowing_spacing" placeholder="e.g., 18-24 inches apart">
+                                </div>
+
+                                <div class="esc-form-field">
+                                    <label for="esc_germination_temp"><?php esc_html_e('Germination Temperature', 'erins-seed-catalog'); ?></label>
+                                    <input type="text" id="esc_germination_temp" name="germination_temp" placeholder="e.g., 70-85°F (21-29°C)">
+                                </div>
+                            </div>
+
+                            <div class="esc-form-row">
+                                <div class="esc-form-field">
                                     <label for="esc_sunlight"><?php esc_html_e('Sunlight Requirements', 'erins-seed-catalog'); ?></label>
                                     <div class="esc-toggle-group">
                                         <label class="esc-toggle">
@@ -294,6 +330,30 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <div class="esc-form-field">
                                     <label for="esc_watering"><?php esc_html_e('Watering Needs', 'erins-seed-catalog'); ?></label>
                                     <textarea id="esc_watering" name="watering" placeholder="e.g., Keep consistently moist"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="esc-form-row">
+                                <div class="esc-form-field">
+                                    <label for="esc_fertilizer"><?php esc_html_e('Fertilizer', 'erins-seed-catalog'); ?></label>
+                                    <textarea id="esc_fertilizer" name="fertilizer" placeholder="e.g., Balanced fertilizer at planting"></textarea>
+                                </div>
+
+                                <div class="esc-form-field">
+                                    <label for="esc_pest_disease_info"><?php esc_html_e('Pest & Disease Info', 'erins-seed-catalog'); ?></label>
+                                    <textarea id="esc_pest_disease_info" name="pest_disease_info" placeholder="e.g., Susceptible to aphids, monitor regularly"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="esc-form-row">
+                                <div class="esc-form-field">
+                                    <label for="esc_harvesting_tips"><?php esc_html_e('Harvesting Tips', 'erins-seed-catalog'); ?></label>
+                                    <textarea id="esc_harvesting_tips" name="harvesting_tips" placeholder="e.g., Harvest when fruits are fully colored"></textarea>
+                                </div>
+
+                                <div class="esc-form-field">
+                                    <label for="esc_storage_recommendations"><?php esc_html_e('Storage Recommendations', 'erins-seed-catalog'); ?></label>
+                                    <textarea id="esc_storage_recommendations" name="storage_recommendations" placeholder="e.g., Store in cool, dry conditions"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -319,6 +379,57 @@ if ( ! defined( 'ABSPATH' ) ) {
                                 <div class="esc-form-field">
                                     <label for="esc_pollinator_info"><?php esc_html_e('Pollinator Information', 'erins-seed-catalog'); ?></label>
                                     <textarea id="esc_pollinator_info" name="pollinator_info" placeholder="e.g., Attracts bees and butterflies"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="esc-form-row">
+                                <div class="esc-form-field">
+                                    <label for="esc_container_suitability"><?php esc_html_e('Container Suitability', 'erins-seed-catalog'); ?></label>
+                                    <select id="esc_container_suitability" name="container_suitability" class="esc-select">
+                                        <option value=""><?php esc_html_e('-- Select --', 'erins-seed-catalog'); ?></option>
+                                        <option value="1"><?php esc_html_e('Yes', 'erins-seed-catalog'); ?></option>
+                                        <option value="0"><?php esc_html_e('No', 'erins-seed-catalog'); ?></option>
+                                    </select>
+                                </div>
+
+                                <div class="esc-form-field">
+                                    <label for="esc_cut_flower_potential"><?php esc_html_e('Cut Flower Potential', 'erins-seed-catalog'); ?></label>
+                                    <select id="esc_cut_flower_potential" name="cut_flower_potential" class="esc-select">
+                                        <option value=""><?php esc_html_e('-- Select --', 'erins-seed-catalog'); ?></option>
+                                        <option value="1"><?php esc_html_e('Yes', 'erins-seed-catalog'); ?></option>
+                                        <option value="0"><?php esc_html_e('No', 'erins-seed-catalog'); ?></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="esc-form-row">
+                                <div class="esc-form-field">
+                                    <label for="esc_edible_parts"><?php esc_html_e('Edible Parts', 'erins-seed-catalog'); ?></label>
+                                    <input type="text" id="esc_edible_parts" name="edible_parts" placeholder="e.g., Leaves and stems; Fruit; Root">
+                                </div>
+
+                                <div class="esc-form-field">
+                                    <label for="esc_historical_background"><?php esc_html_e('Historical Background', 'erins-seed-catalog'); ?></label>
+                                    <textarea id="esc_historical_background" name="historical_background" placeholder="e.g., Brief origin or history of the variety"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="esc-form-row">
+                                <div class="esc-form-field">
+                                    <label for="esc_companion_plants"><?php esc_html_e('Companion Plants', 'erins-seed-catalog'); ?></label>
+                                    <textarea id="esc_companion_plants" name="companion_plants" placeholder="e.g., List of suggested companion plants"></textarea>
+                                </div>
+
+                                <div class="esc-form-field">
+                                    <label for="esc_regional_tips"><?php esc_html_e('Regional Tips', 'erins-seed-catalog'); ?></label>
+                                    <textarea id="esc_regional_tips" name="regional_tips" placeholder="e.g., Growing tips for specific regions"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="esc-form-row">
+                                <div class="esc-form-field esc-full-width">
+                                    <label for="esc_seed_saving_info"><?php esc_html_e('Seed Saving Info', 'erins-seed-catalog'); ?></label>
+                                    <textarea id="esc_seed_saving_info" name="seed_saving_info" placeholder="e.g., Isolation distance, how to collect/dry seeds"></textarea>
                                 </div>
                             </div>
 
