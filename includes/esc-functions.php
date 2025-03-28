@@ -54,6 +54,14 @@ class ESC_Functions {
                 ESC_VERSION . '.' . time() // Add timestamp to force cache refresh
             );
 
+            // Enqueue Scroll Enhancements CSS
+            wp_enqueue_style(
+                'esc-scroll-enhancements',
+                ESC_PLUGIN_URL . 'public/css/esc-scroll-enhancements.css',
+                ['esc-public-styles', 'esc-modern-form'],
+                ESC_VERSION
+            );
+
             // Enqueue Public JS
             wp_enqueue_script(
                 'esc-public-scripts',
@@ -77,6 +85,15 @@ class ESC_Functions {
                 'esc-modern-form',
                 ESC_PLUGIN_URL . 'public/js/esc-modern-form.js',
                 [ 'jquery', 'esc-public-scripts', 'esc-variety-suggestions' ],
+                ESC_VERSION,
+                true // Load in footer
+            );
+
+            // Enqueue Scroll Enhancements JS
+            wp_enqueue_script(
+                'esc-scroll-enhancements',
+                ESC_PLUGIN_URL . 'public/js/esc-scroll-enhancements.js',
+                [ 'jquery', 'esc-modern-form' ],
                 ESC_VERSION,
                 true // Load in footer
             );

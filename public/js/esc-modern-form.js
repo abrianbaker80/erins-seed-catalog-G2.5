@@ -132,18 +132,37 @@
         switch(phase) {
             case 'ai-input':
                 $('#esc-phase-ai-input').show();
+                // Scroll to the top of the form
+                scrollToElement('#esc-add-seed-form-container', 100);
                 break;
             case 'review-edit':
                 $('#esc-phase-review-edit').show();
                 // Ensure form is properly initialized
                 initReviewPhase();
+                // Scroll to the review phase with a slight delay to ensure it's visible
+                setTimeout(function() {
+                    scrollToElement('#esc-phase-review-edit', 80);
+                }, 200);
                 break;
             case 'manual-entry':
                 $('#esc-phase-manual-entry').show();
+                // Scroll to the manual entry phase
+                scrollToElement('#esc-phase-manual-entry', 100);
                 break;
         }
 
         currentPhase = phase;
+    }
+
+    // Helper function to scroll to an element
+    function scrollToElement(selector, offset = 0) {
+        const $element = $(selector);
+        if ($element.length) {
+            const scrollPosition = $element.offset().top - offset;
+            $('html, body').animate({
+                scrollTop: scrollPosition
+            }, 600, 'swing');
+        }
     }
 
     // Initialize the review phase
@@ -175,6 +194,9 @@
         // Show loading state
         showAIStatus('loading');
         startLoadingStageAnimation();
+
+        // Scroll to the loading status
+        scrollToElement('.esc-ai-status-container', 120);
 
         // Log the request parameters
         console.log('Sending AI request for:', { seed_name: seedName, variety_name: varietyName });
@@ -267,6 +289,13 @@
 
         // Show the requested status
         $('.esc-ai-' + status).show();
+
+        // If showing error or success, scroll to make it visible
+        if (status === 'error' || status === 'success') {
+            setTimeout(function() {
+                scrollToElement('.esc-ai-status-container', 120);
+            }, 100);
+        }
     }
 
     // Start loading stage animation
@@ -303,6 +332,11 @@
         // Make sure the review phase is visible
         $('#esc-phase-review-edit').show();
         $('.esc-review-mode').show();
+
+        // Scroll to the review phase with a slight delay to ensure it's visible
+        setTimeout(function() {
+            scrollToElement('#esc-phase-review-edit', 80);
+        }, 300);
 
         // Reset form - with error checking
         // The form element is the parent form that contains all phases

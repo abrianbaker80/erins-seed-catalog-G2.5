@@ -2,6 +2,16 @@
  * Modern Form Styles for Erin's Seed Catalog
  */
 
+/* Enable smooth scrolling for the entire page */
+html {
+    scroll-behavior: smooth;
+}
+
+/* For JavaScript-based smooth scrolling (more compatible) */
+html.smooth-scroll {
+    scroll-behavior: auto !important; /* Let JS handle it */
+}
+
 /* Base Form Styles */
 .esc-modern-form {
     /* Use !important to override theme styles */
@@ -13,6 +23,7 @@
     background-color: #f7fafc;
     border-radius: 12px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.03);
+    scroll-margin-top: 80px; /* Adds margin when scrolling to this element */
 }
 
 /* Wider form for larger screens */

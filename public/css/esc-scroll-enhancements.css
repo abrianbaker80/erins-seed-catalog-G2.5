@@ -1,0 +1,91 @@
+/**
+ * Scroll Enhancements for Erin's Seed Catalog
+ */
+
+/* Add scroll margin to elements we scroll to */
+.esc-phase,
+.esc-form-card,
+.esc-ai-status-container,
+#esc-phase-review-edit,
+#esc-phase-manual-entry,
+#esc-phase-ai-input,
+.esc-ai-result-summary,
+.esc-ai-loading,
+.esc-ai-success,
+.esc-ai-error {
+    scroll-margin-top: 80px;
+}
+
+/* Smooth scroll indicator */
+.esc-scroll-indicator {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background-color: #4299e1;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(66, 153, 225, 0.3);
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.esc-scroll-indicator.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.esc-scroll-indicator:hover {
+    background-color: #3182ce;
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(66, 153, 225, 0.4);
+}
+
+/* Scroll progress indicator */
+.esc-scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 4px;
+    background: linear-gradient(to right, #4299e1, #3182ce);
+    z-index: 1000;
+    transition: width 0.1s ease;
+}
+
+/* Highlight the section being scrolled to */
+@keyframes highlight-section {
+    0% { box-shadow: 0 0 0 rgba(66, 153, 225, 0); }
+    50% { box-shadow: 0 0 20px rgba(66, 153, 225, 0.3); }
+    100% { box-shadow: 0 0 0 rgba(66, 153, 225, 0); }
+}
+
+.esc-highlight-section {
+    animation: highlight-section 1s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .esc-phase,
+    .esc-form-card,
+    .esc-ai-status-container,
+    #esc-phase-review-edit,
+    #esc-phase-manual-entry,
+    #esc-phase-ai-input {
+        scroll-margin-top: 60px;
+    }
+    
+    .esc-scroll-indicator {
+        bottom: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+    }
+}
