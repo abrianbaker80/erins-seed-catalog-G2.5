@@ -62,6 +62,14 @@ class ESC_Functions {
                 ESC_VERSION
             );
 
+            // Enqueue Seed Variety Layout CSS
+            wp_enqueue_style(
+                'esc-seed-variety-layout',
+                ESC_PLUGIN_URL . 'public/css/esc-seed-variety-layout.css',
+                ['esc-public-styles', 'esc-modern-form'],
+                ESC_VERSION
+            );
+
             // Enqueue Public JS
             wp_enqueue_script(
                 'esc-public-scripts',

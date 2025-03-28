@@ -1,0 +1,69 @@
+/**
+ * Seed Type and Variety Layout Styles
+ */
+
+/* Seed Type and Variety Row */
+.esc-seed-variety-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.esc-seed-field,
+.esc-variety-field {
+    flex: 1;
+    min-width: 250px;
+    position: relative;
+}
+
+/* Ensure the variety dropdown appears correctly */
+.esc-variety-field {
+    position: relative;
+}
+
+.esc-variety-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 5px;
+}
+
+/* Media queries for responsive layout */
+@media (min-width: 1600px) {
+    .esc-seed-variety-row {
+        width: 100%;
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+        gap: 30px;
+    }
+}
+
+@media (min-width: 2560px) {
+    .esc-seed-variety-row {
+        max-width: 1400px;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .esc-seed-variety-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .esc-seed-field,
+    .esc-variety-field {
+        width: 100%;
+    }
+}

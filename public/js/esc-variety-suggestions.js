@@ -17,9 +17,26 @@
         // Add event listeners
         $('#esc_seed_name').on('keyup', handleSeedNameKeyup);
         $('#esc_seed_name').on('change', handleSeedNameChange);
+        $('#esc_seed_name').on('blur', convertToTitleCase);
 
         // Setup variety field behavior
         setupVarietyField();
+    }
+
+    // Convert seed name to Title Case
+    function convertToTitleCase() {
+        const seedNameInput = $('#esc_seed_name');
+        const seedName = seedNameInput.val().trim();
+
+        if (seedName) {
+            // Convert to title case (capitalize first letter of each word)
+            const titleCaseName = seedName.replace(/\w\S*/g, function(txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+
+            // Set the value back to the input
+            seedNameInput.val(titleCaseName);
+        }
     }
 
     // Handle keyup event on seed name field
@@ -42,6 +59,9 @@
 
     // Handle change event on seed name field
     function handleSeedNameChange() {
+        // Convert to title case first
+        convertToTitleCase();
+
         const seedType = $(this).val().trim();
 
         if (seedType.length >= 3) {
