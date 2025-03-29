@@ -1,0 +1,103 @@
+/**
+ * Custom CSS fixes for AI Results Display
+ */
+
+/* Fix text alignment in seed type and variety fields */
+.esc-seed-field input,
+.esc-variety-field input,
+.esc-input-with-confidence input {
+    padding-top: 12px !important;
+}
+
+/* Remove green vertical lines */
+.esc-ai-processed::after {
+    display: none !important;
+}
+
+.esc-ai-processed input,
+.esc-ai-processed textarea,
+.esc-ai-processed select {
+    border-left: none !important;
+}
+
+/* Improve font for AI search results */
+.esc-ai-result-summary,
+.esc-ai-result-text,
+.esc-form-card,
+.esc-form-field label,
+.esc-form-field input,
+.esc-form-field textarea,
+.esc-form-field select,
+.esc-toggle-label {
+    font-family: 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif !important;
+}
+
+/* Reduce spacing between rows */
+.esc-form-row {
+    margin-bottom: 15px !important;
+}
+
+/* Convert Sun Requirements to text display like Sowing Spacing */
+.esc-toggle-group {
+    display: none !important;
+}
+
+.esc-sunlight-text {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+/* Seed Category styling */
+#esc_seed_category {
+    display: none !important;
+}
+
+.esc-seed-category-text {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+/* Rename form field label */
+.esc-form-field label[for="esc_seed_category"]::after {
+    content: "";
+}
+
+.esc-form-field label[for="esc_seed_category"]::before {
+    content: "Seed Category";
+}
+
+/* Submit button styling */
+#esc-submit-seed {
+    background-color: #2ea44f;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+}
+
+#esc-submit-seed:hover {
+    background-color: #22863a;
+}
+
+/* Confirmation message styling */
+.esc-confirmation-message {
+    display: none;
+    padding: 15px;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
+    margin-top: 20px;
+    text-align: center;
+    font-weight: bold;
+}

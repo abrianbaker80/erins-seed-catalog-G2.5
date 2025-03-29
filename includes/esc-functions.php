@@ -71,6 +71,14 @@ class ESC_Functions {
                 ESC_VERSION
             );
 
+            // Enqueue AI Results Fixes CSS
+            wp_enqueue_style(
+                'esc-ai-results-fixes',
+                ESC_PLUGIN_URL . 'public/css/esc-ai-results-fixes.css',
+                ['esc-public-styles', 'esc-modern-form', 'esc-seed-variety-layout'],
+                ESC_VERSION . '.' . time() // Add timestamp to force cache refresh
+            );
+
             // Enqueue Public JS
             wp_enqueue_script(
                 'esc-public-scripts',
@@ -112,6 +120,15 @@ class ESC_Functions {
                 'esc-debug',
                 ESC_PLUGIN_URL . 'public/js/esc-debug.js',
                 [ 'jquery' ],
+                ESC_VERSION . '.' . time(), // Force cache refresh
+                true // Load in footer
+            );
+
+            // Enqueue AI Results Fixes JS
+            wp_enqueue_script(
+                'esc-ai-results-fixes',
+                ESC_PLUGIN_URL . 'public/js/esc-ai-results-fixes.js',
+                [ 'jquery', 'esc-public-scripts', 'esc-modern-form' ],
                 ESC_VERSION . '.' . time(), // Force cache refresh
                 true // Load in footer
             );
