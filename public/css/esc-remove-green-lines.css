@@ -44,18 +44,7 @@
     background-image: none !important;
 }
 
-/* Remove all green borders and backgrounds */
-.esc-ai-processed,
-.esc-ai-populated,
-.esc-form-field,
-.esc-seed-field,
-.esc-variety-field,
-.esc-description,
-.esc-image {
-    border-left: none !important;
-    background-image: none !important;
-    background-color: transparent !important;
-}
+
 
 /* Target the specific elements in the screenshot */
 [class*="esc-"]::after {
