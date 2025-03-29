@@ -79,6 +79,30 @@ class ESC_Functions {
                 ESC_VERSION . '.' . time() // Add timestamp to force cache refresh
             );
 
+            // Enqueue Initial Form Fixes CSS
+            wp_enqueue_style(
+                'esc-initial-form-fixes',
+                ESC_PLUGIN_URL . 'public/css/esc-initial-form-fixes.css',
+                ['esc-public-styles', 'esc-modern-form', 'esc-seed-variety-layout', 'esc-ai-results-fixes'],
+                ESC_VERSION . '.' . time() // Add timestamp to force cache refresh
+            );
+
+            // Enqueue Input Alignment CSS
+            wp_enqueue_style(
+                'esc-input-alignment',
+                ESC_PLUGIN_URL . 'public/css/esc-input-alignment.css',
+                ['esc-public-styles', 'esc-modern-form', 'esc-seed-variety-layout', 'esc-ai-results-fixes', 'esc-initial-form-fixes'],
+                ESC_VERSION . '.' . time() // Add timestamp to force cache refresh
+            );
+
+            // Enqueue Input Fixes Important CSS (with highest priority)
+            wp_enqueue_style(
+                'esc-input-fixes-important',
+                ESC_PLUGIN_URL . 'public/css/esc-input-fixes-important.css',
+                ['esc-public-styles', 'esc-modern-form', 'esc-seed-variety-layout', 'esc-ai-results-fixes', 'esc-initial-form-fixes', 'esc-input-alignment'],
+                ESC_VERSION . '.' . time() // Add timestamp to force cache refresh
+            );
+
             // Enqueue Public JS
             wp_enqueue_script(
                 'esc-public-scripts',
@@ -129,6 +153,24 @@ class ESC_Functions {
                 'esc-ai-results-fixes',
                 ESC_PLUGIN_URL . 'public/js/esc-ai-results-fixes.js',
                 [ 'jquery', 'esc-public-scripts', 'esc-modern-form' ],
+                ESC_VERSION . '.' . time(), // Force cache refresh
+                true // Load in footer
+            );
+
+            // Enqueue Input Alignment JS
+            wp_enqueue_script(
+                'esc-input-alignment',
+                ESC_PLUGIN_URL . 'public/js/esc-input-alignment.js',
+                [ 'jquery', 'esc-public-scripts', 'esc-modern-form', 'esc-ai-results-fixes' ],
+                ESC_VERSION . '.' . time(), // Force cache refresh
+                true // Load in footer
+            );
+
+            // Enqueue Direct Input Fixes JS
+            wp_enqueue_script(
+                'esc-direct-input-fixes',
+                ESC_PLUGIN_URL . 'public/js/esc-direct-input-fixes.js',
+                [ 'jquery', 'esc-public-scripts', 'esc-modern-form', 'esc-ai-results-fixes', 'esc-input-alignment' ],
                 ESC_VERSION . '.' . time(), // Force cache refresh
                 true // Load in footer
             );

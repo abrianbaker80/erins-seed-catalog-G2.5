@@ -5,8 +5,30 @@
 /* Fix text alignment in seed type and variety fields */
 .esc-seed-field input,
 .esc-variety-field input,
-.esc-input-with-confidence input {
-    padding-top: 12px !important;
+.esc-input-with-confidence input,
+#esc_seed_name,
+#esc_variety_name,
+input[id^="esc_seed_name"],
+input[id^="esc_variety_name"] {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    height: 40px !important;
+}
+
+/* Fix for floating labels if present */
+.esc-floating-label input {
+    height: 40px !important;
+    line-height: 40px !important;
+    padding: 0 10px !important;
+}
+
+/* Fix for AI badge positioning */
+.esc-ai-badge {
+    vertical-align: middle !important;
+    position: relative !important;
+    top: -1px !important;
 }
 
 /* Remove green vertical lines */
@@ -28,8 +50,22 @@
 .esc-form-field input,
 .esc-form-field textarea,
 .esc-form-field select,
-.esc-toggle-label {
+.esc-toggle-label,
+.esc-seed-field input,
+.esc-variety-field input,
+.esc-seed-variety-row input,
+.esc-modern-form input {
     font-family: 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif !important;
+    font-size: 15px !important;
+}
+
+/* Additional styling for input fields */
+.esc-seed-variety-row input,
+.esc-seed-field input,
+.esc-variety-field input {
+    padding: 8px 12px !important;
+    box-sizing: border-box !important;
+    line-height: 1.5 !important;
 }
 
 /* Reduce spacing between rows */

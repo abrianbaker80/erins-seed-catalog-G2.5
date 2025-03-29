@@ -4,7 +4,7 @@ Tags: seed catalog, garden, vegetables, gemini api, ai, mobile first
 Requires at least: 6.0
 Tested up to: 6.7.2
 Requires PHP: 8.2
-Stable tag: 1.1.43
+Stable tag: 1.1.44
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -97,6 +97,7 @@ This update adds the ability to select different Gemini models, model testing, u
 
 = 1.0.0 =
 Initial release.
+
 
 
 
