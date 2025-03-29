@@ -1243,22 +1243,18 @@ body.wp-admin #wpbody-content {
 }
 
 .esc-ai-populated::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background-color: #27ae60;
-    border-radius: 0 4px 4px 0;
-    box-shadow: 0 2px 8px rgba(39, 174, 96, 0.2);
+    content: none;
+    display: none;
+    width: 0;
+    height: 0;
+    background-color: transparent;
 }
 
 .esc-ai-populated input,
 .esc-ai-populated textarea,
 .esc-ai-populated select {
-    border-left: 4px solid #27ae60;
-    background-color: rgba(39, 174, 96, 0.03);
+    border-left: none;
+    background-color: transparent;
 }
 
 .esc-ai-populated::before {
@@ -1312,22 +1308,18 @@ body.wp-admin #wpbody-content {
 }
 
 .esc-ai-processed::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background-color: #95a5a6; /* Gray color for null values */
-    border-radius: 0 4px 4px 0;
-    box-shadow: 0 2px 8px rgba(149, 165, 166, 0.2);
+    content: none;
+    display: none;
+    width: 0;
+    height: 0;
+    background-color: transparent;
 }
 
 .esc-ai-processed input,
 .esc-ai-processed textarea,
 .esc-ai-processed select {
-    border-left: 4px solid #95a5a6;
-    background-color: rgba(149, 165, 166, 0.03);
+    border-left: none;
+    background-color: transparent;
 }
 
 .esc-ai-processed::before {

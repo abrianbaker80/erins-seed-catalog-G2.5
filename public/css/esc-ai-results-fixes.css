@@ -32,14 +32,61 @@ input[id^="esc_variety_name"] {
 }
 
 /* Remove green vertical lines */
-.esc-ai-processed::after {
+.esc-ai-processed::after,
+.esc-ai-populated::after {
     display: none !important;
 }
 
 .esc-ai-processed input,
 .esc-ai-processed textarea,
-.esc-ai-processed select {
+.esc-ai-processed select,
+.esc-ai-populated input,
+.esc-ai-populated textarea,
+.esc-ai-populated select {
     border-left: none !important;
+}
+
+/* Remove all vertical lines from any element */
+[class*="esc-"]::after {
+    width: 0 !important;
+    background-color: transparent !important;
+}
+
+/* Remove all left borders from inputs */
+[class*="esc-"] input,
+[class*="esc-"] textarea,
+[class*="esc-"] select {
+    border-left-width: 0 !important;
+}
+
+/* Direct override for the specific elements in the screenshot */
+.esc-form-field::after,
+.esc-form-field::before,
+.esc-seed-field::after,
+.esc-seed-field::before,
+.esc-variety-field::after,
+.esc-variety-field::before,
+.esc-description::after,
+.esc-description::before,
+.esc-image::after,
+.esc-image::before {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background-color: transparent !important;
+    border: none !important;
+    content: none !important;
+}
+
+/* Remove all green borders and backgrounds */
+.esc-form-field,
+.esc-seed-field,
+.esc-variety-field,
+.esc-description,
+.esc-image {
+    border-left: none !important;
+    background-image: none !important;
+    background-color: transparent !important;
 }
 
 /* Improve font for AI search results */
