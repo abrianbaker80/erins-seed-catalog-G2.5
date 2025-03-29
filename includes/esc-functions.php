@@ -111,6 +111,14 @@ class ESC_Functions {
                 ESC_VERSION . '.' . time() // Add timestamp to force cache refresh
             );
 
+            // Enqueue Enhanced AI Results CSS (with highest priority)
+            wp_enqueue_style(
+                'esc-ai-results-enhanced',
+                ESC_PLUGIN_URL . 'public/css/esc-ai-results-enhanced.css',
+                ['esc-public-styles', 'esc-modern-form', 'esc-seed-variety-layout', 'esc-ai-results-fixes', 'esc-initial-form-fixes', 'esc-input-alignment', 'esc-input-fixes-important', 'esc-remove-green-lines'],
+                ESC_VERSION . '.' . time() // Add timestamp to force cache refresh
+            );
+
             // Enqueue Public JS
             wp_enqueue_script(
                 'esc-public-scripts',
@@ -188,6 +196,15 @@ class ESC_Functions {
                 'esc-remove-green-lines',
                 ESC_PLUGIN_URL . 'public/js/esc-remove-green-lines.js',
                 [ 'jquery', 'esc-public-scripts', 'esc-modern-form', 'esc-ai-results-fixes', 'esc-input-alignment', 'esc-direct-input-fixes' ],
+                ESC_VERSION . '.' . time(), // Force cache refresh
+                true // Load in footer
+            );
+
+            // Enqueue Enhanced AI Results JS
+            wp_enqueue_script(
+                'esc-ai-results-enhanced',
+                ESC_PLUGIN_URL . 'public/js/esc-ai-results-enhanced.js',
+                [ 'jquery', 'esc-public-scripts', 'esc-modern-form', 'esc-ai-results-fixes', 'esc-input-alignment', 'esc-direct-input-fixes', 'esc-remove-green-lines' ],
                 ESC_VERSION . '.' . time(), // Force cache refresh
                 true // Load in footer
             );

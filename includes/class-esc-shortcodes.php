@@ -23,6 +23,9 @@ class ESC_Shortcodes {
 
 		// Add a test shortcode to verify modern form is working
 		add_shortcode( 'erins_seed_catalog_add_form_modern', [ __CLASS__, 'render_add_form_modern' ] );
+
+		// Add a test shortcode for the enhanced AI results page
+		add_shortcode( 'erins_seed_catalog_test_ai_results', [ __CLASS__, 'render_test_ai_results' ] );
 	}
 
 	/**
@@ -239,6 +242,22 @@ class ESC_Shortcodes {
 
 		ob_start();
 		include ESC_PLUGIN_DIR . 'public/views/enhanced-seed-catalog-display.php'; // Pass $seeds, $paged, $total_pages, $initial_category_id to the view
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render the [erins_seed_catalog_test_ai_results] shortcode.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string HTML output for the test AI results page.
+	 */
+	public static function render_test_ai_results( $atts = [] ) {
+		// Enqueue enhanced AI results CSS and JS
+		wp_enqueue_style('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/css/esc-ai-results-enhanced.css', [], ESC_VERSION . '.' . time());
+		wp_enqueue_script('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/js/esc-ai-results-enhanced.js', ['jquery'], ESC_VERSION . '.' . time(), true);
+
+		ob_start();
+		include ESC_PLUGIN_DIR . 'public/views/test-ai-results.php';
 		return ob_get_clean();
 	}
 }

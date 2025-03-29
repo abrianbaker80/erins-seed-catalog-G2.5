@@ -3,6 +3,10 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
+
+// Enqueue enhanced AI results CSS and JS
+wp_enqueue_style('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/css/esc-ai-results-enhanced.css', [], ESC_VERSION);
+wp_enqueue_script('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/js/esc-ai-results-enhanced.js', ['jquery'], ESC_VERSION, true);
 ?>
 
 <div id="esc-add-seed-form-container" class="esc-container esc-modern-form">
@@ -310,21 +314,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
                             <div class="esc-form-row">
                                 <div class="esc-form-field">
-                                    <label for="esc_sunlight"><?php esc_html_e('Sunlight Requirements', 'erins-seed-catalog'); ?></label>
-                                    <div class="esc-toggle-group">
-                                        <label class="esc-toggle">
-                                            <input type="radio" name="sunlight" value="Full Sun">
-                                            <span class="esc-toggle-label"><?php esc_html_e('Full Sun', 'erins-seed-catalog'); ?></span>
-                                        </label>
-                                        <label class="esc-toggle">
-                                            <input type="radio" name="sunlight" value="Partial Sun">
-                                            <span class="esc-toggle-label"><?php esc_html_e('Partial Sun', 'erins-seed-catalog'); ?></span>
-                                        </label>
-                                        <label class="esc-toggle">
-                                            <input type="radio" name="sunlight" value="Shade">
-                                            <span class="esc-toggle-label"><?php esc_html_e('Shade', 'erins-seed-catalog'); ?></span>
-                                        </label>
-                                    </div>
+                                    <label for="esc_sun_requirements"><?php esc_html_e('Sun Requirements', 'erins-seed-catalog'); ?></label>
+                                    <input type="text" id="esc_sun_requirements" name="sun_requirements" placeholder="e.g., Full Sun, Partial Shade">
                                 </div>
 
                                 <div class="esc-form-field">
@@ -451,7 +442,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <div class="esc-card-content">
                             <div class="esc-form-row">
                                 <div class="esc-form-field esc-full-width">
-                                    <label for="esc_seed_category"><?php esc_html_e('Seed Categories', 'erins-seed-catalog'); ?></label>
+                                    <label for="esc_seed_category"><?php esc_html_e('Seed Category', 'erins-seed-catalog'); ?></label>
                                     <select id="esc_seed_category" name="esc_seed_category[]" multiple="multiple" class="esc-select-multiple">
                                         <?php echo ESC_Taxonomy::get_category_dropdown_options(); // Get hierarchical options ?>
                                     </select>
@@ -477,9 +468,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                     <?php esc_html_e('Back to AI Search', 'erins-seed-catalog'); ?>
                 </button>
 
-                <button type="submit" class="esc-button esc-button-primary">
+                <button type="submit" class="esc-button esc-button-primary" id="esc-submit-seed">
                     <span class="dashicons dashicons-saved"></span>
-                    <?php esc_html_e('Save Seed', 'erins-seed-catalog'); ?>
+                    <?php esc_html_e('Submit Seed', 'erins-seed-catalog'); ?>
                 </button>
             </div>
         </div>
@@ -497,4 +488,16 @@ if ( ! defined( 'ABSPATH' ) ) {
             </div>
         </div>
     </form>
+
+<!-- Enhanced Confirmation Modal -->
+<div class="esc-confirmation-container">
+    <div class="esc-confirmation-message">
+        <div class="esc-confirmation-icon">
+            <span class="dashicons dashicons-yes-alt"></span>
+        </div>
+        <h2 class="esc-confirmation-title"><?php esc_html_e('Seed Submitted Successfully!', 'erins-seed-catalog'); ?></h2>
+        <p class="esc-confirmation-text"><?php esc_html_e('Your seed has been added to the catalog.', 'erins-seed-catalog'); ?></p>
+        <button class="esc-confirmation-button"><?php esc_html_e('Add Another Seed', 'erins-seed-catalog'); ?></button>
+    </div>
+</div>
 </div>
