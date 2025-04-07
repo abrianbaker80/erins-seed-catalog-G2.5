@@ -1,69 +1,249 @@
 /**
- * Simplified CSS for Erin's Seed Catalog
- * This file combines and simplifies the CSS from multiple files
+ * Modern CSS for Erin's Seed Catalog
+ * Redesigned for better user experience and visual appeal
  */
 
 /* Base Form Styles */
 .esc-modern-form {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-    max-width: 1400px;
+    max-width: 800px;
     margin: 0 auto;
     color: #2d3748;
-    padding: 30px;
-    background-color: #f7fafc;
+    background: linear-gradient(to bottom, #ffffff, #f9fafb);
     border-radius: 12px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
     scroll-margin-top: 80px;
+    overflow: hidden;
+}
+
+/* Form Header */
+.esc-form-header {
+    background: linear-gradient(to right, #2a9d8f, #264653);
+    padding: 24px 32px;
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.esc-form-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.esc-form-header p {
+    margin: 8px 0 0;
+    opacity: 0.9;
+    font-size: 16px;
+}
+
+/* Form Body */
+.esc-form-body {
+    padding: 32px;
 }
 
 /* Input Field Styles */
+.esc-field-group {
+    margin-bottom: 24px;
+}
+
+.esc-field-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.esc-field-group input[type="text"],
+.esc-field-group input[type="search"],
+.esc-field-group textarea,
+.esc-field-group select,
 .esc-modern-form input[type="text"],
 .esc-modern-form input[type="search"],
 .esc-modern-form textarea,
 .esc-modern-form select {
-    display: block;
     width: 100%;
-    height: 40px;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 16px;
     line-height: 1.5;
-    padding: 0 12px;
-    font-size: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
     background-color: #fff;
     box-sizing: border-box;
-    margin: 0 0 10px 0;
+    transition: all 0.2s;
+    margin-bottom: 6px;
+}
+
+.esc-field-group input:focus,
+.esc-field-group textarea:focus,
+.esc-field-group select:focus,
+.esc-modern-form input:focus,
+.esc-modern-form textarea:focus,
+.esc-modern-form select:focus {
+    border-color: #2a9d8f;
+    box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.2);
+    outline: none;
+}
+
+.esc-field-group input:hover,
+.esc-field-group textarea:hover,
+.esc-field-group select:hover,
+.esc-modern-form input:hover,
+.esc-modern-form textarea:hover,
+.esc-modern-form select:hover {
+    border-color: #2a9d8f;
+}
+
+.esc-field-help {
+    font-size: 14px;
+    color: #718096;
+    margin-top: 6px;
 }
 
 .esc-modern-form textarea {
     height: auto;
-    min-height: 100px;
-    padding: 12px;
+    min-height: 120px;
+    padding: 12px 16px;
 }
 
-/* Label Styles */
-.esc-modern-form label {
-    display: block;
-    margin-bottom: 5px;
+/* Seed Variety Row */
+.esc-seed-variety-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+/* AI Info Box */
+.esc-ai-info {
+    background-color: #e6f7f5;
+    border-left: 4px solid #2a9d8f;
+    padding: 16px;
+    margin: 24px 0;
+    border-radius: 0 8px 8px 0;
+}
+
+/* Button Styles */
+.esc-ai-button {
+    background: linear-gradient(to right, #2a9d8f, #264653);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 24px;
+    font-size: 16px;
     font-weight: 600;
-    color: #333;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(42, 157, 143, 0.2);
+    margin: 24px 0;
+    width: 100%;
+    max-width: 400px;
 }
 
-/* Floating Label Styles */
+.esc-ai-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(42, 157, 143, 0.3);
+}
+
+.esc-back-button {
+    background-color: #e2e8f0;
+    color: #475569;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.esc-back-button:hover {
+    background-color: #cbd5e1;
+}
+
+.esc-submit-button {
+    background-color: #2a9d8f;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.esc-submit-button:hover {
+    background-color: #218a7e;
+}
+
+.esc-modern-form button,
+.esc-modern-form .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #2a9d8f;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.esc-modern-form button:hover,
+.esc-modern-form .button:hover {
+    background-color: #218a7e;
+    transform: translateY(-2px);
+}
+
+/* Manual Entry Link */
+.esc-manual-link {
+    display: inline-block;
+    margin-top: 16px;
+    color: #4a5568;
+    text-decoration: underline;
+    font-size: 14px;
+}
+
+.esc-manual-link:hover {
+    color: #2a9d8f;
+}
+
+/* Form Footer */
+.esc-form-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 24px 32px;
+    background-color: #f1f5f9;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* Floating Label Styles - Enhanced */
 .esc-floating-label {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .esc-floating-label label {
     position: absolute;
-    top: 10px;
-    left: 12px;
+    top: 12px;
+    left: 16px;
     transition: all 0.2s ease;
     pointer-events: none;
-    color: #666;
+    color: #718096;
     background-color: transparent;
     padding: 0;
     margin: 0;
+    font-size: 16px;
 }
 
 .esc-floating-label input:focus + label,
@@ -77,57 +257,24 @@
     font-size: 12px;
     background-color: white;
     padding: 0 5px;
-    color: #3498db;
-}
-
-/* Focus and Hover States */
-.esc-modern-form input:focus,
-.esc-modern-form textarea:focus,
-.esc-modern-form select:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 0 1px #3498db;
-    outline: none;
-}
-
-.esc-modern-form input:hover,
-.esc-modern-form textarea:hover,
-.esc-modern-form select:hover {
-    border-color: #3498db;
-}
-
-/* Button Styles */
-.esc-modern-form button,
-.esc-modern-form .button {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 15px;
+    color: #2a9d8f;
     font-weight: 600;
-    color: #fff;
-    background-color: #3498db;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
 }
 
-.esc-modern-form button:hover,
-.esc-modern-form .button:hover {
-    background-color: #2980b9;
-}
-
-/* Card Styles */
+/* Card Styles - Enhanced */
 .esc-form-card {
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 24px;
     overflow: hidden;
+    border: 1px solid #e2e8f0;
 }
 
 .esc-card-header {
-    padding: 15px 20px;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #eee;
+    padding: 16px 24px;
+    background-color: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -136,34 +283,38 @@
 .esc-card-header h3 {
     margin: 0;
     font-size: 18px;
-    color: #333;
+    color: #1e293b;
+    font-weight: 600;
 }
 
 .esc-card-content {
-    padding: 20px;
+    padding: 24px;
 }
 
-/* AI Status Styles */
+/* AI Status Styles - Enhanced */
 .esc-ai-status-badge {
     display: inline-flex;
     align-items: center;
-    padding: 3px 8px;
-    border-radius: 12px;
+    padding: 4px 10px;
+    border-radius: 16px;
     font-size: 12px;
     font-weight: 600;
-    background-color: #f8f9fa;
-    color: #666;
+    background-color: #f0fdf4;
+    color: #166534;
+    border: 1px solid #dcfce7;
 }
 
 .esc-ai-badge {
-    display: inline-block;
-    padding: 2px 5px;
-    border-radius: 3px;
-    font-size: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 11px;
     font-weight: 600;
-    background-color: #3498db;
+    background-color: #2a9d8f;
     color: #fff;
-    margin-left: 5px;
+    margin-left: 6px;
     vertical-align: middle;
 }
 
@@ -172,50 +323,188 @@
     display: none;
 }
 
-/* Loading Animation */
+/* Loading Animation - Enhanced */
 .esc-ai-loading {
     text-align: center;
-    padding: 20px;
+    padding: 32px;
+    background-color: #f8fafc;
+    border-radius: 12px;
+    margin: 24px 0;
+    border: 1px solid #e2e8f0;
+}
+
+.esc-loading-icon {
+    margin-bottom: 16px;
+}
+
+.esc-loading-icon svg {
+    width: 60px;
+    height: 60px;
+}
+
+.esc-ai-loading h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #2a9d8f;
+    margin: 0 0 8px 0;
+}
+
+.esc-ai-loading p {
+    font-size: 16px;
+    color: #4a5568;
+    margin: 0 0 24px 0;
+}
+
+.esc-loading-stages {
+    max-width: 400px;
+    margin: 0 auto;
 }
 
 .esc-loading-stage {
     display: none;
-    margin: 10px 0;
+    margin: 16px 0;
+    padding: 12px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    font-size: 14px;
+    color: #4a5568;
 }
 
 .esc-loading-stage.active {
     display: block;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+}
+
+/* Success and Error States */
+.esc-ai-success, .esc-review-success-message {
+    text-align: center;
+    background-color: #f0fdf4;
+    border: 1px solid #dcfce7;
+    border-radius: 12px;
+    padding: 32px;
+    margin: 24px 0;
+}
+
+.esc-success-icon {
+    margin-bottom: 16px;
+}
+
+.esc-success-icon svg {
+    width: 60px;
+    height: 60px;
+}
+
+.esc-ai-success h3, .esc-review-success-message h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #2a9d8f;
+    margin: 0 0 8px 0;
+}
+
+.esc-ai-success p, .esc-review-success-message p {
+    font-size: 16px;
+    color: #4a5568;
+    margin: 0;
+}
+
+#esc-seed-display-name {
+    font-weight: 600;
+    color: #2a9d8f;
+}
+
+.esc-ai-error {
+    text-align: center;
+    background-color: #fef2f2;
+    border: 1px solid #fee2e2;
+    border-radius: 12px;
+    padding: 32px;
+    margin: 24px 0;
+}
+
+.esc-error-icon {
+    margin-bottom: 16px;
+}
+
+.esc-error-icon svg {
+    width: 60px;
+    height: 60px;
+}
+
+.esc-ai-error h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #e53e3e;
+    margin: 0 0 8px 0;
+}
+
+.esc-ai-error p {
+    font-size: 16px;
+    color: #4a5568;
+    margin: 0 0 24px 0;
+}
+
+.esc-manual-button {
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.esc-manual-button:hover {
+    background-color: #c53030;
+    transform: translateY(-2px);
 }
 
 /* Responsive Styles */
-@media (min-width: 768px) {
-    .esc-seed-variety-row {
-        display: flex;
-        gap: 20px;
-    }
-    
-    .esc-seed-variety-row .esc-seed-field,
-    .esc-seed-variety-row .esc-variety-field {
-        flex: 1;
-    }
-}
-
-@media (min-width: 1600px) {
-    .esc-modern-form {
-        max-width: 1800px;
-    }
-}
-
 @media (max-width: 767px) {
-    .esc-modern-form {
-        padding: 15px;
+    .esc-seed-variety-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
-    
+
+    .esc-form-body,
+    .esc-form-header,
+    .esc-form-footer {
+        padding: 16px;
+    }
+
     .esc-card-header {
-        padding: 10px 15px;
+        padding: 12px 16px;
     }
-    
+
     .esc-card-content {
-        padding: 15px;
+        padding: 16px;
+    }
+
+    .esc-ai-button {
+        padding: 12px 20px;
+        font-size: 15px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .esc-modern-form {
+        max-width: 700px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .esc-modern-form {
+        max-width: 800px;
     }
 }
