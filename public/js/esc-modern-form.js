@@ -209,7 +209,7 @@
                 action: 'esc_gemini_search',
                 nonce: esc_ajax_object.nonce,
                 seed_name: seedName,
-                variety_name: varietyName
+                variety: varietyName
             },
             success: function(response) {
                 stopLoadingStageAnimation();
