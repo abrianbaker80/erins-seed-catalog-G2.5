@@ -39,179 +39,26 @@ class ESC_Functions {
                 has_shortcode( $post->post_content, 'erins_seed_catalog_export' )
             )) {
 
-            // Enqueue Public CSS (Mobile-First)
+            // Enqueue Simplified CSS
             wp_enqueue_style(
-                'esc-public-styles',
-                ESC_PLUGIN_URL . 'public/css/esc-public-styles.css',
+                'esc-simplified',
+                ESC_PLUGIN_URL . 'public/css/esc-simplified.css',
                 [],
                 ESC_VERSION
             );
 
-            // Enqueue Modern Form CSS with forced cache refresh
-            wp_enqueue_style(
-                'esc-modern-form',
-                ESC_PLUGIN_URL . 'public/css/esc-modern-form.css',
-                ['esc-public-styles'],
-                ESC_VERSION . '.' . time() // Add timestamp to force cache refresh
-            );
-
-            // Enqueue Scroll Enhancements CSS
-            wp_enqueue_style(
-                'esc-scroll-enhancements',
-                ESC_PLUGIN_URL . 'public/css/esc-scroll-enhancements.css',
-                ['esc-public-styles', 'esc-modern-form'],
-                ESC_VERSION
-            );
-
-            // Enqueue Seed Variety Layout CSS
-            wp_enqueue_style(
-                'esc-seed-variety-layout',
-                ESC_PLUGIN_URL . 'public/css/esc-seed-variety-layout.css',
-                ['esc-public-styles', 'esc-modern-form'],
-                ESC_VERSION
-            );
-
-            // Enqueue AI Results Fixes CSS
-            wp_enqueue_style(
-                'esc-ai-results-fixes',
-                ESC_PLUGIN_URL . 'public/css/esc-ai-results-fixes.css',
-                ['esc-public-styles', 'esc-modern-form', 'esc-seed-variety-layout'],
-                ESC_VERSION . '.' . time() // Add timestamp to force cache refresh
-            );
-
-            // Enqueue Initial Form Fixes CSS
-            wp_enqueue_style(
-                'esc-initial-form-fixes',
-                ESC_PLUGIN_URL . 'public/css/esc-initial-form-fixes.css',
-                ['esc-public-styles', 'esc-modern-form', 'esc-seed-variety-layout', 'esc-ai-results-fixes'],
-                ESC_VERSION . '.' . time() // Add timestamp to force cache refresh
-            );
-
-            // Enqueue Input Alignment CSS
-            wp_enqueue_style(
-                'esc-input-alignment',
-                ESC_PLUGIN_URL . 'public/css/esc-input-alignment.css',
-                ['esc-public-styles', 'esc-modern-form', 'esc-seed-variety-layout', 'esc-ai-results-fixes', 'esc-initial-form-fixes'],
-                ESC_VERSION . '.' . time() // Add timestamp to force cache refresh
-            );
-
-            // Enqueue Input Fixes Important CSS (with highest priority)
-            wp_enqueue_style(
-                'esc-input-fixes-important',
-                ESC_PLUGIN_URL . 'public/css/esc-input-fixes-important.css',
-                ['esc-public-styles', 'esc-modern-form', 'esc-seed-variety-layout', 'esc-ai-results-fixes', 'esc-initial-form-fixes', 'esc-input-alignment'],
-                ESC_VERSION . '.' . time() // Add timestamp to force cache refresh
-            );
-
-            // Enqueue Remove Green Lines CSS (with highest priority)
-            wp_enqueue_style(
-                'esc-remove-green-lines',
-                ESC_PLUGIN_URL . 'public/css/esc-remove-green-lines.css',
-                ['esc-public-styles', 'esc-modern-form', 'esc-seed-variety-layout', 'esc-ai-results-fixes', 'esc-initial-form-fixes', 'esc-input-alignment', 'esc-input-fixes-important'],
-                ESC_VERSION . '.' . time() // Add timestamp to force cache refresh
-            );
-
-            // Enqueue Enhanced AI Results CSS (with highest priority)
-            wp_enqueue_style(
-                'esc-ai-results-enhanced',
-                ESC_PLUGIN_URL . 'public/css/esc-ai-results-enhanced.css',
-                ['esc-public-styles', 'esc-modern-form', 'esc-seed-variety-layout', 'esc-ai-results-fixes', 'esc-initial-form-fixes', 'esc-input-alignment', 'esc-input-fixes-important', 'esc-remove-green-lines'],
-                ESC_VERSION . '.' . time() // Add timestamp to force cache refresh
-            );
-
-            // Enqueue Public JS
+            // Enqueue Simplified JS
             wp_enqueue_script(
-                'esc-public-scripts',
-                ESC_PLUGIN_URL . 'public/js/esc-public-scripts.js',
-                [ 'jquery' ], // Dependency on jQuery
-                ESC_VERSION,
-                true // Load in footer
-            );
-
-            // Enqueue Variety Suggestions JS
-            wp_enqueue_script(
-                'esc-variety-suggestions',
-                ESC_PLUGIN_URL . 'public/js/esc-variety-suggestions.js',
-                [ 'jquery', 'esc-public-scripts' ],
-                ESC_VERSION,
-                true // Load in footer
-            );
-
-            // Enqueue Modern Form JS
-            wp_enqueue_script(
-                'esc-modern-form',
-                ESC_PLUGIN_URL . 'public/js/esc-modern-form.js',
-                [ 'jquery', 'esc-public-scripts', 'esc-variety-suggestions' ],
-                ESC_VERSION,
-                true // Load in footer
-            );
-
-            // Enqueue Scroll Enhancements JS
-            wp_enqueue_script(
-                'esc-scroll-enhancements',
-                ESC_PLUGIN_URL . 'public/js/esc-scroll-enhancements.js',
-                [ 'jquery', 'esc-modern-form' ],
-                ESC_VERSION,
-                true // Load in footer
-            );
-
-            // Enqueue Debug JS
-            wp_enqueue_script(
-                'esc-debug',
-                ESC_PLUGIN_URL . 'public/js/esc-debug.js',
+                'esc-simplified',
+                ESC_PLUGIN_URL . 'public/js/esc-simplified.js',
                 [ 'jquery' ],
-                ESC_VERSION . '.' . time(), // Force cache refresh
-                true // Load in footer
-            );
-
-            // Enqueue AI Results Fixes JS
-            wp_enqueue_script(
-                'esc-ai-results-fixes',
-                ESC_PLUGIN_URL . 'public/js/esc-ai-results-fixes.js',
-                [ 'jquery', 'esc-public-scripts', 'esc-modern-form' ],
-                ESC_VERSION . '.' . time(), // Force cache refresh
-                true // Load in footer
-            );
-
-            // Enqueue Input Alignment JS
-            wp_enqueue_script(
-                'esc-input-alignment',
-                ESC_PLUGIN_URL . 'public/js/esc-input-alignment.js',
-                [ 'jquery', 'esc-public-scripts', 'esc-modern-form', 'esc-ai-results-fixes' ],
-                ESC_VERSION . '.' . time(), // Force cache refresh
-                true // Load in footer
-            );
-
-            // Enqueue Direct Input Fixes JS
-            wp_enqueue_script(
-                'esc-direct-input-fixes',
-                ESC_PLUGIN_URL . 'public/js/esc-direct-input-fixes.js',
-                [ 'jquery', 'esc-public-scripts', 'esc-modern-form', 'esc-ai-results-fixes', 'esc-input-alignment' ],
-                ESC_VERSION . '.' . time(), // Force cache refresh
-                true // Load in footer
-            );
-
-            // Enqueue Remove Green Lines JS
-            wp_enqueue_script(
-                'esc-remove-green-lines',
-                ESC_PLUGIN_URL . 'public/js/esc-remove-green-lines.js',
-                [ 'jquery', 'esc-public-scripts', 'esc-modern-form', 'esc-ai-results-fixes', 'esc-input-alignment', 'esc-direct-input-fixes' ],
-                ESC_VERSION . '.' . time(), // Force cache refresh
-                true // Load in footer
-            );
-
-            // Enqueue Enhanced AI Results JS
-            wp_enqueue_script(
-                'esc-ai-results-enhanced',
-                ESC_PLUGIN_URL . 'public/js/esc-ai-results-enhanced.js',
-                [ 'jquery', 'esc-public-scripts', 'esc-modern-form', 'esc-ai-results-fixes', 'esc-input-alignment', 'esc-direct-input-fixes', 'esc-remove-green-lines' ],
-                ESC_VERSION . '.' . time(), // Force cache refresh
+                ESC_VERSION,
                 true // Load in footer
             );
 
             // Localize script for AJAX calls
             wp_localize_script(
-                'esc-public-scripts',
+                'esc-simplified',
                 'esc_ajax_object',
                 [
                     'ajax_url' => admin_url( 'admin-ajax.php' ),

@@ -1,0 +1,221 @@
+/**
+ * Simplified CSS for Erin's Seed Catalog
+ * This file combines and simplifies the CSS from multiple files
+ */
+
+/* Base Form Styles */
+.esc-modern-form {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    max-width: 1400px;
+    margin: 0 auto;
+    color: #2d3748;
+    padding: 30px;
+    background-color: #f7fafc;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.03);
+    scroll-margin-top: 80px;
+}
+
+/* Input Field Styles */
+.esc-modern-form input[type="text"],
+.esc-modern-form input[type="search"],
+.esc-modern-form textarea,
+.esc-modern-form select {
+    display: block;
+    width: 100%;
+    height: 40px;
+    line-height: 1.5;
+    padding: 0 12px;
+    font-size: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    box-sizing: border-box;
+    margin: 0 0 10px 0;
+}
+
+.esc-modern-form textarea {
+    height: auto;
+    min-height: 100px;
+    padding: 12px;
+}
+
+/* Label Styles */
+.esc-modern-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Floating Label Styles */
+.esc-floating-label {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.esc-floating-label label {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    color: #666;
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+.esc-floating-label input:focus + label,
+.esc-floating-label input.has-value + label,
+.esc-floating-label textarea:focus + label,
+.esc-floating-label textarea.has-value + label,
+.esc-floating-label select:focus + label,
+.esc-floating-label select.has-value + label {
+    top: -10px;
+    left: 10px;
+    font-size: 12px;
+    background-color: white;
+    padding: 0 5px;
+    color: #3498db;
+}
+
+/* Focus and Hover States */
+.esc-modern-form input:focus,
+.esc-modern-form textarea:focus,
+.esc-modern-form select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 1px #3498db;
+    outline: none;
+}
+
+.esc-modern-form input:hover,
+.esc-modern-form textarea:hover,
+.esc-modern-form select:hover {
+    border-color: #3498db;
+}
+
+/* Button Styles */
+.esc-modern-form button,
+.esc-modern-form .button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #3498db;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.esc-modern-form button:hover,
+.esc-modern-form .button:hover {
+    background-color: #2980b9;
+}
+
+/* Card Styles */
+.esc-form-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.esc-card-header {
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.esc-card-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.esc-card-content {
+    padding: 20px;
+}
+
+/* AI Status Styles */
+.esc-ai-status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    background-color: #f8f9fa;
+    color: #666;
+}
+
+.esc-ai-badge {
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    background-color: #3498db;
+    color: #fff;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+/* Phase Styles */
+.esc-phase {
+    display: none;
+}
+
+/* Loading Animation */
+.esc-ai-loading {
+    text-align: center;
+    padding: 20px;
+}
+
+.esc-loading-stage {
+    display: none;
+    margin: 10px 0;
+}
+
+.esc-loading-stage.active {
+    display: block;
+}
+
+/* Responsive Styles */
+@media (min-width: 768px) {
+    .esc-seed-variety-row {
+        display: flex;
+        gap: 20px;
+    }
+    
+    .esc-seed-variety-row .esc-seed-field,
+    .esc-seed-variety-row .esc-variety-field {
+        flex: 1;
+    }
+}
+
+@media (min-width: 1600px) {
+    .esc-modern-form {
+        max-width: 1800px;
+    }
+}
+
+@media (max-width: 767px) {
+    .esc-modern-form {
+        padding: 15px;
+    }
+    
+    .esc-card-header {
+        padding: 10px 15px;
+    }
+    
+    .esc-card-content {
+        padding: 15px;
+    }
+}
