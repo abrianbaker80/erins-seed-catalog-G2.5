@@ -10,6 +10,20 @@ wp_enqueue_style('esc-modern-form', ESC_PLUGIN_URL . 'public/css/esc-modern-form
 // Enqueue enhanced AI results CSS and JS
 wp_enqueue_style('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/css/esc-ai-results-enhanced.css', ['esc-modern-form'], ESC_VERSION);
 wp_enqueue_script('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/js/esc-ai-results-enhanced.js', ['jquery'], ESC_VERSION, true);
+
+// Enqueue fixes JS
+wp_enqueue_style('esc-ai-results-fixes', ESC_PLUGIN_URL . 'public/css/esc-ai-results-fixes.css', ['esc-modern-form'], ESC_VERSION);
+wp_enqueue_script('esc-ai-results-fixes', ESC_PLUGIN_URL . 'public/js/esc-ai-results-fixes.js', ['jquery'], ESC_VERSION, true);
+
+// Localize script for AJAX calls
+wp_localize_script('esc-ai-results-fixes', 'esc_ajax_object', [
+    'ajax_url' => admin_url('admin-ajax.php'),
+    'nonce' => wp_create_nonce('esc_ajax_nonce'),
+    'loading_text' => __('Saving...', 'erins-seed-catalog'),
+    'error_text' => __('An error occurred.', 'erins-seed-catalog'),
+    'form_submit_success' => __('Seed added successfully!', 'erins-seed-catalog'),
+    'form_submit_error' => __('Error adding seed.', 'erins-seed-catalog'),
+]);
 ?>
 
 <div id="esc-add-seed-form-container" class="esc-container esc-modern-form">

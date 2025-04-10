@@ -59,38 +59,61 @@ jQuery(document).ready(function($) {
             e.preventDefault();
 
             const $form = $(this).closest('form');
+            const $submitButton = $(this);
             const $formContainer = $form.closest('.esc-container, .esc-modern-form');
+            const $messageDiv = $('#esc-form-messages');
 
-            // Create confirmation message if it doesn't exist
-            if ($formContainer.find('.esc-confirmation-message').length === 0) {
-                $formContainer.append('<div class="esc-confirmation-message">Seed submitted successfully!</div>');
-            }
+            // Clear previous messages and show loading state
+            $messageDiv.empty().removeClass('success error').addClass('loading').text('Saving...').show();
+            $submitButton.prop('disabled', true);
 
-            // Hide the form
-            $form.hide();
+            // Serialize form data
+            var formData = $form.serialize();
 
-            // Show confirmation message
-            const $confirmationMessage = $formContainer.find('.esc-confirmation-message');
-            $confirmationMessage.fadeIn();
+            // Add AJAX action and nonce
+            formData += '&action=esc_add_seed&nonce=' + esc_ajax_object.nonce;
 
-            // After 3 seconds, hide message and reset form
-            setTimeout(function() {
-                $confirmationMessage.fadeOut(function() {
-                    // Reset the form
-                    $form[0].reset();
+            // Submit the form via AJAX
+            $.ajax({
+                url: esc_ajax_object.ajax_url,
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        // Show success message
+                        $messageDiv.removeClass('loading').addClass('success').text(response.data.message || 'Seed added successfully!');
 
-                    // Clear any AI results
-                    $('#esc-ai-result-display').hide().empty();
-                    $('#esc-ai-status').empty();
+                        // Reset form
+                        $form[0].reset();
 
-                    // Reset to initial AI search form
-                    $('.esc-phase').hide();
-                    $('#esc-phase-ai-input').show();
+                        // Clear any AI results
+                        $('#esc-ai-result-display').hide().empty();
+                        $('#esc-ai-status').empty();
 
-                    // Show the form again
-                    $form.show();
-                });
-            }, 3000);
+                        // Reset to initial AI search form
+                        $('.esc-phase').hide();
+                        $('#esc-phase-ai-input').show();
+
+                        // Scroll to top of form to see message
+                        $('html, body').animate({ scrollTop: $form.offset().top - 50 }, 500);
+                    } else {
+                        // Show error message
+                        let errorMsg = response.data.message || 'Error adding seed.';
+                        $messageDiv.removeClass('loading').addClass('error').text(errorMsg);
+                        console.error('Add Seed Error:', response.data);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // Show error message
+                    $messageDiv.removeClass('loading').addClass('error').text('An error occurred.');
+                    console.error('AJAX Error:', textStatus, errorThrown);
+                },
+                complete: function() {
+                    // Re-enable submit button
+                    $submitButton.prop('disabled', false);
+                }
+            });
         });
     }
 
