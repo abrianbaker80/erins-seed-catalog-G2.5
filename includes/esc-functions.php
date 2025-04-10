@@ -20,6 +20,10 @@ class ESC_Functions {
 		// Add AJAX handlers
 		add_action( 'wp_ajax_esc_export_catalog', [ __CLASS__, 'handle_export_catalog_ajax' ] );
 		add_action( 'wp_ajax_nopriv_esc_export_catalog', [ __CLASS__, 'handle_export_catalog_ajax' ] );
+
+		// Add AJAX handler for variety suggestions
+		add_action( 'wp_ajax_esc_get_varieties', [ __CLASS__, 'handle_get_varieties_ajax' ] );
+		add_action( 'wp_ajax_nopriv_esc_get_varieties', [ __CLASS__, 'handle_get_varieties_ajax' ] );
 	}
 
     /**
@@ -47,6 +51,17 @@ class ESC_Functions {
                 ESC_VERSION
             );
 
+            // Enqueue Variety Suggestions CSS
+            wp_enqueue_style(
+                'esc-variety-suggestions',
+                ESC_PLUGIN_URL . 'public/css/esc-variety-suggestions.css',
+                [],
+                ESC_VERSION
+            );
+
+            // Enqueue Dashicons for the loading spinner
+            wp_enqueue_style('dashicons');
+
             // Enqueue Simplified JS
             wp_enqueue_script(
                 'esc-simplified',
@@ -56,20 +71,28 @@ class ESC_Functions {
                 true // Load in footer
             );
 
-            // Localize script for AJAX calls
-            wp_localize_script(
-                'esc-simplified',
-                'esc_ajax_object',
-                [
-                    'ajax_url' => admin_url( 'admin-ajax.php' ),
-                    'nonce'    => wp_create_nonce( 'esc_ajax_nonce' ), // Create a nonce
-                    'loading_text' => __('Loading...', 'erins-seed-catalog'),
-                    'error_text' => __('An error occurred.', 'erins-seed-catalog'),
-                    'gemini_error_text' => __('Error fetching AI info:', 'erins-seed-catalog'),
-                    'form_submit_success' => __('Seed added successfully!', 'erins-seed-catalog'),
-                    'form_submit_error' => __('Error adding seed.', 'erins-seed-catalog'),
-                ]
+            // Enqueue Variety Suggestions JS
+            wp_enqueue_script(
+                'esc-variety-suggestions',
+                ESC_PLUGIN_URL . 'public/js/esc-variety-suggestions.js',
+                [ 'jquery' ],
+                ESC_VERSION,
+                true // Load in footer
             );
+
+            // Localize script for AJAX calls - apply to both scripts
+            $ajax_data = [
+                'ajax_url' => admin_url( 'admin-ajax.php' ),
+                'nonce'    => wp_create_nonce( 'esc_ajax_nonce' ), // Create a nonce
+                'loading_text' => __('Loading...', 'erins-seed-catalog'),
+                'error_text' => __('An error occurred.', 'erins-seed-catalog'),
+                'gemini_error_text' => __('Error fetching AI info:', 'erins-seed-catalog'),
+                'form_submit_success' => __('Seed added successfully!', 'erins-seed-catalog'),
+                'form_submit_error' => __('Error adding seed.', 'erins-seed-catalog'),
+            ];
+
+            wp_localize_script('esc-simplified', 'esc_ajax_object', $ajax_data);
+            wp_localize_script('esc-variety-suggestions', 'esc_ajax_object', $ajax_data);
         }
 	}
 
@@ -340,6 +363,33 @@ class ESC_Functions {
 
         fclose($output);
         exit;
+    }
+
+    /**
+     * Handle AJAX request for variety suggestions.
+     */
+    public static function handle_get_varieties_ajax() {
+        // Check nonce for security
+        if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'esc_ajax_nonce')) {
+            wp_send_json_error(['message' => __('Security check failed.', 'erins-seed-catalog')]);
+        }
+
+        // Get the seed type from the request
+        $seed_type = isset($_POST['seed_type']) ? sanitize_text_field($_POST['seed_type']) : '';
+
+        if (empty($seed_type)) {
+            wp_send_json_error(['message' => __('Seed type is required.', 'erins-seed-catalog')]);
+        }
+
+        // Get variety suggestions from the API
+        $varieties = ESC_Variety_Suggestions::get_variety_suggestions($seed_type);
+
+        if (is_wp_error($varieties)) {
+            wp_send_json_error(['message' => $varieties->get_error_message()]);
+        }
+
+        // Return the varieties as JSON
+        wp_send_json_success(['varieties' => $varieties]);
     }
 
 }
