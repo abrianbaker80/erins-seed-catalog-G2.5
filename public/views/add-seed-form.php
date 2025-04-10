@@ -18,13 +18,13 @@ if ( ! defined( 'ABSPATH' ) ) {
             <div>
                 <label for="esc_seed_name"><?php esc_html_e( 'Seed Type', 'erins-seed-catalog' ); ?> <span style="color:red;">*</span></label>
                 <input type="text" id="esc_seed_name" name="seed_name" required>
-                <p class="description"><?php esc_html_e('The main name, e.g., "Tomato", "Bean", "Zinnia".', 'erins-seed-catalog'); ?></p>
+                <p class="description"><?php esc_html_e('Enter seed type.', 'erins-seed-catalog'); ?></p>
             </div>
 
             <div id="esc-variety-container">
                 <label for="esc_variety_name"><?php esc_html_e('Variety', 'erins-seed-catalog'); ?></label>
                 <div class="esc-variety-field-container">
-                    <input type="text" id="esc_variety_name" name="variety_name" placeholder="<?php esc_attr_e('Enter variety name', 'erins-seed-catalog'); ?>">
+                    <input type="text" id="esc_variety_name" name="variety_name" placeholder="<?php esc_attr_e('Select variety or enter name', 'erins-seed-catalog'); ?>">
                     <div id="esc-variety-dropdown" style="display: none;" class="esc-variety-dropdown"></div>
                 </div>
                 <div class="esc-variety-loading" style="display: none;">

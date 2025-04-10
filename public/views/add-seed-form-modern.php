@@ -4,8 +4,11 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// Make sure modern form CSS is loaded first
+wp_enqueue_style('esc-modern-form', ESC_PLUGIN_URL . 'public/css/esc-modern-form.css', [], ESC_VERSION);
+
 // Enqueue enhanced AI results CSS and JS
-wp_enqueue_style('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/css/esc-ai-results-enhanced.css', [], ESC_VERSION);
+wp_enqueue_style('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/css/esc-ai-results-enhanced.css', ['esc-modern-form'], ESC_VERSION);
 wp_enqueue_script('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/js/esc-ai-results-enhanced.js', ['jquery'], ESC_VERSION, true);
 ?>
 

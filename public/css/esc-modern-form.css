@@ -9,7 +9,7 @@ html {
 
 /* For JavaScript-based smooth scrolling (more compatible) */
 html.smooth-scroll {
-    scroll-behavior: auto !important; /* Let JS handle it */
+    scroll-behavior: auto; /* Let JS handle it */
 }
 
 /* Base Form Styles */

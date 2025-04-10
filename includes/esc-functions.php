@@ -43,11 +43,19 @@ class ESC_Functions {
                 has_shortcode( $post->post_content, 'erins_seed_catalog_export' )
             )) {
 
+            // Enqueue Modern Form CSS first (base styles)
+            wp_enqueue_style(
+                'esc-modern-form',
+                ESC_PLUGIN_URL . 'public/css/esc-modern-form.css',
+                [],
+                ESC_VERSION
+            );
+
             // Enqueue Simplified CSS
             wp_enqueue_style(
                 'esc-simplified',
                 ESC_PLUGIN_URL . 'public/css/esc-simplified.css',
-                [],
+                ['esc-modern-form'],
                 ESC_VERSION
             );
 
@@ -55,7 +63,7 @@ class ESC_Functions {
             wp_enqueue_style(
                 'esc-variety-suggestions',
                 ESC_PLUGIN_URL . 'public/css/esc-variety-suggestions.css',
-                [],
+                ['esc-modern-form', 'esc-simplified'],
                 ESC_VERSION
             );
 

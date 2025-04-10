@@ -252,8 +252,11 @@ class ESC_Shortcodes {
 	 * @return string HTML output for the test AI results page.
 	 */
 	public static function render_test_ai_results( $atts = [] ) {
+		// Make sure modern form CSS is loaded first
+		wp_enqueue_style('esc-modern-form', ESC_PLUGIN_URL . 'public/css/esc-modern-form.css', [], ESC_VERSION . '.' . time());
+
 		// Enqueue enhanced AI results CSS and JS
-		wp_enqueue_style('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/css/esc-ai-results-enhanced.css', [], ESC_VERSION . '.' . time());
+		wp_enqueue_style('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/css/esc-ai-results-enhanced.css', ['esc-modern-form'], ESC_VERSION . '.' . time());
 		wp_enqueue_script('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/js/esc-ai-results-enhanced.js', ['jquery'], ESC_VERSION . '.' . time(), true);
 
 		ob_start();
