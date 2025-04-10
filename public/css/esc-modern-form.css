@@ -15,7 +15,7 @@ html.smooth-scroll {
 /* Base Form Styles */
 .esc-modern-form {
     /* Use !important to override theme styles */
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
     max-width: 1400px;
     margin: 0 auto;
     color: #2d3748;
@@ -24,6 +24,30 @@ html.smooth-scroll {
     border-radius: 12px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.03);
     scroll-margin-top: 80px; /* Adds margin when scrolling to this element */
+}
+
+/* Apply consistent font to all elements within the form */
+.esc-modern-form *,
+.esc-modern-form h1,
+.esc-modern-form h2,
+.esc-modern-form h3,
+.esc-modern-form h4,
+.esc-modern-form p,
+.esc-modern-form input,
+.esc-modern-form textarea,
+.esc-modern-form select,
+.esc-modern-form button,
+.esc-modern-form label,
+.esc-modern-form ::placeholder,
+.esc-form-card,
+.esc-form-card *,
+.esc-card-header,
+.esc-card-header *,
+.esc-card-content,
+.esc-card-content *,
+.esc-ai-card,
+.esc-ai-card * {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
 }
 
 /* Wider form for larger screens */
@@ -216,18 +240,27 @@ body.wp-admin #wpbody-content {
     font-size: 28px;
     margin-bottom: 24px;
     color: #2c3e50;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    line-height: 1.3;
 }
 
 .esc-modern-form h3 {
     font-size: 20px;
     margin: 0;
     color: #2c3e50;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    line-height: 1.3;
 }
 
 .esc-modern-form h4 {
     font-size: 16px;
     margin: 0 0 12px;
     color: #2c3e50;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    line-height: 1.3;
 }
 
 /* Card Layout */
@@ -274,20 +307,77 @@ body.wp-admin #wpbody-content {
     margin-top: 0;
     margin-bottom: 24px;
     color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+}
+
+/* Info text styling */
+.esc-info-text {
+    background-color: #f0f9ff;
+    border-left: 4px solid #3498db;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #2c5282;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+}
+
+/* Description text styling */
+.description,
+p.description {
+    font-size: 13px !important;
+    color: #666 !important;
+    margin-top: 5px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    line-height: 1.5 !important;
+}
+
+/* Confidence tooltip styling */
+.esc-confidence-tooltip {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    font-size: 12px !important;
+    line-height: 1.5 !important;
 }
 
 /* AI Card Styling */
 .esc-ai-card {
     border-left: 4px solid #3498db;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    margin-bottom: 40px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    position: relative;
 }
 
 .esc-ai-card .esc-card-header {
     background-color: #ebf5fb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 30px;
+    border-bottom: 1px solid #edf2f7;
+    position: relative;
+}
+
+.esc-ai-card .esc-card-header h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
 }
 
 /* Add a subtle gradient background to the AI card */
 .esc-ai-card .esc-card-content {
     background: linear-gradient(to bottom, #ffffff 0%, #f8fafc 100%);
+    padding: 35px 30px;
+    position: relative;
 }
 
 /* Add a subtle divider between input fields and button */
@@ -452,14 +542,20 @@ body.wp-admin #wpbody-content {
     font-weight: 600;
     color: #4a5568;
     font-size: 15px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
 }
 
 .esc-modern-form input[type="text"],
 .esc-modern-form input[type="url"],
 .esc-modern-form input[type="number"],
 .esc-modern-form input[type="date"],
+.esc-modern-form input[type="search"],
 .esc-modern-form textarea,
-.esc-modern-form select {
+.esc-modern-form select,
+#esc_seed_name,
+#esc_variety_name,
+input[id^="esc_seed_name"],
+input[id^="esc_variety_name"] {
     width: 100%;
     padding: 14px 18px;
     border: 2px solid #e2e8f0;
@@ -470,6 +566,22 @@ body.wp-admin #wpbody-content {
     transition: all 0.3s ease;
     box-shadow: 0 2px 6px rgba(0,0,0,0.03);
     color: #2d3748;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    height: auto !important;
+    display: block !important;
+}
+
+/* Placeholder styling */
+.esc-modern-form input::placeholder,
+.esc-modern-form textarea::placeholder,
+.esc-modern-form select::placeholder,
+#esc_seed_name::placeholder,
+#esc_variety_name::placeholder,
+input[id^="esc_seed_name"]::placeholder,
+input[id^="esc_variety_name"]::placeholder {
+    color: #a0aec0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    opacity: 0.8;
 }
 
 .esc-modern-form input[type="text"]:hover,

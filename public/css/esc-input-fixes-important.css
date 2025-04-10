@@ -11,33 +11,35 @@
 #esc_variety_name,
 input[id^="esc_seed_name"],
 input[id^="esc_variety_name"] {
-    display: flex !important;
-    align-items: center !important;
-    height: 40px !important;
+    display: block !important;
+    height: auto !important;
     line-height: 1.5 !important;
-    padding: 0 12px !important;
-    font-size: 15px !important;
+    padding: 14px 18px !important;
+    font-size: 16px !important;
     box-sizing: border-box !important;
     margin: 0 !important;
-    vertical-align: middle !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
 }
 
 /* Target the seed type and variety fields specifically */
 .esc-seed-variety-row .esc-seed-field input,
 .esc-seed-variety-row .esc-variety-field input {
-    height: 40px !important;
+    height: auto !important;
     line-height: 1.5 !important;
-    padding: 0 12px !important;
-    font-size: 15px !important;
-    vertical-align: middle !important;
+    padding: 14px 18px !important;
+    font-size: 16px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
 }
 
 /* Fix for the field labels */
 .esc-seed-field label,
 .esc-variety-field label {
     display: block !important;
-    margin-bottom: 5px !important;
+    margin-bottom: 10px !important;
     font-weight: 600 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    font-size: 15px !important;
+    color: #4a5568 !important;
 }
 
 /* Fix for the description text */
@@ -46,6 +48,8 @@ input[id^="esc_variety_name"] {
     margin-top: 5px !important;
     font-size: 13px !important;
     color: #666 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    line-height: 1.5 !important;
 }
 
 /* Fix for the AI badge */
@@ -58,8 +62,8 @@ input[id^="esc_variety_name"] {
 /* Fix for the input field text */
 .esc-seed-field input,
 .esc-variety-field input {
-    color: #333 !important;
-    font-family: 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif !important;
+    color: #2d3748 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
 }
 
 /* Fix for the input field focus state */
@@ -78,8 +82,14 @@ input[id^="esc_variety_name"] {
 
 /* Fix for the input field placeholder */
 .esc-seed-field input::placeholder,
-.esc-variety-field input::placeholder {
-    color: #999 !important;
+.esc-variety-field input::placeholder,
+#esc_seed_name::placeholder,
+#esc_variety_name::placeholder,
+input[id^="esc_seed_name"]::placeholder,
+input[id^="esc_variety_name"]::placeholder {
+    color: #a0aec0 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    opacity: 0.8 !important;
 }
 
 /* Fix for the input field disabled state */
@@ -147,22 +157,25 @@ input[id^="esc_variety_name"] {
 /* Fix for the seed type and variety fields in the initial form */
 .esc-seed-variety-row .esc-seed-field input,
 .esc-seed-variety-row .esc-variety-field input {
-    height: 40px !important;
-    line-height: 40px !important;
-    padding: 0 12px !important;
-    font-size: 15px !important;
-    display: flex !important;
-    align-items: center !important;
+    height: auto !important;
+    line-height: 1.5 !important;
+    padding: 14px 18px !important;
+    font-size: 16px !important;
+    display: block !important;
     box-sizing: border-box !important;
-    vertical-align: middle !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    color: #2d3748 !important;
 }
 
 /* Fix for the seed type and variety fields in the initial form */
 .esc-seed-variety-row .esc-seed-field label,
 .esc-seed-variety-row .esc-variety-field label {
-    margin-bottom: 5px !important;
+    margin-bottom: 10px !important;
     display: block !important;
     font-weight: 600 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    font-size: 15px !important;
+    color: #4a5568 !important;
 }
 
 /* Fix for the seed type and variety fields in the initial form */
@@ -171,12 +184,16 @@ input[id^="esc_variety_name"] {
     margin-top: 5px !important;
     font-size: 13px !important;
     color: #666 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    line-height: 1.5 !important;
 }
 
 /* Fix for the seed type and variety fields in the initial form */
 .esc-seed-variety-row .esc-seed-field input::placeholder,
 .esc-seed-variety-row .esc-variety-field input::placeholder {
-    color: #999 !important;
+    color: #a0aec0 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    opacity: 0.8 !important;
 }
 
 /* Fix for the seed type and variety fields in the initial form */

@@ -10,18 +10,21 @@
 #esc_variety_name,
 input[id^="esc_seed_name"],
 input[id^="esc_variety_name"] {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    height: 40px !important;
+    padding: 14px 18px !important;
+    display: block !important;
+    height: auto !important;
+    line-height: 1.5 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    font-size: 16px !important;
 }
 
 /* Fix for floating labels if present */
 .esc-floating-label input {
-    height: 40px !important;
-    line-height: 40px !important;
-    padding: 0 10px !important;
+    height: auto !important;
+    line-height: 1.5 !important;
+    padding: 14px 18px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    font-size: 16px !important;
 }
 
 /* Fix for AI badge positioning */
@@ -102,17 +105,19 @@ input[id^="esc_variety_name"] {
 .esc-variety-field input,
 .esc-seed-variety-row input,
 .esc-modern-form input {
-    font-family: 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif !important;
-    font-size: 15px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    font-size: 16px !important;
 }
 
 /* Additional styling for input fields */
 .esc-seed-variety-row input,
 .esc-seed-field input,
 .esc-variety-field input {
-    padding: 8px 12px !important;
+    padding: 14px 18px !important;
     box-sizing: border-box !important;
     line-height: 1.5 !important;
+    height: auto !important;
+    display: block !important;
 }
 
 /* Reduce spacing between rows */
