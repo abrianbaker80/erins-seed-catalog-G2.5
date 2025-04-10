@@ -55,6 +55,15 @@
     font-style: italic;
 }
 
+/* Error message */
+.esc-variety-error {
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #e53e3e;
+    text-align: center;
+    font-style: italic;
+}
+
 /* Loading Indicator */
 .esc-variety-loading {
     margin-top: 5px;

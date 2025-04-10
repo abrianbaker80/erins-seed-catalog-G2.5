@@ -148,74 +148,25 @@
                     populateVarietyDropdown(response.data.varieties);
                 } else {
                     console.error('Error fetching varieties:', response.data ? response.data.message : 'Unknown error');
+
+                    // Show error message in dropdown
+                    const $dropdown = $('#esc-variety-dropdown');
+                    $dropdown.empty();
+                    $dropdown.append('<div class="esc-variety-error">Error: ' + (response.data ? response.data.message : 'Unable to fetch varieties') + '</div>');
+                    showVarietyDropdown();
                 }
             },
             error: function(_, textStatus, errorThrown) {
                 $('.esc-variety-loading').hide();
                 console.error('AJAX error:', textStatus, errorThrown);
 
-                // Use fallback data if AJAX fails
-                useFallbackVarieties(seedType);
+                // Show error message in dropdown
+                const $dropdown = $('#esc-variety-dropdown');
+                $dropdown.empty();
+                $dropdown.append('<div class="esc-variety-error">Unable to fetch varieties. Please try again later.</div>');
+                showVarietyDropdown();
             }
         });
-    }
-
-    // Use fallback variety data when AJAX is not available
-    function useFallbackVarieties(seedType) {
-        console.log('Using fallback varieties for:', seedType);
-
-        // Common varieties for popular seed types
-        const fallbackData = {
-            'tomato': ['Brandywine', 'Cherokee Purple', 'San Marzano', 'Roma', 'Better Boy', 'Early Girl', 'Beefsteak', 'Cherry', 'Grape', 'Sungold', 'Black Krim', 'Green Zebra', 'Mortgage Lifter', 'Amish Paste', 'Yellow Pear'],
-            'pepper': ['Bell', 'Jalapeño', 'Habanero', 'Cayenne', 'Serrano', 'Poblano', 'Anaheim', 'Thai', 'Ghost', 'Banana', 'Sweet Italian', 'Hungarian Wax', 'Shishito', 'Carolina Reaper', 'Scotch Bonnet'],
-            'bean': ['Kentucky Wonder', 'Blue Lake', 'Pinto', 'Black', 'Navy', 'Lima', 'Kidney', 'Fava', 'Garbanzo', 'Green', 'Yellow Wax', 'Dragon Tongue', 'Scarlet Runner', 'Cannellini', 'Great Northern'],
-            'lettuce': ['Romaine', 'Butterhead', 'Iceberg', 'Loose Leaf', 'Red Leaf', 'Green Leaf', 'Bibb', 'Arugula', 'Oak Leaf', 'Batavian', 'Mesclun Mix', 'Little Gem', 'Butter Crunch', 'Salad Bowl', 'Lollo Rossa'],
-            'cucumber': ['Straight Eight', 'Marketmore', 'Pickling', 'English', 'Armenian', 'Lemon', 'Persian', 'Japanese', 'Kirby', 'Burpless', 'Slicing', 'Boston Pickling', 'Suyo Long', 'Mexican Sour Gherkin', 'Muncher'],
-            'squash': ['Zucchini', 'Yellow Summer', 'Butternut', 'Acorn', 'Spaghetti', 'Delicata', 'Hubbard', 'Pumpkin', 'Patty Pan', 'Crookneck', 'Kabocha', 'Buttercup', 'Carnival', 'Sweet Dumpling', 'Turban'],
-            'corn': ['Sweet', 'Silver Queen', 'Butter and Sugar', 'Peaches and Cream', 'Golden Bantam', 'Honey Select', 'Ambrosia', 'Jubilee', 'Bodacious', 'Incredible', 'Kandy Korn', 'Silver King', 'Honey and Cream', 'Stowell\'s Evergreen', 'Country Gentleman'],
-            'carrot': ['Danvers', 'Nantes', 'Imperator', 'Chantenay', 'Little Finger', 'Purple Dragon', 'Cosmic Purple', 'Rainbow', 'Scarlet Nantes', 'Thumbelina', 'Bolero', 'Yellowstone', 'White Satin', 'Atomic Red', 'Paris Market'],
-            'radish': ['Cherry Belle', 'French Breakfast', 'White Icicle', 'Watermelon', 'Black Spanish', 'Daikon', 'Easter Egg', 'China Rose', 'Purple Plum', 'Champion', 'White Beauty', 'Red King', 'Sparkler', 'Green Meat', 'Zlata'],
-            'onion': ['Yellow Sweet Spanish', 'Red Burgundy', 'White Sweet Spanish', 'Walla Walla', 'Vidalia', 'Texas Supersweet', 'Candy', 'Red Wing', 'Evergreen Bunching', 'Crystal White Wax', 'Southport White Globe', 'Ailsa Craig', 'Red Baron', 'Stuttgarter', 'Cipollini']
-        };
-
-        // Normalize seed type to lowercase for matching
-        const normalizedSeedType = seedType.toLowerCase();
-
-        // Find the closest match in our fallback data
-        let bestMatch = null;
-        let bestMatchScore = 0;
-
-        for (const key in fallbackData) {
-            if (normalizedSeedType === key) {
-                // Exact match
-                bestMatch = key;
-                break;
-            } else if (normalizedSeedType.includes(key) || key.includes(normalizedSeedType)) {
-                // Partial match - use the longer match as better
-                const matchScore = key.length;
-                if (matchScore > bestMatchScore) {
-                    bestMatch = key;
-                    bestMatchScore = matchScore;
-                }
-            }
-        }
-
-        if (bestMatch && fallbackData[bestMatch]) {
-            // Cache the varieties
-            varietiesCache[seedType] = fallbackData[bestMatch];
-
-            // Populate the dropdown
-            populateVarietyDropdown(fallbackData[bestMatch]);
-        } else {
-            // No match found, use generic varieties
-            const genericVarieties = ['Common', 'Heirloom', 'Hybrid', 'Organic', 'Heritage', 'Standard', 'Dwarf', 'Giant', 'Early', 'Late', 'Mid-Season', 'Compact', 'Climbing', 'Bush', 'Trailing'];
-
-            // Cache the varieties
-            varietiesCache[seedType] = genericVarieties;
-
-            // Populate the dropdown
-            populateVarietyDropdown(genericVarieties);
-        }
     }
 
     // Populate the variety dropdown with options
