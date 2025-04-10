@@ -188,40 +188,9 @@
     outline: none;
 }
 
-/* Simplified Sun Requirements Display */
-.esc-sun-requirements {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 5px;
-}
-
-.esc-sun-option {
-    flex: 1 1 auto;
-    background-color: #f7fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    padding: 10px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.esc-sun-option:hover {
-    background-color: #edf2f7;
-}
-
-.esc-sun-option.selected {
-    background-color: #ebf8ff;
-    border-color: #4299e1;
-    color: #2b6cb0;
-    font-weight: 500;
-}
-
-.esc-sun-option .sun-icon {
-    display: block;
-    font-size: 20px;
-    margin-bottom: 5px;
+/* Sun Requirements Display - Using standard text input */
+#esc_sun_requirements, [name="sun_requirements"] {
+    display: block !important;
 }
 
 /* Improved AI Status Badge */

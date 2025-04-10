@@ -4,25 +4,11 @@
 jQuery(document).ready(function($) {
     'use strict';
 
-    // Function to convert Sun Requirements to text display
+    // Function to convert Sun Requirements to text display - DISABLED
     function convertSunRequirementsToText() {
-        // Find all sunlight radio button groups
-        $('.esc-form-field').each(function() {
-            const $field = $(this);
-            const $label = $field.find('label[for="esc_sunlight"]');
-
-            if ($label.length) {
-                const $toggleGroup = $field.find('.esc-toggle-group');
-                const $checkedRadio = $toggleGroup.find('input[type="radio"]:checked');
-
-                // Create text display element if it doesn't exist
-                if ($field.find('.esc-sunlight-text').length === 0) {
-                    const sunValue = $checkedRadio.length ? $checkedRadio.val() : '';
-                    const $textDisplay = $('<div class="esc-sunlight-text"></div>').text(sunValue);
-                    $toggleGroup.after($textDisplay);
-                }
-            }
-        });
+        // Function disabled - we want to keep the original text input field
+        // without any conversion or special handling
+        return;
     }
 
     // Function to convert Seed Categories to single text display

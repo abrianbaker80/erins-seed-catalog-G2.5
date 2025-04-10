@@ -311,7 +311,7 @@ wp_enqueue_script('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/js/esc-ai-
                             <div class="esc-form-row">
                                 <div class="esc-form-field">
                                     <label for="esc_sun_requirements"><?php esc_html_e('Sun Requirements', 'erins-seed-catalog'); ?></label>
-                                    <input type="text" id="esc_sun_requirements" name="sun_requirements" placeholder="e.g., Full Sun, Partial Shade">
+                                    <input type="text" id="esc_sun_requirements" name="sun_requirements" placeholder="e.g., Full Sun">
                                 </div>
 
                                 <div class="esc-form-field">

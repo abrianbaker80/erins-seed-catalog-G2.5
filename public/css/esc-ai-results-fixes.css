@@ -125,17 +125,17 @@ input[id^="esc_variety_name"] {
     margin-bottom: 15px !important;
 }
 
-/* Convert Sun Requirements to text display like Sowing Spacing */
-.esc-toggle-group {
-    display: none !important;
-}
-
-.esc-sunlight-text {
+/* Sun Requirements should use standard text input */
+#esc_sun_requirements, [name="sun_requirements"] {
+    display: block !important;
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 14px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
     background-color: #fff;
+    font-size: 16px;
+    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
 }
 
 /* Seed Category styling */
