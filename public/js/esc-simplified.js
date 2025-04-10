@@ -28,6 +28,9 @@
         // Initialize floating labels
         initFloatingLabels();
 
+        // Initialize confidence indicators
+        initConfidenceIndicators();
+
         // Initialize variety suggestions
         setTimeout(function() {
             initVarietySuggestions();
@@ -37,6 +40,7 @@
         setTimeout(function() {
             cleanupFormStructure();
             initVarietySuggestions();
+            initConfidenceIndicators();
         }, 500);
     }
 
@@ -120,11 +124,8 @@
     function cleanupFormStructure() {
         // Store references to important elements we want to keep
         const $form = $('#esc-add-seed-form-container');
-        const $aiPhase = $('#esc-phase-ai-input');
         const $seedInput = $('#esc_seed_name');
         const $varietyInput = $('#esc_variety_name');
-        const $aiButton = $('#esc-ai-fetch-trigger');
-        const $manualLink = $('#esc-toggle-manual-entry');
 
         // Get values from inputs if they exist
         const seedValue = $seedInput.val();
@@ -845,6 +846,12 @@
                                     }
                                 }
                             });
+
+                            // Trigger event for confidence indicators
+                            $(document).trigger('esc:ai_data_populated', [response.data]);
+
+                            // Update confidence indicators
+                            updateConfidenceIndicators(response.data);
                         } catch (error) {
                             console.error('Error populating form:', error);
                             alert('There was an error populating the form. Please try again or enter details manually.');
@@ -856,7 +863,7 @@
                     console.error('Error fetching seed information:', response.data?.message);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function(_, status, error) {
                 stopLoadingStageAnimation();
                 showAIStatus('error');
                 console.error('AJAX Error:', status, error);
@@ -1182,6 +1189,109 @@
         $('.esc-changes-list').append(listItem);
     }
 
+    // Initialize confidence indicators
+    function initConfidenceIndicators() {
+        console.log('Initializing confidence indicators');
+
+        // Find all confidence indicators
+        const $indicators = $('.esc-confidence-indicator');
+
+        if ($indicators.length) {
+            console.log('Found ' + $indicators.length + ' confidence indicators');
+
+            // Make sure they have the correct icon
+            $indicators.each(function() {
+                const $indicator = $(this);
+                const confidence = $indicator.attr('data-confidence');
+
+                // Make sure the indicator has the shield icon
+                if (!$indicator.find('.dashicons-shield').length) {
+                    $indicator.html('<span class="dashicons dashicons-shield"></span>' +
+                        '<span class="esc-confidence-tooltip">' + getConfidenceText(confidence) + '</span>');
+                }
+
+                // Make sure the tooltip has the correct text
+                $indicator.find('.esc-confidence-tooltip').text(getConfidenceText(confidence));
+            });
+        } else {
+            console.log('No confidence indicators found');
+        }
+    }
+
+    // Get confidence text based on level
+    function getConfidenceText(confidence) {
+        switch (confidence) {
+            case 'high':
+                return 'High confidence: This information comes from verified sources.';
+            case 'medium':
+                return 'Medium confidence: This information is likely correct but may need verification.';
+            case 'low':
+                return 'Low confidence: This information is uncertain and should be verified.';
+            default:
+                return 'Confidence level unknown.';
+        }
+    }
+
+    // Update confidence indicators based on AI data
+    function updateConfidenceIndicators(data) {
+        console.log('Updating confidence indicators with data:', data);
+
+        if (!data || typeof data !== 'object') {
+            console.error('Invalid data for confidence indicators');
+            return;
+        }
+
+        // Process each field in the data
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                const value = data[key];
+                let confidence = 'medium'; // Default confidence level
+
+                // Basic fields like seed_name and variety_name are high confidence
+                if (key === 'seed_name' || key === 'variety_name') {
+                    confidence = 'high';
+                }
+
+                // If the value is empty or null, confidence is low
+                if (!value || value === 'null' || value === 'undefined') {
+                    confidence = 'low';
+                }
+
+                // Find the corresponding confidence indicator
+                let $field = $('#esc_' + key + '_review');
+                if (!$field.length) {
+                    $field = $('#esc_' + key);
+                }
+
+                if ($field.length) {
+                    const $indicator = $field.closest('.esc-input-with-confidence').find('.esc-confidence-indicator');
+
+                    if ($indicator.length) {
+                        console.log('Setting confidence for ' + key + ' to ' + confidence);
+
+                        // Update the confidence level
+                        $indicator.attr('data-confidence', confidence);
+
+                        // Update the tooltip text
+                        let tooltipText = 'Confidence level unknown.';
+                        switch (confidence) {
+                            case 'high':
+                                tooltipText = 'High confidence: This information comes from verified sources.';
+                                break;
+                            case 'medium':
+                                tooltipText = 'Medium confidence: This information is likely correct but may need verification.';
+                                break;
+                            case 'low':
+                                tooltipText = 'Low confidence: This information is uncertain and should be verified.';
+                                break;
+                        }
+                        $indicator.find('.esc-confidence-tooltip').text(tooltipText);
+                    }
+                }
+            }
+        }
+    }
+
     // Update AI status badges
     function updateAIStatusBadges() {
         try {
@@ -1290,8 +1400,6 @@
 
     // Retry AI for section
     function retryAIForSection() {
-        const section = $(this).data('section');
-
         // Show loading state
         const $card = $(this).closest('.esc-form-card');
         $card.find('.esc-retry-ai').hide();

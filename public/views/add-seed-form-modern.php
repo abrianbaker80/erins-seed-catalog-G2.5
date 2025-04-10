@@ -29,7 +29,7 @@ wp_enqueue_script('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/js/esc-ai-
                             <div class="esc-floating-label">
                                 <input type="text" id="esc_seed_name" name="seed_name" placeholder=" " required autocomplete="off">
                                 <label for="esc_seed_name"><?php esc_html_e('Seed Type', 'erins-seed-catalog'); ?> <span class="required">*</span></label>
-                                <p class="description"><?php esc_html_e('The main name, e.g., "Tomato", "Bean", "Zinnia".', 'erins-seed-catalog'); ?></p>
+                                <p class="description"><?php esc_html_e('Enter seed name.', 'erins-seed-catalog'); ?></p>
                             </div>
                         </div>
 
@@ -37,7 +37,7 @@ wp_enqueue_script('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/js/esc-ai-
                             <div class="esc-floating-label">
                                 <input type="text" id="esc_variety_name" name="variety_name" placeholder=" " autocomplete="off">
                                 <label for="esc_variety_name"><?php esc_html_e('Variety (Optional)', 'erins-seed-catalog'); ?></label>
-                                <p class="description"><?php esc_html_e('Specific variety, e.g., "Brandywine", "Kentucky Wonder", "California Giant".', 'erins-seed-catalog'); ?></p>
+                                <p class="description"><?php esc_html_e('Select or enter variety name.', 'erins-seed-catalog'); ?></p>
                             </div>
                             <div id="esc-variety-dropdown" class="esc-variety-dropdown"></div>
                             <div class="esc-variety-loading" style="display: none;">
@@ -71,10 +71,7 @@ wp_enqueue_script('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/js/esc-ai-
 
                         <!-- Success State - Hidden, using the review phase header instead -->
                         <div class="esc-ai-success" style="display: none;">
-                            <!-- Success message removed to avoid redundancy -->
-                            <div style="display: none;">
-                                <span id="esc-seed-name-display"></span>
-                            </div>
+                            <!-- Success message completely removed to avoid redundancy -->
                         </div>
 
                         <!-- Error State -->
