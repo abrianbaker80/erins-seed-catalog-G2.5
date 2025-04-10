@@ -178,9 +178,6 @@
 
             // Make sure the detailed view is visible
             $('.esc-review-mode').show();
-
-            // Ensure the success message stays hidden
-            $('.esc-ai-success').hide();
         }, 100);
     }
 
@@ -230,6 +227,7 @@
                     // Update seed name display
                     const displayName = varietyName ? seedName + ' (' + varietyName + ')' : seedName;
                     $('#esc-seed-name-display, #esc-seed-display-name').text(displayName);
+                    console.log('Updated seed display name to:', displayName);
 
                     // Ensure the review phase is visible before populating
                     $('#esc-phase-review-edit').show();
@@ -253,11 +251,8 @@
                             // Populate the review form with the seed data
                             populateReviewForm(response.data);
 
-                            // Switch to review phase and hide the success message
+                            // Switch to review phase
                             showPhase('review-edit');
-
-                            // Hide the success message since we now have the review header
-                            $('.esc-ai-success').hide();
 
                             // Ensure floating labels are properly initialized
                             $('.esc-floating-label input, .esc-floating-label textarea').each(function() {

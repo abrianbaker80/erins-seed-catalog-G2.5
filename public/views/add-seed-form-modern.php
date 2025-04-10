@@ -69,15 +69,11 @@ wp_enqueue_script('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/js/esc-ai-
                             </div>
                         </div>
 
-                        <!-- Success State -->
+                        <!-- Success State - Hidden, using the review phase header instead -->
                         <div class="esc-ai-success" style="display: none;">
-                            <div class="esc-success-icon">
-                                <span class="dashicons dashicons-yes-alt"></span>
-                            </div>
-                            <div class="esc-success-message">
-                                <h4><?php esc_html_e('Information Retrieved!', 'erins-seed-catalog'); ?></h4>
-                                <p><?php esc_html_e('AI found details for', 'erins-seed-catalog'); ?> <strong id="esc-seed-name-display"></strong>.</p>
-                                <p><?php esc_html_e('Review the information below and make any necessary adjustments.', 'erins-seed-catalog'); ?></p>
+                            <!-- Success message removed to avoid redundancy -->
+                            <div style="display: none;">
+                                <span id="esc-seed-name-display"></span>
                             </div>
                         </div>
 
