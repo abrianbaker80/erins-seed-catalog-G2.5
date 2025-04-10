@@ -28,10 +28,16 @@
         // Initialize floating labels
         initFloatingLabels();
 
+        // Initialize variety suggestions
+        setTimeout(function() {
+            initVarietySuggestions();
+        }, 200);
+
         // Run a second cleanup after a short delay to catch any elements that might be added dynamically
         setTimeout(function() {
             cleanupFormStructure();
-        }, 100);
+            initVarietySuggestions();
+        }, 500);
     }
 
     // Create modern UI structure
@@ -183,13 +189,13 @@
                         <input type="text" id="esc_seed_name" name="esc_seed_name" placeholder="e.g., Tomato, Bean, Zinnia" class="esc-field-input" />
                         <div class="esc-field-help">${seedHelp}</div>
                     </div>
-                    <div class="esc-field-group">
+                    <div class="esc-field-group" style="position: relative;">
                         <label for="esc_variety_name">${varietyLabel}</label>
                         <input type="text" id="esc_variety_name" name="esc_variety_name" placeholder="e.g., Brandywine, Kentucky Wonder" class="esc-field-input" />
                         <div class="esc-field-help">${varietyHelp}</div>
-                        <div id="esc-variety-dropdown" class="esc-variety-dropdown" style="display: none;"></div>
-                        <div class="esc-variety-loading" style="display: none;">
-                            <span class="dashicons dashicons-update-alt esc-spin"></span> Loading varieties...
+                        <div id="esc-variety-dropdown" class="esc-variety-dropdown" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; z-index: 1000; background: white; border: 1px solid #ccc;"></div>
+                        <div class="esc-variety-loading" style="display: none; margin-top: 5px;">
+                            <span class="dashicons dashicons-update-alt esc-spin" style="display: inline-block; margin-right: 5px;"></span> Loading varieties...
                         </div>
                     </div>
                 </div>
@@ -218,6 +224,15 @@
             // Hide the original inputs to avoid duplicates
             $seedInput.closest('.esc-form-field, .esc-floating-label').hide();
             $varietyInput.closest('.esc-form-field, .esc-floating-label').hide();
+
+            // Add a test button for debugging
+            const $testBtn = $('<button id="esc-test-varieties-btn" type="button" style="margin-top: 10px; padding: 5px 10px; background: #f0f0f0; border: 1px solid #ccc; border-radius: 4px;">Test Varieties</button>');
+            $seedVarietyRow.find('.esc-field-group').last().append($testBtn);
+
+            $testBtn.on('click', function(e) {
+                e.preventDefault();
+                testVarietyDropdown();
+            });
 
             // Initialize variety suggestions for the new inputs
             setTimeout(function() {
@@ -418,6 +433,17 @@
         // Create variety dropdown if it doesn't exist
         ensureVarietyDropdownExists();
 
+        // Add a test button for debugging
+        if ($('#esc-test-varieties-btn').length === 0) {
+            const $testBtn = $('<button id="esc-test-varieties-btn" type="button" style="margin-top: 10px; padding: 5px 10px; background: #f0f0f0; border: 1px solid #ccc; border-radius: 4px;">Test Varieties</button>');
+            $('#esc_variety_name').closest('.esc-field-group').append($testBtn);
+
+            $testBtn.on('click', function(e) {
+                e.preventDefault();
+                testVarietyDropdown();
+            });
+        }
+
         // Add event listeners for seed name field
         $('#esc_seed_name').on('keyup', function() {
             clearTimeout(typingTimer);
@@ -476,10 +502,59 @@
 
         // Close dropdown when clicking outside
         $(document).on('click', function(e) {
-            if (!$(e.target).closest('.esc-variety-field-container, .esc-field-group').length) {
+            if (!$(e.target).closest('.esc-variety-field-container, .esc-field-group, #esc-test-varieties-btn').length) {
                 hideVarietyDropdown();
             }
         });
+    }
+
+    // Test function to verify the dropdown is working
+    function testVarietyDropdown() {
+        console.log('Testing variety dropdown');
+
+        // Create a test dropdown if it doesn't exist
+        ensureVarietyDropdownExists();
+
+        // Get the dropdown
+        const $dropdown = $('#esc-variety-dropdown');
+
+        // Clear existing options
+        $dropdown.empty();
+
+        // Add test options
+        const testOptions = [
+            'Test Variety 1',
+            'Test Variety 2',
+            'Test Variety 3',
+            'Test Variety 4',
+            'Test Variety 5'
+        ];
+
+        testOptions.forEach(function(option) {
+            const $option = $('<div class="esc-variety-option" style="padding: 10px; cursor: pointer; border-bottom: 1px solid #eee;">' + option + '</div>');
+
+            $option.on('click', function() {
+                selectVariety(option);
+            });
+
+            $dropdown.append($option);
+        });
+
+        // Show the dropdown
+        $dropdown.css({
+            'display': 'block',
+            'position': 'absolute',
+            'z-index': 1000,
+            'background': 'white',
+            'border': '1px solid #ccc',
+            'width': '100%',
+            'max-height': '200px',
+            'overflow-y': 'auto',
+            'top': $('#esc_variety_name').outerHeight() + 'px',
+            'left': '0'
+        });
+
+        console.log('Dropdown should be visible now');
     }
 
     // Convert input value to title case
@@ -501,27 +576,43 @@
     function ensureVarietyDropdownExists() {
         // Check if dropdown already exists
         if ($('#esc-variety-dropdown').length === 0) {
-            // Create the dropdown
-            const $dropdown = $('<div id="esc-variety-dropdown" class="esc-variety-dropdown" style="display: none;"></div>');
+            console.log('Creating variety dropdown');
+
+            // Create the dropdown with inline styles to ensure visibility
+            const $dropdown = $('<div id="esc-variety-dropdown" class="esc-variety-dropdown" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%; max-height: 200px; overflow-y: auto;"></div>');
 
             // Find the variety field container
             const $varietyField = $('#esc_variety_name');
 
             if ($varietyField.length) {
+                console.log('Found variety field');
+
                 // If the variety field is in a field group, append the dropdown to it
                 const $fieldGroup = $varietyField.closest('.esc-field-group');
                 if ($fieldGroup.length) {
+                    console.log('Appending dropdown to field group');
+                    $fieldGroup.css('position', 'relative');
                     $fieldGroup.append($dropdown);
                 } else {
                     // Otherwise, wrap the variety field in a container and append the dropdown
-                    $varietyField.wrap('<div class="esc-variety-field-container"></div>');
+                    console.log('Wrapping variety field and appending dropdown');
+                    $varietyField.wrap('<div class="esc-variety-field-container" style="position: relative;"></div>');
                     $varietyField.after($dropdown);
                 }
 
-                // Add loading indicator
-                const $loading = $('<div class="esc-variety-loading" style="display: none;"><span class="dashicons dashicons-update-alt esc-spin"></span> Loading varieties...</div>');
+                // Add loading indicator with inline styles
+                const $loading = $('<div class="esc-variety-loading" style="display: none; margin-top: 5px; color: #718096; font-size: 13px;"><span class="dashicons dashicons-update-alt esc-spin" style="margin-right: 5px; display: inline-block;"></span> Loading varieties...</div>');
                 $dropdown.after($loading);
+
+                // Add a test option to verify the dropdown is working
+                $dropdown.append('<div class="esc-variety-option" style="padding: 10px; cursor: pointer; border-bottom: 1px solid #eee;">Test Variety</div>');
+
+                console.log('Dropdown created and appended');
+            } else {
+                console.log('Variety field not found');
             }
+        } else {
+            console.log('Dropdown already exists');
         }
     }
 
@@ -1383,6 +1474,9 @@
 
         // Show the dropdown
         showVarietyDropdown();
+
+        // Log for debugging
+        console.log('Populated dropdown with', varieties.length, 'varieties');
     }
 
     // Filter variety options based on input
@@ -1416,12 +1510,33 @@
 
     // Show the variety dropdown
     function showVarietyDropdown() {
-        $('#esc-variety-dropdown').show();
+        const $dropdown = $('#esc-variety-dropdown');
+        $dropdown.css('display', 'block');
+        console.log('Showing dropdown, display style:', $dropdown.css('display'));
+
+        // Make sure the dropdown is visible and positioned correctly
+        if ($dropdown.children().length > 0) {
+            // Position the dropdown correctly
+            const $varietyField = $('#esc_variety_name');
+            if ($varietyField.length) {
+                const fieldPosition = $varietyField.position();
+                const fieldHeight = $varietyField.outerHeight();
+
+                // Ensure the dropdown is visible
+                $dropdown.css({
+                    'display': 'block',
+                    'z-index': 1000,
+                    'width': $varietyField.outerWidth() + 'px'
+                });
+            }
+        } else {
+            console.log('Dropdown has no children');
+        }
     }
 
     // Hide the variety dropdown
     function hideVarietyDropdown() {
-        $('#esc-variety-dropdown').hide();
+        $('#esc-variety-dropdown').css('display', 'none');
     }
 
     // Initialize when document is ready

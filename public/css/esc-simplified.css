@@ -194,19 +194,21 @@
     position: relative;
 }
 
+.esc-variety-dropdown,
+#esc-variety-dropdown,
 #esc-add-seed-form-container .esc-variety-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    max-height: 200px;
-    overflow-y: auto;
-    background-color: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 0 0 8px 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 100;
-    margin-top: 2px;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-height: 200px !important;
+    overflow-y: auto !important;
+    background-color: #fff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 0 0 8px 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    z-index: 1000 !important;
+    margin-top: 2px !important;
 }
 
 /* Position dropdown for field group layout */
@@ -219,32 +221,41 @@
     top: calc(100% - 6px);
 }
 
+.esc-variety-option,
+#esc-variety-dropdown .esc-variety-option,
 #esc-add-seed-form-container .esc-variety-option {
-    padding: 10px 12px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    font-size: 14px;
-    color: #4a5568;
+    padding: 10px 12px !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+    font-size: 14px !important;
+    color: #4a5568 !important;
+    display: block !important;
+    border-bottom: 1px solid #f0f4f8 !important;
 }
 
+.esc-variety-option:hover,
+#esc-variety-dropdown .esc-variety-option:hover,
 #esc-add-seed-form-container .esc-variety-option:hover {
-    background-color: #ebf5fb;
+    background-color: #ebf5fb !important;
 }
 
+.esc-variety-loading,
 #esc-add-seed-form-container .esc-variety-loading {
-    margin-top: 5px;
-    color: #718096;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
+    margin-top: 5px !important;
+    color: #718096 !important;
+    font-size: 13px !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
+.esc-variety-loading .dashicons,
 #esc-add-seed-form-container .esc-variety-loading .dashicons {
-    margin-right: 5px;
+    margin-right: 5px !important;
 }
 
 .esc-spin {
-    animation: esc-spin 2s linear infinite;
+    animation: esc-spin 2s linear infinite !important;
+    display: inline-block !important;
 }
 
 @keyframes esc-spin {
