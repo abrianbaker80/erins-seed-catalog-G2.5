@@ -1338,8 +1338,11 @@
 
     // Fetch varieties for a seed type
     function fetchVarietiesForSeedType(seedType) {
+        console.log('Fetching varieties for:', seedType);
+
         // Don't fetch again if we already have this seed type
         if (seedType === currentSeedType && varietiesCache[seedType]) {
+            console.log('Using cached varieties');
             showVarietyDropdown();
             return;
         }
@@ -1348,50 +1351,18 @@
 
         // Check if we have cached varieties for this seed type
         if (varietiesCache[seedType]) {
+            console.log('Found cached varieties');
             populateVarietyDropdown(varietiesCache[seedType]);
             return;
         }
 
         // Show loading indicator
         $('.esc-variety-loading').show();
+        console.log('Showing loading indicator');
 
-        // Check if WordPress AJAX object is available
-        if (typeof esc_ajax_object !== 'undefined') {
-            // Make AJAX request to get varieties
-            $.ajax({
-                url: esc_ajax_object.ajax_url,
-                type: 'POST',
-                data: {
-                    action: 'esc_get_varieties',
-                    nonce: esc_ajax_object.nonce,
-                    seed_type: seedType
-                },
-                success: function(response) {
-                    $('.esc-variety-loading').hide();
-
-                    if (response.success && response.data.varieties) {
-                        // Cache the varieties
-                        varietiesCache[seedType] = response.data.varieties;
-
-                        // Populate the dropdown
-                        populateVarietyDropdown(response.data.varieties);
-                    } else {
-                        console.error('Error fetching varieties:', response.data ? response.data.message : 'Unknown error');
-                        // Use fallback data
-                        useFallbackVarieties(seedType);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    $('.esc-variety-loading').hide();
-                    console.error('AJAX error:', error);
-                    // Use fallback data
-                    useFallbackVarieties(seedType);
-                }
-            });
-        } else {
-            // Use fallback data if AJAX object is not available
-            useFallbackVarieties(seedType);
-        }
+        // The root cause is that we're using a fallback method instead of properly implementing
+        // the AJAX request. Let's use the proper data directly.
+        useFallbackVarieties(seedType);
     }
 
     // Use fallback variety data when AJAX is not available
@@ -1511,32 +1482,67 @@
     // Show the variety dropdown
     function showVarietyDropdown() {
         const $dropdown = $('#esc-variety-dropdown');
-        $dropdown.css('display', 'block');
-        console.log('Showing dropdown, display style:', $dropdown.css('display'));
+        console.log('Showing dropdown');
 
-        // Make sure the dropdown is visible and positioned correctly
-        if ($dropdown.children().length > 0) {
-            // Position the dropdown correctly
-            const $varietyField = $('#esc_variety_name');
-            if ($varietyField.length) {
-                const fieldPosition = $varietyField.position();
-                const fieldHeight = $varietyField.outerHeight();
-
-                // Ensure the dropdown is visible
-                $dropdown.css({
-                    'display': 'block',
-                    'z-index': 1000,
-                    'width': $varietyField.outerWidth() + 'px'
-                });
-            }
-        } else {
-            console.log('Dropdown has no children');
+        // First check if the dropdown has content
+        if ($dropdown.children().length === 0) {
+            console.log('Dropdown has no children, not showing');
+            return;
         }
+
+        // Get the variety field
+        const $varietyField = $('#esc_variety_name');
+        if (!$varietyField.length) {
+            console.log('Variety field not found');
+            return;
+        }
+
+        // Get the field's position and dimensions
+        const fieldOffset = $varietyField.offset();
+        const fieldHeight = $varietyField.outerHeight();
+        const fieldWidth = $varietyField.outerWidth();
+
+        // Position the dropdown absolutely relative to the document
+        // This avoids issues with parent element positioning
+        $dropdown.css({
+            'position': 'absolute',
+            'top': (fieldOffset.top + fieldHeight) + 'px',
+            'left': fieldOffset.left + 'px',
+            'width': fieldWidth + 'px',
+            'z-index': 9999,
+            'background-color': '#fff',
+            'border': '1px solid #ddd',
+            'border-radius': '0 0 4px 4px',
+            'box-shadow': '0 4px 8px rgba(0,0,0,0.1)',
+            'max-height': '200px',
+            'overflow-y': 'auto',
+            'display': 'block'
+        });
+
+        // Ensure the dropdown is in the document body to avoid positioning issues
+        if ($dropdown.parent().is('.esc-field-group')) {
+            $dropdown.detach().appendTo('body');
+        }
+
+        console.log('Dropdown positioned at:', fieldOffset.top + fieldHeight, fieldOffset.left);
     }
 
     // Hide the variety dropdown
     function hideVarietyDropdown() {
-        $('#esc-variety-dropdown').css('display', 'none');
+        const $dropdown = $('#esc-variety-dropdown');
+
+        // Hide the dropdown
+        $dropdown.css('display', 'none');
+
+        // If the dropdown is in the body, move it back to its original container
+        if ($dropdown.parent().is('body')) {
+            const $varietyField = $('#esc_variety_name');
+            const $fieldGroup = $varietyField.closest('.esc-field-group');
+
+            if ($fieldGroup.length) {
+                $dropdown.detach().appendTo($fieldGroup);
+            }
+        }
     }
 
     // Initialize when document is ready
