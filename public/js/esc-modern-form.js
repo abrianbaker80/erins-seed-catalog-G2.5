@@ -178,6 +178,9 @@
 
             // Make sure the detailed view is visible
             $('.esc-review-mode').show();
+
+            // Ensure the success message stays hidden
+            $('.esc-ai-success').hide();
         }, 100);
     }
 
@@ -250,8 +253,11 @@
                             // Populate the review form with the seed data
                             populateReviewForm(response.data);
 
-                            // Switch to review phase
+                            // Switch to review phase and hide the success message
                             showPhase('review-edit');
+
+                            // Hide the success message since we now have the review header
+                            $('.esc-ai-success').hide();
 
                             // Ensure floating labels are properly initialized
                             $('.esc-floating-label input, .esc-floating-label textarea').each(function() {

@@ -75,6 +75,8 @@
     align-items: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     border-left: 4px solid #4299e1;
+    position: relative; /* Ensure proper stacking context */
+    z-index: 1; /* Higher than the success message */
 }
 
 .esc-ai-result-icon {
@@ -411,21 +413,21 @@
     .esc-form-field {
         flex: 1 1 100%;
     }
-    
+
     .esc-form-actions {
         flex-direction: column-reverse;
         gap: 10px;
     }
-    
+
     .esc-button {
         width: 100%;
     }
-    
+
     .esc-ai-result-summary {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .esc-ai-result-icon {
         margin-right: 0;
         margin-bottom: 15px;
