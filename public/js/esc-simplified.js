@@ -187,6 +187,10 @@
                         <label for="esc_variety_name">${varietyLabel}</label>
                         <input type="text" id="esc_variety_name" name="esc_variety_name" placeholder="e.g., Brandywine, Kentucky Wonder" class="esc-field-input" />
                         <div class="esc-field-help">${varietyHelp}</div>
+                        <div id="esc-variety-dropdown" class="esc-variety-dropdown" style="display: none;"></div>
+                        <div class="esc-variety-loading" style="display: none;">
+                            <span class="dashicons dashicons-update-alt esc-spin"></span> Loading varieties...
+                        </div>
                     </div>
                 </div>
             `);
@@ -214,6 +218,11 @@
             // Hide the original inputs to avoid duplicates
             $seedInput.closest('.esc-form-field, .esc-floating-label').hide();
             $varietyInput.closest('.esc-form-field, .esc-floating-label').hide();
+
+            // Initialize variety suggestions for the new inputs
+            setTimeout(function() {
+                initVarietySuggestions();
+            }, 100);
         }
     }
 
@@ -366,6 +375,12 @@
         $('.esc-floating-label input, .esc-floating-label textarea, .esc-floating-label select').trigger('input');
     }
 
+    // Variables for variety suggestions
+    let typingTimer;
+    const doneTypingInterval = 800; // Time in ms after user stops typing
+    let currentSeedType = '';
+    let varietiesCache = {};
+
     // Initialize event listeners
     function initEventListeners() {
         // AI fetch trigger
@@ -393,6 +408,121 @@
         // Range slider sync
         $('.esc-slider').on('input', syncRangeSlider);
         $('.esc-slider-value input').on('input', syncRangeSliderFromInput);
+
+        // Initialize variety suggestions
+        initVarietySuggestions();
+    }
+
+    // Initialize variety suggestions
+    function initVarietySuggestions() {
+        // Create variety dropdown if it doesn't exist
+        ensureVarietyDropdownExists();
+
+        // Add event listeners for seed name field
+        $('#esc_seed_name').on('keyup', function() {
+            clearTimeout(typingTimer);
+
+            const seedType = $(this).val().trim();
+
+            // Only proceed if we have at least 3 characters
+            if (seedType.length < 3) {
+                hideVarietyDropdown();
+                return;
+            }
+
+            // Set a timer to fetch varieties after user stops typing
+            typingTimer = setTimeout(function() {
+                fetchVarietiesForSeedType(seedType);
+            }, doneTypingInterval);
+        });
+
+        // Add event listener for seed name change
+        $('#esc_seed_name').on('change', function() {
+            // Convert to title case first
+            convertToTitleCase();
+
+            const seedType = $(this).val().trim();
+
+            if (seedType.length >= 3) {
+                fetchVarietiesForSeedType(seedType);
+            } else {
+                hideVarietyDropdown();
+            }
+        });
+
+        // Add event listener for seed name blur
+        $('#esc_seed_name').on('blur', convertToTitleCase);
+
+        // Add event listener for variety field focus
+        $('#esc_variety_name').on('focus', function() {
+            const seedType = $('#esc_seed_name').val().trim();
+            if (seedType.length >= 3) {
+                fetchVarietiesForSeedType(seedType);
+            }
+        });
+
+        // Add event listener for variety field input
+        $('#esc_variety_name').on('input', function() {
+            const input = $(this).val().toLowerCase().trim();
+
+            // If we have cached varieties, filter them
+            if (currentSeedType && varietiesCache[currentSeedType]) {
+                filterVarietyOptions(input);
+            }
+        });
+
+        // Add event listener for variety field blur
+        $('#esc_variety_name').on('blur', convertToTitleCase);
+
+        // Close dropdown when clicking outside
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.esc-variety-field-container, .esc-field-group').length) {
+                hideVarietyDropdown();
+            }
+        });
+    }
+
+    // Convert input value to title case
+    function convertToTitleCase() {
+        const $input = $(this);
+        const value = $input.val().trim();
+
+        if (value) {
+            // Split by spaces and capitalize first letter of each word
+            const titleCaseValue = value.toLowerCase().split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+
+            $input.val(titleCaseValue);
+        }
+    }
+
+    // Ensure variety dropdown exists
+    function ensureVarietyDropdownExists() {
+        // Check if dropdown already exists
+        if ($('#esc-variety-dropdown').length === 0) {
+            // Create the dropdown
+            const $dropdown = $('<div id="esc-variety-dropdown" class="esc-variety-dropdown" style="display: none;"></div>');
+
+            // Find the variety field container
+            const $varietyField = $('#esc_variety_name');
+
+            if ($varietyField.length) {
+                // If the variety field is in a field group, append the dropdown to it
+                const $fieldGroup = $varietyField.closest('.esc-field-group');
+                if ($fieldGroup.length) {
+                    $fieldGroup.append($dropdown);
+                } else {
+                    // Otherwise, wrap the variety field in a container and append the dropdown
+                    $varietyField.wrap('<div class="esc-variety-field-container"></div>');
+                    $varietyField.after($dropdown);
+                }
+
+                // Add loading indicator
+                const $loading = $('<div class="esc-variety-loading" style="display: none;"><span class="dashicons dashicons-update-alt esc-spin"></span> Loading varieties...</div>');
+                $dropdown.after($loading);
+            }
+        }
     }
 
     // Initialize form phases
@@ -1115,6 +1245,185 @@
         }
     }
 
+    // Fetch varieties for a seed type
+    function fetchVarietiesForSeedType(seedType) {
+        // Don't fetch again if we already have this seed type
+        if (seedType === currentSeedType && varietiesCache[seedType]) {
+            showVarietyDropdown();
+            return;
+        }
+
+        currentSeedType = seedType;
+
+        // Check if we have cached varieties for this seed type
+        if (varietiesCache[seedType]) {
+            populateVarietyDropdown(varietiesCache[seedType]);
+            return;
+        }
+
+        // Show loading indicator
+        $('.esc-variety-loading').show();
+
+        // Check if WordPress AJAX object is available
+        if (typeof esc_ajax_object !== 'undefined') {
+            // Make AJAX request to get varieties
+            $.ajax({
+                url: esc_ajax_object.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'esc_get_varieties',
+                    nonce: esc_ajax_object.nonce,
+                    seed_type: seedType
+                },
+                success: function(response) {
+                    $('.esc-variety-loading').hide();
+
+                    if (response.success && response.data.varieties) {
+                        // Cache the varieties
+                        varietiesCache[seedType] = response.data.varieties;
+
+                        // Populate the dropdown
+                        populateVarietyDropdown(response.data.varieties);
+                    } else {
+                        console.error('Error fetching varieties:', response.data ? response.data.message : 'Unknown error');
+                        // Use fallback data
+                        useFallbackVarieties(seedType);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $('.esc-variety-loading').hide();
+                    console.error('AJAX error:', error);
+                    // Use fallback data
+                    useFallbackVarieties(seedType);
+                }
+            });
+        } else {
+            // Use fallback data if AJAX object is not available
+            useFallbackVarieties(seedType);
+        }
+    }
+
+    // Use fallback variety data when AJAX is not available
+    function useFallbackVarieties(seedType) {
+        // Hide loading indicator
+        $('.esc-variety-loading').hide();
+
+        // Common varieties for popular seed types
+        const fallbackData = {
+            'tomato': ['Brandywine', 'Cherokee Purple', 'San Marzano', 'Roma', 'Better Boy', 'Early Girl', 'Beefsteak', 'Cherry', 'Grape', 'Sungold', 'Black Krim', 'Green Zebra', 'Mortgage Lifter', 'Amish Paste', 'Yellow Pear'],
+            'pepper': ['Bell', 'Jalapeño', 'Habanero', 'Cayenne', 'Serrano', 'Poblano', 'Anaheim', 'Thai', 'Ghost', 'Banana', 'Sweet Italian', 'Hungarian Wax', 'Shishito', 'Carolina Reaper', 'Scotch Bonnet'],
+            'bean': ['Kentucky Wonder', 'Blue Lake', 'Pinto', 'Black', 'Navy', 'Lima', 'Kidney', 'Fava', 'Garbanzo', 'Green', 'Yellow Wax', 'Dragon Tongue', 'Scarlet Runner', 'Cannellini', 'Great Northern'],
+            'lettuce': ['Romaine', 'Butterhead', 'Iceberg', 'Loose Leaf', 'Red Leaf', 'Green Leaf', 'Bibb', 'Arugula', 'Oak Leaf', 'Batavian', 'Mesclun Mix', 'Little Gem', 'Butter Crunch', 'Salad Bowl', 'Lollo Rossa'],
+            'cucumber': ['Straight Eight', 'Marketmore', 'Pickling', 'English', 'Armenian', 'Lemon', 'Persian', 'Japanese', 'Kirby', 'Burpless', 'Slicing', 'Boston Pickling', 'Suyo Long', 'Mexican Sour Gherkin', 'Muncher'],
+            'squash': ['Zucchini', 'Yellow Summer', 'Butternut', 'Acorn', 'Spaghetti', 'Delicata', 'Hubbard', 'Pumpkin', 'Patty Pan', 'Crookneck', 'Kabocha', 'Buttercup', 'Carnival', 'Sweet Dumpling', 'Turban'],
+            'corn': ['Sweet', 'Silver Queen', 'Butter and Sugar', 'Peaches and Cream', 'Golden Bantam', 'Honey Select', 'Ambrosia', 'Jubilee', 'Bodacious', 'Incredible', 'Kandy Korn', 'Silver King', 'Honey and Cream', 'Stowell\'s Evergreen', 'Country Gentleman'],
+            'carrot': ['Danvers', 'Nantes', 'Imperator', 'Chantenay', 'Little Finger', 'Purple Dragon', 'Cosmic Purple', 'Rainbow', 'Scarlet Nantes', 'Thumbelina', 'Bolero', 'Yellowstone', 'White Satin', 'Atomic Red', 'Paris Market'],
+            'radish': ['Cherry Belle', 'French Breakfast', 'White Icicle', 'Watermelon', 'Black Spanish', 'Daikon', 'Easter Egg', 'China Rose', 'Purple Plum', 'Champion', 'White Beauty', 'Red King', 'Sparkler', 'Green Meat', 'Zlata'],
+            'onion': ['Yellow Sweet Spanish', 'Red Burgundy', 'White Sweet Spanish', 'Walla Walla', 'Vidalia', 'Texas Supersweet', 'Candy', 'Red Wing', 'Evergreen Bunching', 'Crystal White Wax', 'Southport White Globe', 'Ailsa Craig', 'Red Baron', 'Stuttgarter', 'Cipollini']
+        };
+
+        // Normalize seed type to lowercase for matching
+        const normalizedSeedType = seedType.toLowerCase();
+
+        // Find the closest match in our fallback data
+        let bestMatch = null;
+        let bestMatchScore = 0;
+
+        for (const key in fallbackData) {
+            if (normalizedSeedType === key) {
+                // Exact match
+                bestMatch = key;
+                break;
+            } else if (normalizedSeedType.includes(key) || key.includes(normalizedSeedType)) {
+                // Partial match - use the longer match as better
+                const matchScore = key.length;
+                if (matchScore > bestMatchScore) {
+                    bestMatch = key;
+                    bestMatchScore = matchScore;
+                }
+            }
+        }
+
+        if (bestMatch && fallbackData[bestMatch]) {
+            // Cache the varieties
+            varietiesCache[seedType] = fallbackData[bestMatch];
+
+            // Populate the dropdown
+            populateVarietyDropdown(fallbackData[bestMatch]);
+        } else {
+            // No match found, use generic varieties
+            const genericVarieties = ['Common', 'Heirloom', 'Hybrid', 'Organic', 'Heritage', 'Standard', 'Dwarf', 'Giant', 'Early', 'Late', 'Mid-Season', 'Compact', 'Climbing', 'Bush', 'Trailing'];
+
+            // Cache the varieties
+            varietiesCache[seedType] = genericVarieties;
+
+            // Populate the dropdown
+            populateVarietyDropdown(genericVarieties);
+        }
+    }
+
+    // Populate the variety dropdown with options
+    function populateVarietyDropdown(varieties) {
+        const $dropdown = $('#esc-variety-dropdown');
+
+        // Clear existing options
+        $dropdown.empty();
+
+        // Add each variety as an option
+        varieties.forEach(function(variety) {
+            const $option = $('<div class="esc-variety-option">' + variety + '</div>');
+
+            // Add click handler to select the variety
+            $option.on('click', function() {
+                selectVariety(variety);
+            });
+
+            $dropdown.append($option);
+        });
+
+        // Show the dropdown
+        showVarietyDropdown();
+    }
+
+    // Filter variety options based on input
+    function filterVarietyOptions(input) {
+        const $options = $('.esc-variety-option');
+
+        $options.each(function() {
+            const optionText = $(this).text().toLowerCase();
+
+            if (optionText.includes(input)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }
+
+    // Select a variety
+    function selectVariety(variety) {
+        const $varietyField = $('#esc_variety_name');
+        $varietyField.val(variety);
+
+        // Trigger input event to handle floating label
+        $varietyField.trigger('input');
+
+        // Add has-value class for floating label
+        $varietyField.addClass('has-value');
+
+        hideVarietyDropdown();
+    }
+
+    // Show the variety dropdown
+    function showVarietyDropdown() {
+        $('#esc-variety-dropdown').show();
+    }
+
+    // Hide the variety dropdown
+    function hideVarietyDropdown() {
+        $('#esc-variety-dropdown').hide();
+    }
+
     // Initialize when document is ready
     $(document).ready(function() {
         // Run initialization immediately
@@ -1124,12 +1433,14 @@
         setTimeout(function() {
             cleanupFormStructure();
             createModernUIStructure();
+            initVarietySuggestions();
         }, 300);
 
         // Run again after a longer delay to catch any late-loading elements
         setTimeout(function() {
             cleanupFormStructure();
             createModernUIStructure();
+            initVarietySuggestions();
         }, 1000);
 
         // Clean up when navigating away from the page
@@ -1140,12 +1451,14 @@
     $(window).on('load', function() {
         cleanupFormStructure();
         createModernUIStructure();
+        initVarietySuggestions();
 
         // Set up a periodic check for the first few seconds to catch any dynamic changes
         let checkCount = 0;
         const checkInterval = setInterval(function() {
             cleanupFormStructure();
             createModernUIStructure();
+            initVarietySuggestions();
 
             checkCount++;
             if (checkCount >= 5) {
