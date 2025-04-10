@@ -13,7 +13,10 @@
 
     // Initialize
     function init() {
-        // Create modern UI structure if it doesn't exist
+        // Clean up the form structure first
+        cleanupFormStructure();
+
+        // Create modern UI structure
         createModernUIStructure();
 
         // Initialize event listeners
@@ -24,140 +27,295 @@
 
         // Initialize floating labels
         initFloatingLabels();
+
+        // Run a second cleanup after a short delay to catch any elements that might be added dynamically
+        setTimeout(function() {
+            cleanupFormStructure();
+        }, 100);
     }
 
     // Create modern UI structure
     function createModernUIStructure() {
-        // Only create the structure if it doesn't already exist
-        if ($('.esc-form-header').length === 0) {
-            // Wrap the existing form in our new structure
-            const $form = $('#esc-add-seed-form-container');
+        // Add the modern form class to the main container
+        $('#esc-add-seed-form-container').addClass('esc-modern-form');
 
-            if ($form.length) {
-                // Add the header
+        // Clean up the form first - remove all duplicate elements
+        cleanupFormStructure();
+
+        // Wrap the existing form in our new structure
+        const $form = $('#esc-add-seed-form-container');
+
+        if ($form.length) {
+            // Add the header with modern design (only if it doesn't exist)
+            if ($('.esc-form-header').length === 0) {
                 $form.prepend(`
                     <div class="esc-form-header">
-                        <h2>Add New Seed to Catalog</h2>
-                        <p>Use AI to automatically fill in seed details or enter them manually</p>
+                        <div class="esc-form-header-content">
+                            <h2>Add New Seed to Catalog</h2>
+                            <p>Use AI to automatically fill in seed details or enter them manually</p>
+                        </div>
                     </div>
                 `);
+            }
 
-                // Wrap the AI input phase content
-                const $aiPhase = $('#esc-phase-ai-input');
-                if ($aiPhase.length) {
+            // Wrap the AI input phase content
+            const $aiPhase = $('#esc-phase-ai-input');
+            if ($aiPhase.length) {
+                // Create the form body if it doesn't exist
+                if (!$aiPhase.find('.esc-form-body').length) {
                     $aiPhase.wrapInner('<div class="esc-form-body"></div>');
-
-                    // Add the AI info box if it doesn't exist
-                    if ($aiPhase.find('.esc-ai-info').length === 0) {
-                        $aiPhase.find('.esc-form-body').prepend(`
-                            <div class="esc-ai-info">
-                                <p>Enter the seed type and variety to automatically retrieve detailed information using AI.</p>
-                            </div>
-                        `);
-                    }
-
-                    // Style the seed and variety inputs
-                    const $seedInput = $aiPhase.find('#esc_seed_name');
-                    const $varietyInput = $aiPhase.find('#esc_variety_name');
-
-                    if ($seedInput.length && $varietyInput.length) {
-                        // Get the existing labels
-                        const seedLabel = $seedInput.siblings('label').text() || 'Seed Type *';
-                        const varietyLabel = $varietyInput.siblings('label').text() || 'Variety (Optional)';
-
-                        // Get the existing help text
-                        const seedHelp = $seedInput.siblings('.esc-field-help').text() || 'The main name of the seed';
-                        const varietyHelp = $varietyInput.siblings('.esc-field-help').text() || 'Specific variety if known';
-
-                        // Create the new structure
-                        const $seedVarietyRow = $(`
-                            <div class="esc-seed-variety-row">
-                                <div class="esc-field-group">
-                                    <label for="esc_seed_name">${seedLabel}</label>
-                                    <div class="esc-field-help">${seedHelp}</div>
-                                </div>
-                                <div class="esc-field-group">
-                                    <label for="esc_variety_name">${varietyLabel}</label>
-                                    <div class="esc-field-help">${varietyHelp}</div>
-                                </div>
-                            </div>
-                        `);
-
-                        // Move the inputs to the new structure
-                        $seedInput.closest('.esc-floating-label, .esc-form-field').before($seedVarietyRow);
-                        $seedVarietyRow.find('.esc-field-group').eq(0).prepend($seedInput);
-                        $seedVarietyRow.find('.esc-field-group').eq(1).prepend($varietyInput);
-
-                        // Remove the old containers
-                        $seedInput.closest('.esc-floating-label, .esc-form-field').remove();
-                        $varietyInput.closest('.esc-floating-label, .esc-form-field').remove();
-                    }
-
-                    // Style the AI button
-                    const $aiButton = $aiPhase.find('#esc-ai-fetch-trigger');
-                    if ($aiButton.length) {
-                        $aiButton.addClass('esc-ai-button');
-
-                        // Add icon to the button if it doesn't have one
-                        if (!$aiButton.find('svg').length) {
-                            $aiButton.html(`
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
-                                    <path d="M12 16.99V17M12 7V14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                                Generate Seed Details with AI
-                            `);
-                        }
-                    }
-
-                    // Style the manual entry link
-                    const $manualLink = $aiPhase.find('#esc-toggle-manual-entry');
-                    if ($manualLink.length) {
-                        $manualLink.addClass('esc-manual-link');
-                    }
                 }
 
-                // Add the footer
-                if ($form.find('.esc-form-footer').length === 0) {
-                    $form.append(`
-                        <div class="esc-form-footer">
-                            <button class="esc-back-button" id="esc-back-to-ai-search">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
-                                    <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                                Back
-                            </button>
-
-                            <button class="esc-submit-button" id="esc-submit-seed">
-                                Submit Seed
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 8px;">
-                                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </button>
+                // Add the AI info box if it doesn't exist
+                if ($aiPhase.find('.esc-ai-info').length === 0) {
+                    $aiPhase.find('.esc-form-body').prepend(`
+                        <div class="esc-ai-info">
+                            <p>Enter the seed type and variety to automatically retrieve detailed information using AI.</p>
                         </div>
                     `);
+                }
 
-                    // Move the existing back button functionality to our new button
-                    const $oldBackButton = $('.esc-back-button:not(#esc-back-to-ai-search)');
-                    if ($oldBackButton.length) {
-                        const oldBackClick = $oldBackButton.attr('onclick');
-                        if (oldBackClick) {
-                            $('#esc-back-to-ai-search').attr('onclick', oldBackClick);
-                        }
-                        $oldBackButton.hide();
-                    }
+                // Style the seed and variety inputs
+                createSeedVarietyInputs($aiPhase);
 
-                    // Move the existing submit button functionality to our new button
-                    const $oldSubmitButton = $('.esc-submit-button:not(#esc-submit-seed)');
-                    if ($oldSubmitButton.length) {
-                        const oldSubmitClick = $oldSubmitButton.attr('onclick');
-                        if (oldSubmitClick) {
-                            $('#esc-submit-seed').attr('onclick', oldSubmitClick);
-                        }
-                        $oldSubmitButton.hide();
+                // Style the AI button
+                const $aiButton = $aiPhase.find('#esc-ai-fetch-trigger');
+                if ($aiButton.length) {
+                    $aiButton.addClass('esc-ai-button');
+
+                    // Add icon to the button if it doesn't have one
+                    if (!$aiButton.find('svg').length) {
+                        $aiButton.html(`
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
+                                <path d="M12 16.99V17M12 7V14M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Generate Seed Details with AI
+                        `);
                     }
                 }
+
+                // Style the manual entry link
+                const $manualLink = $aiPhase.find('#esc-toggle-manual-entry');
+                if ($manualLink.length) {
+                    $manualLink.addClass('esc-manual-link');
+                    $manualLink.text('Prefer to enter details manually?');
+                }
+            }
+
+            // Add the footer
+            createFormFooter($form);
+        }
+
+        // Set up a mutation observer to handle dynamic content changes
+        setupMutationObserver();
+    }
+
+    // Clean up the form structure by removing duplicate elements
+    function cleanupFormStructure() {
+        // Store references to important elements we want to keep
+        const $form = $('#esc-add-seed-form-container');
+        const $aiPhase = $('#esc-phase-ai-input');
+        const $seedInput = $('#esc_seed_name');
+        const $varietyInput = $('#esc_variety_name');
+        const $aiButton = $('#esc-ai-fetch-trigger');
+        const $manualLink = $('#esc-toggle-manual-entry');
+
+        // Get values from inputs if they exist
+        const seedValue = $seedInput.val();
+        const varietyValue = $varietyInput.val();
+
+        // Remove all duplicate headers
+        $form.find('h1, h2').not('.esc-form-header h2, .esc-card-header h3').remove();
+
+        // Remove all duplicate instructional text
+        $form.find('p:contains("Enter the seed type")').not('.esc-ai-info p').remove();
+        $form.find('p:contains("AI will search")').remove();
+
+        // Remove duplicate section headers
+        $form.find('.esc-section-header:contains("Add Seed with AI")').remove();
+
+        // Hide all existing back/submit buttons that aren't our custom ones
+        $('a:contains("Back to AI"), button:contains("Back to AI"), button:contains("Submit")').not('#esc-back-to-ai-search, #esc-submit-seed, .esc-form-footer button').hide();
+
+        // If we have our custom buttons, hide the original ones completely
+        if ($('#esc-back-to-ai-search').length && $('#esc-submit-seed').length) {
+            $('.esc-back-button:not(#esc-back-to-ai-search), .esc-submit-button:not(#esc-submit-seed)').hide();
+        }
+
+        // Restore input values if they were lost
+        if (seedValue && $('#esc_seed_name').length) {
+            $('#esc_seed_name').val(seedValue);
+        }
+
+        if (varietyValue && $('#esc_variety_name').length) {
+            $('#esc_variety_name').val(varietyValue);
+        }
+    }
+
+    // Create the seed and variety input fields
+    function createSeedVarietyInputs($container) {
+        // First check if our custom row already exists
+        if ($container.find('.esc-seed-variety-row').length > 0) {
+            return; // Don't recreate if it already exists
+        }
+
+        const $seedInput = $container.find('#esc_seed_name');
+        const $varietyInput = $container.find('#esc_variety_name');
+
+        if ($seedInput.length && $varietyInput.length) {
+            // Get the existing labels
+            const seedLabel = $seedInput.siblings('label').text() || 'Seed Type *';
+            const varietyLabel = $varietyInput.siblings('label').text() || 'Variety (Optional)';
+
+            // Get the existing help text
+            const seedHelp = $seedInput.siblings('.esc-field-help').text() || 'The main name of the seed';
+            const varietyHelp = $varietyInput.siblings('.esc-field-help').text() || 'Specific variety if known';
+
+            // Get the values from the existing inputs
+            const seedValue = $seedInput.val();
+            const varietyValue = $varietyInput.val();
+
+            // Create the new structure
+            const $seedVarietyRow = $(`
+                <div class="esc-seed-variety-row">
+                    <div class="esc-field-group">
+                        <label for="esc_seed_name">${seedLabel}</label>
+                        <input type="text" id="esc_seed_name" name="esc_seed_name" placeholder="e.g., Tomato, Bean, Zinnia" class="esc-field-input" />
+                        <div class="esc-field-help">${seedHelp}</div>
+                    </div>
+                    <div class="esc-field-group">
+                        <label for="esc_variety_name">${varietyLabel}</label>
+                        <input type="text" id="esc_variety_name" name="esc_variety_name" placeholder="e.g., Brandywine, Kentucky Wonder" class="esc-field-input" />
+                        <div class="esc-field-help">${varietyHelp}</div>
+                    </div>
+                </div>
+            `);
+
+            // Find the best place to insert our new row
+            let $targetElement = $seedInput.closest('.esc-seed-variety-row, .esc-form-field, .esc-floating-label').parent();
+
+            // If we can't find a good parent, look for common containers
+            if (!$targetElement.length) {
+                $targetElement = $container.find('.esc-form-body, form, .esc-section-content').first();
+            }
+
+            // If we still can't find a target, use the container itself
+            if (!$targetElement.length) {
+                $targetElement = $container;
+            }
+
+            // Insert our new row at the beginning of the target element
+            $targetElement.prepend($seedVarietyRow);
+
+            // Set the values back
+            if (seedValue) $seedVarietyRow.find('#esc_seed_name').val(seedValue);
+            if (varietyValue) $seedVarietyRow.find('#esc_variety_name').val(varietyValue);
+
+            // Hide the original inputs to avoid duplicates
+            $seedInput.closest('.esc-form-field, .esc-floating-label').hide();
+            $varietyInput.closest('.esc-form-field, .esc-floating-label').hide();
+        }
+    }
+
+    // Create the form footer with back and submit buttons
+    function createFormFooter($form) {
+        // Check if our custom footer already exists
+        if ($form.find('.esc-form-footer').length > 0) {
+            return; // Don't recreate if it already exists
+        }
+
+        // Find the original buttons to copy their functionality
+        const $oldBackButton = $('a:contains("Back to AI"), button:contains("Back to AI")').first();
+        const $oldSubmitButton = $('button:contains("Submit"), input[type="submit"]').first();
+
+        // Store the original button actions
+        let backAction = '';
+        let submitAction = '';
+
+        // Get the back button action
+        if ($oldBackButton.length) {
+            if ($oldBackButton.attr('onclick')) {
+                backAction = $oldBackButton.attr('onclick');
+            } else if ($oldBackButton.is('a') && $oldBackButton.attr('href')) {
+                backAction = 'window.location.href = "' + $oldBackButton.attr('href') + '"';
             }
         }
+
+        // Get the submit button action
+        if ($oldSubmitButton.length) {
+            if ($oldSubmitButton.attr('onclick')) {
+                submitAction = $oldSubmitButton.attr('onclick');
+            } else if ($oldSubmitButton.is('input[type="submit"]')) {
+                submitAction = '$oldSubmitButton.closest("form").submit()';
+            }
+        }
+
+        // Add the new footer
+        $form.append(`
+            <div class="esc-form-footer">
+                <button class="esc-back-button" id="esc-back-to-ai-search" ${backAction ? 'onclick="' + backAction + '"' : ''}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
+                        <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Back
+                </button>
+
+                <button class="esc-submit-button" id="esc-submit-seed" ${submitAction ? 'onclick="' + submitAction + '"' : ''}>
+                    Submit Seed
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 8px;">
+                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        `);
+
+        // If we couldn't set the onclick directly, set up click handlers
+        if (!backAction && $oldBackButton.length) {
+            $('#esc-back-to-ai-search').on('click', function(e) {
+                e.preventDefault();
+                $oldBackButton[0].click();
+            });
+        }
+
+        if (!submitAction && $oldSubmitButton.length) {
+            $('#esc-submit-seed').on('click', function(e) {
+                e.preventDefault();
+                $oldSubmitButton[0].click();
+            });
+        }
+
+        // Hide the original buttons
+        if ($oldBackButton.length) {
+            $oldBackButton.hide();
+        }
+
+        if ($oldSubmitButton.length) {
+            $oldSubmitButton.hide();
+        }
+    }
+
+    // Set up a mutation observer to handle dynamic content changes
+    function setupMutationObserver() {
+        // Disconnect any existing observer
+        if (mutationObserver) {
+            mutationObserver.disconnect();
+        }
+
+        // Create a new observer
+        mutationObserver = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    // Clean up any newly added elements
+                    cleanupFormStructure();
+                }
+            });
+        });
+
+        // Start observing the form container
+        mutationObserver.observe(document.getElementById('esc-add-seed-form-container'), {
+            childList: true,
+            subtree: true
+        });
     }
 
     // Initialize floating labels
@@ -959,10 +1117,48 @@
 
     // Initialize when document is ready
     $(document).ready(function() {
+        // Run initialization immediately
         init();
+
+        // Run a second time after a short delay to catch any dynamically added elements
+        setTimeout(function() {
+            cleanupFormStructure();
+            createModernUIStructure();
+        }, 300);
+
+        // Run again after a longer delay to catch any late-loading elements
+        setTimeout(function() {
+            cleanupFormStructure();
+            createModernUIStructure();
+        }, 1000);
 
         // Clean up when navigating away from the page
         $(window).on('beforeunload', cleanup);
+    });
+
+    // Also run when the window loads to ensure everything is properly styled
+    $(window).on('load', function() {
+        cleanupFormStructure();
+        createModernUIStructure();
+
+        // Set up a periodic check for the first few seconds to catch any dynamic changes
+        let checkCount = 0;
+        const checkInterval = setInterval(function() {
+            cleanupFormStructure();
+            createModernUIStructure();
+
+            checkCount++;
+            if (checkCount >= 5) {
+                clearInterval(checkInterval);
+            }
+        }, 1000);
+    });
+
+    // Handle any clicks on the document that might reveal hidden elements
+    $(document).on('click', function() {
+        setTimeout(function() {
+            cleanupFormStructure();
+        }, 100);
     });
 
 })(jQuery);
