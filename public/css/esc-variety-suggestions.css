@@ -9,6 +9,24 @@
     position: relative;
 }
 
+/* Style for the variety field to indicate it's clickable */
+#esc_variety_name {
+    cursor: pointer;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23718096" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 30px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Style for when the dropdown is open */
+#esc_variety_name.dropdown-open {
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%234299e1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>');
+}
+
 /* Variety Dropdown */
 #esc-variety-dropdown,
 .esc-variety-dropdown {

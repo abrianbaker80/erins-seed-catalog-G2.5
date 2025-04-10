@@ -77,13 +77,45 @@
         $('#esc_variety_name').on('focus', function() {
             const seedType = $('#esc_seed_name').val().trim();
             if (seedType.length >= 3) {
-                fetchVarietiesForSeedType(seedType);
+                // If we already have varieties cached, show them immediately
+                if (currentSeedType === seedType && varietiesCache[seedType]) {
+                    populateVarietyDropdown(varietiesCache[seedType]);
+                } else {
+                    // Otherwise fetch new varieties
+                    fetchVarietiesForSeedType(seedType);
+                }
+            }
+        });
+
+        // Add click event to toggle dropdown
+        $('#esc_variety_name').on('click', function(e) {
+            e.stopPropagation(); // Prevent document click from immediately closing it
+
+            const seedType = $('#esc_seed_name').val().trim();
+            if (seedType.length >= 3) {
+                const $dropdown = $('#esc-variety-dropdown');
+
+                // Toggle dropdown visibility
+                if ($dropdown.is(':visible')) {
+                    hideVarietyDropdown();
+                } else if (currentSeedType === seedType && varietiesCache[seedType]) {
+                    populateVarietyDropdown(varietiesCache[seedType]);
+                } else {
+                    fetchVarietiesForSeedType(seedType);
+                }
             }
         });
 
         // Add event listener for variety field input
         $('#esc_variety_name').on('input', function() {
             const input = $(this).val().toLowerCase().trim();
+
+            // If the field is cleared, remove the selected variety data
+            if (input === '') {
+                $(this).removeData('selected-variety');
+                hideVarietyDropdown();
+                return;
+            }
 
             // If we have cached varieties, filter them
             if (currentSeedType && varietiesCache[currentSeedType]) {
@@ -228,7 +260,13 @@
         // Add has-value class for floating label
         $varietyField.addClass('has-value');
 
+        // Hide the dropdown but keep the varieties cached
         hideVarietyDropdown();
+
+        // Store the selected variety for reference
+        $varietyField.data('selected-variety', variety);
+
+        console.log('Selected variety:', variety);
     }
 
     // Show the variety dropdown
@@ -261,19 +299,25 @@
             $dropdown.detach().appendTo('body');
         }
 
+        // Add a class to the variety field to indicate the dropdown is open
+        $varietyField.addClass('dropdown-open');
+
         console.log('Showing variety dropdown at position:', fieldOffset.top + fieldHeight, fieldOffset.left);
     }
 
     // Hide the variety dropdown
     function hideVarietyDropdown() {
         const $dropdown = $('#esc-variety-dropdown');
+        const $varietyField = $('#esc_variety_name');
 
         // Hide the dropdown
         $dropdown.hide();
 
+        // Remove the open class from the variety field
+        $varietyField.removeClass('dropdown-open');
+
         // If the dropdown is in the body, move it back to its original container
         if ($dropdown.parent().is('body')) {
-            const $varietyField = $('#esc_variety_name');
             const $fieldContainer = $varietyField.closest('.esc-variety-field');
 
             if ($fieldContainer.length) {
