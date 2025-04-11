@@ -222,7 +222,7 @@ jQuery(document).ready(function($) {
                 }
 
                 // Mark as submitting
-                isSubmitting = true;
+                window.escIsSubmitting = true;
 
                 // Serialize form data
                 var formData = $form.serialize();
@@ -266,7 +266,7 @@ jQuery(document).ready(function($) {
                                 $('#esc-phase-ai-input').show();
 
                                 // Reset submitting flag
-                                isSubmitting = false;
+                                window.escIsSubmitting = false;
 
                                 // Re-enable submit button
                                 $('#esc-submit-seed').prop('disabled', false);
