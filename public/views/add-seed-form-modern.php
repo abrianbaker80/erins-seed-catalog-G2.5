@@ -521,7 +521,23 @@ jQuery(document).ready(function($) {
         // Get form data
         const $form = $('#esc-add-seed-form');
         const $messageDiv = $('#esc-form-messages');
-        const formData = $form.serialize() + '&action=esc_add_seed&nonce=' + esc_ajax_object.nonce;
+
+        // Ensure the seed_name field is properly populated
+        const seedNameValue = $('#esc_seed_name').val() || $('#esc_seed_name_review').val();
+        console.log('Inline script - Seed Name Value:', seedNameValue);
+
+        // If we have a value, make sure both fields have it
+        if (seedNameValue) {
+            $('#esc_seed_name, #esc_seed_name_review').val(seedNameValue);
+        }
+
+        // Serialize form data
+        let formData = $form.serialize() + '&action=esc_add_seed&nonce=' + esc_ajax_object.nonce;
+
+        // Manually add seed_name if it's not in the serialized data
+        if (formData.indexOf('seed_name=') === -1 && seedNameValue) {
+            formData += '&seed_name=' + encodeURIComponent(seedNameValue);
+        }
 
         // Show loading message
         $messageDiv.empty().removeClass('success error').addClass('loading').text('Saving...').show();

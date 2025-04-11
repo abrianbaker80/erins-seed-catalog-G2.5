@@ -80,12 +80,27 @@ jQuery(document).ready(function($) {
             $messageDiv.empty().removeClass('success error').addClass('loading').text('Saving...').show();
             $submitButton.prop('disabled', true);
 
+            // Ensure the seed_name field is properly populated
+            // Get the value from either the AI input phase or the review phase
+            const seedNameValue = $('#esc_seed_name').val() || $('#esc_seed_name_review').val();
+            console.log('Seed Name Value:', seedNameValue);
+
+            // If we have a value, make sure both fields have it
+            if (seedNameValue) {
+                $('#esc_seed_name, #esc_seed_name_review').val(seedNameValue);
+            }
+
             // Serialize form data
             var formData = $form.serialize();
             console.log('Form data:', formData);
 
             // Add AJAX action and nonce
             formData += '&action=esc_add_seed&nonce=' + esc_ajax_object.nonce;
+
+            // Manually add seed_name if it's not in the serialized data
+            if (formData.indexOf('seed_name=') === -1 && seedNameValue) {
+                formData += '&seed_name=' + encodeURIComponent(seedNameValue);
+            }
 
             // Submit the form via AJAX
             console.log('Submitting form via AJAX...');
@@ -187,6 +202,22 @@ jQuery(document).ready(function($) {
         });
     }
 
+    // Function to synchronize seed name fields
+    function syncSeedNameFields() {
+        // When either seed name field changes, update the other one
+        $('#esc_seed_name, #esc_seed_name_review').on('input', function() {
+            const value = $(this).val();
+            console.log('Syncing seed name fields with value:', value);
+
+            // Update the other field
+            if (this.id === 'esc_seed_name') {
+                $('#esc_seed_name_review').val(value);
+            } else {
+                $('#esc_seed_name').val(value);
+            }
+        });
+    }
+
     // Initialize all fixes
     function initFixes() {
         console.log('Initializing fixes...');
@@ -194,6 +225,7 @@ jQuery(document).ready(function($) {
         convertSeedCategoriesToText();
         renameSaveButton();
         fixTextAlignment();
+        syncSeedNameFields();
 
         // Wait a moment for other scripts to finish initializing
         setTimeout(function() {
