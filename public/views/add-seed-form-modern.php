@@ -23,6 +23,9 @@ wp_localize_script('esc-ai-results-fixes', 'esc_ajax_object', [
     'error_text' => __('An error occurred.', 'erins-seed-catalog'),
     'form_submit_success' => __('Seed added successfully!', 'erins-seed-catalog'),
     'form_submit_error' => __('Error adding seed.', 'erins-seed-catalog'),
+    'catalog_url' => get_permalink(get_option('esc_catalog_page_id')) ?: home_url('/seed-catalog/'),
+    'add_another_text' => __('Add Another Seed', 'erins-seed-catalog'),
+    'view_catalog_text' => __('View Catalog', 'erins-seed-catalog'),
 ]);
 ?>
 
@@ -503,74 +506,5 @@ wp_localize_script('esc-ai-results-fixes', 'esc_ajax_object', [
         </div>
     </form>
 
-<!-- Enhanced Confirmation Modal -->
-<div class="esc-confirmation-container">
-    <div class="esc-confirmation-message">
-        <div class="esc-confirmation-icon">
-            <span class="dashicons dashicons-yes-alt"></span>
-        </div>
-        <h2 class="esc-confirmation-title"><?php esc_html_e('Seed Submitted Successfully!', 'erins-seed-catalog'); ?></h2>
-        <p class="esc-confirmation-text"><?php esc_html_e('Your seed has been added to the catalog.', 'erins-seed-catalog'); ?></p>
-        <button class="esc-confirmation-button"><?php esc_html_e('Add Another Seed', 'erins-seed-catalog'); ?></button>
-    </div>
-</div>
-
-<script type="text/javascript">
-jQuery(document).ready(function($) {
-    // Direct form submission handler as a fallback
-    $('#esc-submit-seed').on('click', function(e) {
-        e.preventDefault();
-        console.log('Inline script: Submit button clicked');
-
-        // Get form data
-        const $form = $('#esc-add-seed-form');
-        const $messageDiv = $('#esc-form-messages');
-
-        // Make sure hidden fields are up to date with the latest values
-        $('input[data-target]').each(function() {
-            const value = $(this).val();
-            const targetId = $(this).data('target');
-            if (value) {
-                $('#' + targetId).val(value);
-            }
-        });
-
-        // Check if seed_name is populated
-        const seedNameValue = $('#esc_seed_name_hidden').val();
-        console.log('Inline script - Seed Name Value:', seedNameValue);
-
-        if (!seedNameValue) {
-            $messageDiv.removeClass('loading').addClass('error').text('Seed Type is required.').show();
-            return;
-        }
-
-        // Serialize form data
-        let formData = $form.serialize() + '&action=esc_add_seed&nonce=' + esc_ajax_object.nonce;
-
-        // Show loading message
-        $messageDiv.empty().removeClass('success error').addClass('loading').text('Saving...').show();
-
-        // Submit form via AJAX
-        $.ajax({
-            url: esc_ajax_object.ajax_url,
-            type: 'POST',
-            data: formData,
-            dataType: 'json',
-            success: function(response) {
-                console.log('Inline script: AJAX success', response);
-                if (response.success) {
-                    $messageDiv.removeClass('loading').addClass('success').text(response.data.message || 'Seed added successfully!');
-                    $form[0].reset();
-                } else {
-                    $messageDiv.removeClass('loading').addClass('error').text(response.data.message || 'Error adding seed.');
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('Inline script: AJAX error', textStatus, errorThrown);
-                $messageDiv.removeClass('loading').addClass('error').text('An error occurred: ' + textStatus);
-            }
-        });
-    });
-});
-</script>
+<!-- Success screen will be dynamically added by esc-ai-results-enhanced.js -->
 </div>

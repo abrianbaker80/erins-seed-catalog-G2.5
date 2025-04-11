@@ -204,15 +204,62 @@ input[id^="esc_variety_name"] {
     border: 1px solid #f5c6cb;
 }
 
-/* Confirmation message styling */
-.esc-confirmation-message {
-    display: none;
-    padding: 15px;
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-    border-radius: 5px;
-    margin-top: 20px;
+/* Success Screen Styling */
+.esc-success-screen {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    padding: 40px 30px;
     text-align: center;
-    font-weight: bold;
+    max-width: 600px;
+    margin: 30px auto;
+    border: 1px solid #e2e8f0;
+}
+
+.esc-success-icon {
+    background-color: #38b2ac;
+    color: white;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+    box-shadow: 0 4px 10px rgba(56, 178, 172, 0.3);
+}
+
+.esc-success-icon .dashicons {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+}
+
+.esc-success-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 15px;
+}
+
+.esc-success-message {
+    font-size: 16px;
+    color: #4a5568;
+    margin-bottom: 30px;
+}
+
+.esc-success-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+@media (max-width: 600px) {
+    .esc-success-actions {
+        flex-direction: column;
+    }
+
+    .esc-success-screen {
+        padding: 30px 20px;
+    }
 }

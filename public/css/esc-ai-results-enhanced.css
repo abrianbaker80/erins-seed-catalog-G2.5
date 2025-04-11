@@ -356,6 +356,12 @@
     font-size: 16px;
 }
 
+.esc-confirmation-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
 .esc-confirmation-button {
     background: linear-gradient(135deg, #38b2ac 0%, #2c7a7b 100%);
     color: white;
@@ -369,10 +375,27 @@
     display: inline-block;
 }
 
-.esc-confirmation-button:hover {
+.esc-confirmation-button.esc-view-catalog {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+    box-shadow: 0 4px 10px rgba(74, 85, 104, 0.3);
+}
+
+.esc-confirmation-button.esc-view-catalog:hover {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    box-shadow: 0 6px 15px rgba(74, 85, 104, 0.4);
+    transform: translateY(-2px);
+}
+
+.esc-confirmation-button.esc-add-another:hover {
     background: linear-gradient(135deg, #319795 0%, #285e61 100%);
     box-shadow: 0 6px 15px rgba(56, 178, 172, 0.4);
     transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+    .esc-confirmation-actions {
+        flex-direction: column;
+    }
 }
 
 /* Enhanced Confidence Indicators */

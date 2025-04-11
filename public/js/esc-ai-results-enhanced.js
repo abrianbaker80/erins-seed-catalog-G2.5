@@ -56,7 +56,10 @@ jQuery(document).ready(function($) {
                         </div>
                         <h2 class="esc-confirmation-title">Seed Submitted Successfully!</h2>
                         <p class="esc-confirmation-text">Your seed has been added to the catalog.</p>
-                        <button class="esc-confirmation-button">Add Another Seed</button>
+                        <div class="esc-confirmation-actions">
+                            <button class="esc-confirmation-button esc-view-catalog">View Catalog</button>
+                            <button class="esc-confirmation-button esc-add-another">Add Another Seed</button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -64,42 +67,128 @@ jQuery(document).ready(function($) {
             $('body').append(confirmationHTML);
         }
 
+        // Flag to prevent duplicate submissions
+        let isSubmitting = false;
+
         // Handle form submission
-        $(document).on('submit', '#esc-add-seed-form', function(e) {
-            // Note: We're not preventing default here to allow the normal form submission to proceed
+        $('#esc-submit-seed').on('click', function(e) {
+            e.preventDefault();
 
-            // Store the form for later reference
-            const $form = $(this);
+            // Get the form
+            const $form = $('#esc-add-seed-form');
+            const $messageDiv = $('#esc-form-messages');
 
-            // Show confirmation after successful submission
-            $(document).ajaxComplete(function(event, xhr, settings) {
-                // Check if this is the add seed AJAX request
-                if (settings.data && settings.data.includes('esc_add_seed')) {
-                    try {
-                        const response = JSON.parse(xhr.responseText);
+            // Prevent duplicate submissions
+            if (isSubmitting) {
+                console.log('Form already submitting, preventing duplicate submission');
+                return;
+            }
 
-                        if (response.success) {
-                            // Show confirmation
-                            $('.esc-confirmation-container').addClass('active');
-
-                            // Handle "Add Another Seed" button
-                            $('.esc-confirmation-button').off('click').on('click', function() {
-                                // Hide confirmation
-                                $('.esc-confirmation-container').removeClass('active');
-
-                                // Reset form
-                                $form[0].reset();
-
-                                // Reset to initial AI search form
-                                $('.esc-phase').hide();
-                                $('#esc-phase-ai-input').show();
-                            });
-                        }
-                    } catch (e) {
-                        console.error('Error parsing AJAX response:', e);
-                    }
+            // Make sure hidden fields are up to date with the latest values
+            $('input[data-target]').each(function() {
+                const value = $(this).val();
+                const targetId = $(this).data('target');
+                if (value) {
+                    $('#' + targetId).val(value);
                 }
             });
+
+            // Check if seed_name is populated
+            const seedNameValue = $('#esc_seed_name_hidden').val();
+            console.log('Seed Name Value:', seedNameValue);
+
+            if (!seedNameValue) {
+                $messageDiv.removeClass('loading').addClass('error').text('Seed Type is required.').show();
+                return;
+            }
+
+            // Mark as submitting
+            isSubmitting = true;
+
+            // Serialize form data
+            var formData = $form.serialize();
+            console.log('Form data:', formData);
+
+            // Add AJAX action and nonce
+            formData += '&action=esc_add_seed&nonce=' + esc_ajax_object.nonce;
+
+            // Show loading state
+            $messageDiv.empty().removeClass('success error').addClass('loading').text('Saving...').show();
+            $(this).prop('disabled', true);
+
+            // Submit the form via AJAX
+            $.ajax({
+                url: esc_ajax_object.ajax_url,
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                success: function(response) {
+                    console.log('AJAX success:', response);
+                    if (response.success) {
+                        // Hide message
+                        $messageDiv.hide();
+
+                        // Show confirmation
+                        $('.esc-confirmation-container').addClass('active');
+
+                        // Handle "Add Another Seed" button
+                        $('.esc-add-another').off('click').on('click', function() {
+                            // Hide confirmation
+                            $('.esc-confirmation-container').removeClass('active');
+
+                            // Reset form
+                            $form[0].reset();
+
+                            // Reset hidden fields
+                            $('#esc_seed_name_hidden, #esc_variety_name_hidden').val('');
+
+                            // Reset to initial AI search form
+                            $('.esc-phase').hide();
+                            $('#esc-phase-ai-input').show();
+
+                            // Reset submitting flag
+                            isSubmitting = false;
+
+                            // Re-enable submit button
+                            $('#esc-submit-seed').prop('disabled', false);
+                        });
+
+                        // Handle "View Catalog" button
+                        $('.esc-view-catalog').off('click').on('click', function() {
+                            // Redirect to catalog page
+                            window.location.href = esc_ajax_object.catalog_url || '/';
+                        });
+                    } else {
+                        // Show error message
+                        let errorMsg = response.data.message || 'Error adding seed.';
+                        $messageDiv.removeClass('loading').addClass('error').text(errorMsg);
+                        console.error('Add Seed Error:', response.data);
+
+                        // Reset submitting flag
+                        isSubmitting = false;
+
+                        // Re-enable submit button
+                        $('#esc-submit-seed').prop('disabled', false);
+                    }
+                },
+                error: function(_, textStatus, errorThrown) {
+                    // Show error message
+                    console.error('AJAX Error:', textStatus, errorThrown);
+                    $messageDiv.removeClass('loading').addClass('error').text('An error occurred: ' + textStatus);
+
+                    // Reset submitting flag
+                    isSubmitting = false;
+
+                    // Re-enable submit button
+                    $('#esc-submit-seed').prop('disabled', false);
+                }
+            });
+        });
+
+        // Also handle form submit event
+        $('#esc-add-seed-form').on('submit', function(e) {
+            e.preventDefault();
+            $('#esc-submit-seed').click();
         });
     }
 
@@ -142,7 +231,7 @@ jQuery(document).ready(function($) {
     initEnhancements();
 
     // Also run enhancements when AI results are loaded
-    $(document).ajaxComplete(function(event, xhr, settings) {
+    $(document).ajaxComplete(function(_, __, settings) {
         // Check if this is the AI search AJAX request
         if (settings.data && settings.data.includes('esc_gemini_search')) {
             // Wait a short moment for the DOM to update
