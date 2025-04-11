@@ -478,7 +478,7 @@ wp_localize_script('esc-ai-results-fixes', 'esc_ajax_object', [
                     <?php esc_html_e('Back to AI Search', 'erins-seed-catalog'); ?>
                 </button>
 
-                <button type="submit" class="esc-button esc-button-primary" id="esc-submit-seed">
+                <button type="submit" class="esc-button esc-button-primary" id="esc-submit-seed" onclick="jQuery(document).trigger('esc_submit_seed_clicked'); return false;">
                     <span class="dashicons dashicons-saved"></span>
                     <?php esc_html_e('Submit Seed', 'erins-seed-catalog'); ?>
                 </button>
@@ -510,4 +510,43 @@ wp_localize_script('esc-ai-results-fixes', 'esc_ajax_object', [
         <button class="esc-confirmation-button"><?php esc_html_e('Add Another Seed', 'erins-seed-catalog'); ?></button>
     </div>
 </div>
+
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    // Direct form submission handler as a fallback
+    $('#esc-submit-seed').on('click', function(e) {
+        e.preventDefault();
+        console.log('Inline script: Submit button clicked');
+
+        // Get form data
+        const $form = $('#esc-add-seed-form');
+        const $messageDiv = $('#esc-form-messages');
+        const formData = $form.serialize() + '&action=esc_add_seed&nonce=' + esc_ajax_object.nonce;
+
+        // Show loading message
+        $messageDiv.empty().removeClass('success error').addClass('loading').text('Saving...').show();
+
+        // Submit form via AJAX
+        $.ajax({
+            url: esc_ajax_object.ajax_url,
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                console.log('Inline script: AJAX success', response);
+                if (response.success) {
+                    $messageDiv.removeClass('loading').addClass('success').text(response.data.message || 'Seed added successfully!');
+                    $form[0].reset();
+                } else {
+                    $messageDiv.removeClass('loading').addClass('error').text(response.data.message || 'Error adding seed.');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Inline script: AJAX error', textStatus, errorThrown);
+                $messageDiv.removeClass('loading').addClass('error').text('An error occurred: ' + textStatus);
+            }
+        });
+    });
+});
+</script>
 </div>

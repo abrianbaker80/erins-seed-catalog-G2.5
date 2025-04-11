@@ -55,13 +55,26 @@ jQuery(document).ready(function($) {
 
     // Function to handle form submission
     function handleFormSubmission() {
-        $(document).on('click', '#esc-submit-seed', function(e) {
-            e.preventDefault();
+        // Function to process the form submission
+        function processFormSubmission() {
+            console.log('Processing form submission');
 
-            const $form = $(this).closest('form');
-            const $submitButton = $(this);
+            const $form = $('#esc-add-seed-form');
+            console.log('Form found:', $form.length > 0);
+
+            const $submitButton = $('#esc-submit-seed');
             const $formContainer = $form.closest('.esc-container, .esc-modern-form');
             const $messageDiv = $('#esc-form-messages');
+            console.log('Message div found:', $messageDiv.length > 0);
+
+            // Check if esc_ajax_object is defined
+            if (typeof esc_ajax_object === 'undefined') {
+                console.error('esc_ajax_object is not defined');
+                $messageDiv.removeClass('loading').addClass('error').text('Configuration error: AJAX object not defined').show();
+                return;
+            }
+            console.log('AJAX URL:', esc_ajax_object.ajax_url);
+            console.log('Nonce:', esc_ajax_object.nonce);
 
             // Clear previous messages and show loading state
             $messageDiv.empty().removeClass('success error').addClass('loading').text('Saving...').show();
@@ -69,17 +82,20 @@ jQuery(document).ready(function($) {
 
             // Serialize form data
             var formData = $form.serialize();
+            console.log('Form data:', formData);
 
             // Add AJAX action and nonce
             formData += '&action=esc_add_seed&nonce=' + esc_ajax_object.nonce;
 
             // Submit the form via AJAX
+            console.log('Submitting form via AJAX...');
             $.ajax({
                 url: esc_ajax_object.ajax_url,
                 type: 'POST',
                 data: formData,
                 dataType: 'json',
                 success: function(response) {
+                    console.log('AJAX success:', response);
                     if (response.success) {
                         // Show success message
                         $messageDiv.removeClass('loading').addClass('success').text(response.data.message || 'Seed added successfully!');
@@ -106,15 +122,47 @@ jQuery(document).ready(function($) {
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     // Show error message
-                    $messageDiv.removeClass('loading').addClass('error').text('An error occurred.');
                     console.error('AJAX Error:', textStatus, errorThrown);
+                    $messageDiv.removeClass('loading').addClass('error').text('An error occurred: ' + textStatus);
                 },
                 complete: function() {
                     // Re-enable submit button
                     $submitButton.prop('disabled', false);
+                    console.log('AJAX request completed');
                 }
             });
+        }
+
+        // Use multiple event handlers to ensure the button click is captured
+
+        // 1. Direct click on the submit button
+        $('#esc-submit-seed').on('click', function(e) {
+            console.log('Submit button clicked directly');
+            e.preventDefault();
+            processFormSubmission();
         });
+
+        // 2. Form submit event
+        $('#esc-add-seed-form').on('submit', function(e) {
+            console.log('Form submitted directly');
+            e.preventDefault();
+            processFormSubmission();
+        });
+
+        // 3. Custom event triggered by the onclick attribute
+        $(document).on('esc_submit_seed_clicked', function() {
+            console.log('Custom submit event triggered');
+            processFormSubmission();
+        });
+
+        // 4. Direct binding with setTimeout as a fallback
+        setTimeout(function() {
+            $('#esc-submit-seed').off('click.fallback').on('click.fallback', function(e) {
+                console.log('Fallback click handler triggered');
+                e.preventDefault();
+                processFormSubmission();
+            });
+        }, 1000);
     }
 
     // Function to fix text alignment in input fields
@@ -141,24 +189,43 @@ jQuery(document).ready(function($) {
 
     // Initialize all fixes
     function initFixes() {
+        console.log('Initializing fixes...');
         convertSunRequirementsToText();
         convertSeedCategoriesToText();
         renameSaveButton();
-        handleFormSubmission();
         fixTextAlignment();
+
+        // Wait a moment for other scripts to finish initializing
+        setTimeout(function() {
+            console.log('Initializing form submission handler...');
+            handleFormSubmission();
+            console.log('Form submission handler initialized');
+
+            // Log if the submit button exists
+            console.log('Submit button exists:', $('#esc-submit-seed').length > 0);
+
+            // Add a direct click handler as a fallback
+            $('#esc-submit-seed').off('click.directHandler').on('click.directHandler', function(e) {
+                console.log('Direct click handler triggered');
+            });
+        }, 500);
     }
 
     // Run fixes when page loads
-    initFixes();
+    $(document).ready(function() {
+        console.log('Document ready - initializing fixes');
+        initFixes();
+    });
 
     // Also run fixes when AI results are loaded
     $(document).ajaxComplete(function(event, xhr, settings) {
         // Check if this is the AI search AJAX request
         if (settings.data && settings.data.includes('esc_gemini_search')) {
+            console.log('AI search completed - reinitializing fixes');
             // Wait a short moment for the DOM to update
             setTimeout(function() {
                 initFixes();
-            }, 300);
+            }, 500);
         }
     });
 });
