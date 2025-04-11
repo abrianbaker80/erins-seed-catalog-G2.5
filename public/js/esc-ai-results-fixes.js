@@ -84,25 +84,38 @@ jQuery(document).ready(function($) {
 
     // Function to synchronize form fields with hidden fields
     function setupFormFieldSync() {
+        // Track last values to prevent unnecessary updates
+        const lastValues = {};
+
         // Find all input fields with data-target attribute
         $('input[data-target]').on('input', function() {
             const value = $(this).val();
             const targetId = $(this).data('target');
 
-            // Update the hidden field
-            $('#' + targetId).val(value);
-            console.log('Updated hidden field ' + targetId + ' with value: ' + value);
+            // Only update if the value has changed
+            if (lastValues[targetId] !== value) {
+                lastValues[targetId] = value;
 
-            // Also update any other visible fields with the same target
-            $('input[data-target="' + targetId + '"]').not(this).val(value);
+                // Update the hidden field
+                $('#' + targetId).val(value);
+
+                // Only log in debug mode or for significant changes
+                if (value.length === 1 || value.length % 5 === 0) {
+                    console.log('Updated hidden field ' + targetId + ' with value: ' + value);
+                }
+
+                // Also update any other visible fields with the same target
+                $('input[data-target="' + targetId + '"]').not(this).val(value);
+            }
         });
 
-        // Initialize hidden fields with values from visible fields
+        // Initialize hidden fields with values from visible fields - only once
         $('input[data-target]').each(function() {
             const value = $(this).val();
             const targetId = $(this).data('target');
 
-            if (value) {
+            if (value && !lastValues[targetId]) {
+                lastValues[targetId] = value;
                 $('#' + targetId).val(value);
                 console.log('Initialized hidden field ' + targetId + ' with value: ' + value);
             }

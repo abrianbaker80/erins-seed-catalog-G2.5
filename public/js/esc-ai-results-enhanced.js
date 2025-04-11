@@ -68,11 +68,11 @@ jQuery(document).ready(function($) {
         }
 
         // Flag to prevent duplicate submissions
-        let isSubmitting = false;
+        window.escIsSubmitting = window.escIsSubmitting || false;
 
-        // Handle form submission
+        // Handle form submission - use a single handler for the button
         console.log('Setting up submit button handler for:', $('#esc-submit-seed').length ? 'Found button' : 'Button not found');
-        $('#esc-submit-seed').on('click', function(e) {
+        $('#esc-submit-seed').off('click').on('click', function(e) {
             console.log('Submit button clicked');
             e.preventDefault();
 
@@ -81,7 +81,7 @@ jQuery(document).ready(function($) {
             const $messageDiv = $('#esc-form-messages');
 
             // Prevent duplicate submissions
-            if (isSubmitting) {
+            if (window.escIsSubmitting) {
                 console.log('Form already submitting, preventing duplicate submission');
                 return;
             }
@@ -167,7 +167,7 @@ jQuery(document).ready(function($) {
                         console.error('Add Seed Error:', response.data);
 
                         // Reset submitting flag
-                        isSubmitting = false;
+                        window.escIsSubmitting = false;
 
                         // Re-enable submit button
                         $('#esc-submit-seed').prop('disabled', false);
@@ -179,7 +179,7 @@ jQuery(document).ready(function($) {
                     $messageDiv.removeClass('loading').addClass('error').text('An error occurred: ' + textStatus);
 
                     // Reset submitting flag
-                    isSubmitting = false;
+                    window.escIsSubmitting = false;
 
                     // Re-enable submit button
                     $('#esc-submit-seed').prop('disabled', false);
@@ -187,14 +187,18 @@ jQuery(document).ready(function($) {
             });
         });
 
-        // Also handle form submit event
+        // Also handle form submit event - but just trigger the button click
         console.log('Setting up form submit handler for:', $('#esc-add-seed-form').length ? 'Found form' : 'Form not found');
-        $('#esc-add-seed-form').on('submit', function(e) {
+        $('#esc-add-seed-form').off('submit').on('submit', function(e) {
             console.log('Form submitted directly');
             e.preventDefault();
 
-            // Instead of triggering the button click, let's handle the submission directly
-            if (!isSubmitting) {
+            // Trigger the button click to use a single submission handler
+            $('#esc-submit-seed').trigger('click');
+
+            // The following code is now redundant since we're using the button click handler
+            /*
+            if (!window.escIsSubmitting) {
                 // Get the form
                 const $form = $(this);
                 const $messageDiv = $('#esc-form-messages');
@@ -300,6 +304,7 @@ jQuery(document).ready(function($) {
                 });
             }
         });
+        */
     }
 
     // Improve form fields
@@ -338,7 +343,9 @@ jQuery(document).ready(function($) {
     }
 
     // Run enhancements when page loads
-    initEnhancements();
+    $(function() {
+        initEnhancements();
+    });
 
     // Add a direct event listener to the submit button using vanilla JS
     document.addEventListener('DOMContentLoaded', function() {

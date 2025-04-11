@@ -326,14 +326,24 @@
             mutationObserver.disconnect();
         }
 
-        // Create a new observer
+        // Create a new observer with debouncing to improve performance
+        let debounceTimer;
         mutationObserver = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                    // Clean up any newly added elements
+            // Clear any existing timer
+            clearTimeout(debounceTimer);
+
+            // Set a new timer to run cleanup only once after mutations stop
+            debounceTimer = setTimeout(function() {
+                // Check if any mutations added nodes
+                const hasAddedNodes = mutations.some(function(mutation) {
+                    return mutation.type === 'childList' && mutation.addedNodes.length > 0;
+                });
+
+                // Only run cleanup if nodes were added
+                if (hasAddedNodes) {
                     cleanupFormStructure();
                 }
-            });
+            }, 50); // Short delay to batch mutations
         });
 
         // Start observing the form container
@@ -561,15 +571,20 @@
     // Convert input value to title case
     function convertToTitleCase() {
         const $input = $(this);
-        const value = $input.val().trim();
+        const inputValue = $input.val();
 
-        if (value) {
-            // Split by spaces and capitalize first letter of each word
-            const titleCaseValue = value.toLowerCase().split(' ')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ');
+        // Check if inputValue is defined before calling trim()
+        if (inputValue && typeof inputValue === 'string') {
+            const value = inputValue.trim();
 
-            $input.val(titleCaseValue);
+            if (value) {
+                // Split by spaces and capitalize first letter of each word
+                const titleCaseValue = value.toLowerCase().split(' ')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+
+                $input.val(titleCaseValue);
+            }
         }
     }
 
@@ -1043,6 +1058,15 @@
                     $('.esc-dropzone').addClass('has-image');
                     $('.esc-form-field:has(#esc_image_url)').addClass('esc-ai-populated');
                     addToChangesList('image', 'Image URL');
+                    continue;
+                }
+
+                // Special handling for sunlight field (API returns 'sunlight' but field is 'sun_requirements')
+                if (key === 'sunlight' && value) {
+                    console.log('Mapping sunlight to sun_requirements:', value);
+                    $('#esc_sun_requirements').val(value);
+                    $('.esc-form-field:has(#esc_sun_requirements)').addClass('esc-ai-populated');
+                    addToChangesList('sun_requirements', 'Sun Requirements');
                     continue;
                 }
 
@@ -1653,47 +1677,44 @@
         }
     }
 
+    // Track initialization state
+    let isInitialized = false;
+
     // Initialize when document is ready
     $(document).ready(function() {
-        // Run initialization immediately
-        init();
+        // Only initialize once
+        if (!isInitialized) {
+            isInitialized = true;
 
-        // Run a second time after a short delay to catch any dynamically added elements
-        setTimeout(function() {
-            cleanupFormStructure();
-            createModernUIStructure();
-            initVarietySuggestions();
-        }, 300);
+            // Run initialization immediately
+            init();
 
-        // Run again after a longer delay to catch any late-loading elements
-        setTimeout(function() {
-            cleanupFormStructure();
-            createModernUIStructure();
-            initVarietySuggestions();
-        }, 1000);
+            // Run a second time after a short delay to catch any dynamically added elements
+            setTimeout(function() {
+                cleanupFormStructure();
+                createModernUIStructure();
+                // Only initialize variety suggestions if not already initialized
+                if ($('#esc-variety-dropdown').length === 0) {
+                    initVarietySuggestions();
+                }
+            }, 300);
 
-        // Clean up when navigating away from the page
-        $(window).on('beforeunload', cleanup);
+            // Clean up when navigating away from the page
+            $(window).on('beforeunload', cleanup);
+        }
     });
 
     // Also run when the window loads to ensure everything is properly styled
     $(window).on('load', function() {
-        cleanupFormStructure();
-        createModernUIStructure();
-        initVarietySuggestions();
-
-        // Set up a periodic check for the first few seconds to catch any dynamic changes
-        let checkCount = 0;
-        const checkInterval = setInterval(function() {
+        if (isInitialized) {
             cleanupFormStructure();
             createModernUIStructure();
-            initVarietySuggestions();
 
-            checkCount++;
-            if (checkCount >= 5) {
-                clearInterval(checkInterval);
+            // Only initialize variety suggestions if not already initialized
+            if ($('#esc-variety-dropdown').length === 0) {
+                initVarietySuggestions();
             }
-        }, 1000);
+        }
     });
 
     // Handle any clicks on the document that might reveal hidden elements
