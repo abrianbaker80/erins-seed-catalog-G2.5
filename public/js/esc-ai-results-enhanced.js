@@ -71,7 +71,9 @@ jQuery(document).ready(function($) {
         let isSubmitting = false;
 
         // Handle form submission
+        console.log('Setting up submit button handler for:', $('#esc-submit-seed').length ? 'Found button' : 'Button not found');
         $('#esc-submit-seed').on('click', function(e) {
+            console.log('Submit button clicked');
             e.preventDefault();
 
             // Get the form
@@ -186,9 +188,117 @@ jQuery(document).ready(function($) {
         });
 
         // Also handle form submit event
+        console.log('Setting up form submit handler for:', $('#esc-add-seed-form').length ? 'Found form' : 'Form not found');
         $('#esc-add-seed-form').on('submit', function(e) {
+            console.log('Form submitted directly');
             e.preventDefault();
-            $('#esc-submit-seed').click();
+
+            // Instead of triggering the button click, let's handle the submission directly
+            if (!isSubmitting) {
+                // Get the form
+                const $form = $(this);
+                const $messageDiv = $('#esc-form-messages');
+
+                // Make sure hidden fields are up to date
+                $('input[data-target]').each(function() {
+                    const value = $(this).val();
+                    const targetId = $(this).data('target');
+                    if (value) {
+                        $('#' + targetId).val(value);
+                    }
+                });
+
+                // Check if seed_name is populated
+                const seedNameValue = $('#esc_seed_name_hidden').val();
+                console.log('Form submit - Seed Name Value:', seedNameValue);
+
+                if (!seedNameValue) {
+                    $messageDiv.removeClass('loading').addClass('error').text('Seed Type is required.').show();
+                    return;
+                }
+
+                // Mark as submitting
+                isSubmitting = true;
+
+                // Serialize form data
+                var formData = $form.serialize();
+                console.log('Form data:', formData);
+
+                // Add AJAX action and nonce
+                formData += '&action=esc_add_seed&nonce=' + esc_ajax_object.nonce;
+
+                // Show loading state
+                $messageDiv.empty().removeClass('success error').addClass('loading').text('Saving...').show();
+                $('#esc-submit-seed').prop('disabled', true);
+
+                // Submit the form via AJAX
+                $.ajax({
+                    url: esc_ajax_object.ajax_url,
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log('AJAX success:', response);
+                        if (response.success) {
+                            // Hide message
+                            $messageDiv.hide();
+
+                            // Show confirmation
+                            $('.esc-confirmation-container').addClass('active');
+
+                            // Handle "Add Another Seed" button
+                            $('.esc-add-another').off('click').on('click', function() {
+                                // Hide confirmation
+                                $('.esc-confirmation-container').removeClass('active');
+
+                                // Reset form
+                                $form[0].reset();
+
+                                // Reset hidden fields
+                                $('#esc_seed_name_hidden, #esc_variety_name_hidden').val('');
+
+                                // Reset to initial AI search form
+                                $('.esc-phase').hide();
+                                $('#esc-phase-ai-input').show();
+
+                                // Reset submitting flag
+                                isSubmitting = false;
+
+                                // Re-enable submit button
+                                $('#esc-submit-seed').prop('disabled', false);
+                            });
+
+                            // Handle "View Catalog" button
+                            $('.esc-view-catalog').off('click').on('click', function() {
+                                // Redirect to catalog page
+                                window.location.href = esc_ajax_object.catalog_url || '/';
+                            });
+                        } else {
+                            // Show error message
+                            let errorMsg = response.data.message || 'Error adding seed.';
+                            $messageDiv.removeClass('loading').addClass('error').text(errorMsg);
+                            console.error('Add Seed Error:', response.data);
+
+                            // Reset submitting flag
+                            isSubmitting = false;
+
+                            // Re-enable submit button
+                            $('#esc-submit-seed').prop('disabled', false);
+                        }
+                    },
+                    error: function(_, textStatus, errorThrown) {
+                        // Show error message
+                        console.error('AJAX Error:', textStatus, errorThrown);
+                        $messageDiv.removeClass('loading').addClass('error').text('An error occurred: ' + textStatus);
+
+                        // Reset submitting flag
+                        isSubmitting = false;
+
+                        // Re-enable submit button
+                        $('#esc-submit-seed').prop('disabled', false);
+                    }
+                });
+            }
         });
     }
 
@@ -229,6 +339,39 @@ jQuery(document).ready(function($) {
 
     // Run enhancements when page loads
     initEnhancements();
+
+    // Add a direct event listener to the submit button using vanilla JS
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOMContentLoaded event fired');
+        var submitButton = document.getElementById('esc-submit-seed');
+        var form = document.getElementById('esc-add-seed-form');
+
+        if (submitButton) {
+            console.log('Found submit button with vanilla JS');
+            submitButton.addEventListener('click', function(e) {
+                console.log('Submit button clicked with vanilla JS');
+                e.preventDefault();
+                // Trigger the form submit event which has our handler
+                if (form) {
+                    form.dispatchEvent(new Event('submit'));
+                }
+            });
+        } else {
+            console.log('Submit button not found with vanilla JS');
+        }
+
+        if (form) {
+            console.log('Found form with vanilla JS');
+            form.addEventListener('submit', function(e) {
+                console.log('Form submitted with vanilla JS');
+                e.preventDefault();
+                // Manually trigger jQuery's submit handler
+                jQuery(form).trigger('submit');
+            });
+        } else {
+            console.log('Form not found with vanilla JS');
+        }
+    });
 
     // Also run enhancements when AI results are loaded
     $(document).ajaxComplete(function(_, __, settings) {

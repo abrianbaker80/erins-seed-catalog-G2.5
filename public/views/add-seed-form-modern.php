@@ -15,8 +15,8 @@ wp_enqueue_script('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/js/esc-ai-
 wp_enqueue_style('esc-ai-results-fixes', ESC_PLUGIN_URL . 'public/css/esc-ai-results-fixes.css', ['esc-modern-form'], ESC_VERSION);
 wp_enqueue_script('esc-ai-results-fixes', ESC_PLUGIN_URL . 'public/js/esc-ai-results-fixes.js', ['jquery'], ESC_VERSION, true);
 
-// Localize script for AJAX calls
-wp_localize_script('esc-ai-results-fixes', 'esc_ajax_object', [
+// Prepare AJAX object data
+$ajax_object = [
     'ajax_url' => admin_url('admin-ajax.php'),
     'nonce' => wp_create_nonce('esc_ajax_nonce'),
     'loading_text' => __('Saving...', 'erins-seed-catalog'),
@@ -26,7 +26,62 @@ wp_localize_script('esc-ai-results-fixes', 'esc_ajax_object', [
     'catalog_url' => get_permalink(get_option('esc_catalog_page_id')) ?: home_url('/seed-catalog/'),
     'add_another_text' => __('Add Another Seed', 'erins-seed-catalog'),
     'view_catalog_text' => __('View Catalog', 'erins-seed-catalog'),
-]);
+];
+
+// Localize script for AJAX calls - for both scripts
+wp_localize_script('esc-ai-results-fixes', 'esc_ajax_object', $ajax_object);
+wp_localize_script('esc-ai-results-enhanced', 'esc_ajax_object', $ajax_object);
+
+// Add direct form submission handler
+wp_add_inline_script('esc-ai-results-enhanced', '
+document.addEventListener("DOMContentLoaded", function() {
+    console.log("Direct form handler added");
+    var form = document.getElementById("esc-add-seed-form");
+    var submitBtn = document.getElementById("esc-submit-seed");
+
+    if (form && submitBtn) {
+        submitBtn.addEventListener("click", function(e) {
+            e.preventDefault();
+            console.log("Submit button clicked directly");
+
+            // Get the form data
+            var formData = new FormData(form);
+            formData.append("action", "esc_add_seed");
+            formData.append("nonce", esc_ajax_object.nonce);
+
+            // Create AJAX request
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", esc_ajax_object.ajax_url, true);
+            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+
+            // Set up response handler
+            xhr.onload = function() {
+                if (xhr.status >= 200 && xhr.status < 400) {
+                    var response = JSON.parse(xhr.responseText);
+                    console.log("AJAX response:", response);
+
+                    if (response.success) {
+                        alert("Seed added successfully!");
+                        form.reset();
+                    } else {
+                        alert("Error: " + (response.data.message || "Unknown error"));
+                    }
+                } else {
+                    alert("Error: Server returned status " + xhr.status);
+                }
+            };
+
+            // Handle errors
+            xhr.onerror = function() {
+                alert("Error: Could not send request");
+            };
+
+            // Send the request
+            xhr.send(formData);
+        });
+    }
+});
+');
 ?>
 
 <div id="esc-add-seed-form-container" class="esc-container esc-modern-form">
@@ -485,7 +540,7 @@ wp_localize_script('esc-ai-results-fixes', 'esc_ajax_object', [
                     <?php esc_html_e('Back to AI Search', 'erins-seed-catalog'); ?>
                 </button>
 
-                <button type="submit" class="esc-button esc-button-primary" id="esc-submit-seed" onclick="jQuery(document).trigger('esc_submit_seed_clicked'); return false;">
+                <button type="button" class="esc-button esc-button-primary" id="esc-submit-seed">
                     <span class="dashicons dashicons-saved"></span>
                     <?php esc_html_e('Submit Seed', 'erins-seed-catalog'); ?>
                 </button>
@@ -507,4 +562,6 @@ wp_localize_script('esc-ai-results-fixes', 'esc_ajax_object', [
     </form>
 
 <!-- Success screen will be dynamically added by esc-ai-results-enhanced.js -->
+
+
 </div>
