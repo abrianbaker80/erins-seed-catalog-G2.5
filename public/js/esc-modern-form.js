@@ -248,6 +248,12 @@
                                 console.log('Using user-entered variety name:', varietyName);
                             }
 
+                            // Update hidden fields with seed name and variety
+                            $('#esc_seed_name_hidden').val(seedName);
+                            if (varietyName) {
+                                $('#esc_variety_name_hidden').val(varietyName);
+                            }
+
                             // Populate the review form with the seed data
                             populateReviewForm(response.data);
 
@@ -640,7 +646,9 @@
         // Special handling for seed_name
         if (data.seed_name) {
             console.log('Setting seed name:', data.seed_name);
+            // Update both the visible field and the hidden field
             $('#esc_seed_name_review').val(data.seed_name).trigger('input');
+            $('#esc_seed_name_hidden').val(data.seed_name);
             $('#esc_seed_name_review').closest('.esc-form-field').addClass('esc-ai-populated');
             $('#esc_seed_name_review').closest('.esc-form-field').find('label:not(:has(.esc-ai-badge))').append(' <span class="esc-ai-badge">AI</span>');
             addToChangesList('seed_name', 'Seed name');
@@ -654,7 +662,9 @@
                 // Don't use the variety name if it's the same as the seed name
             } else {
                 console.log('Setting variety name:', data.variety_name);
+                // Update both the visible field and the hidden field
                 $('#esc_variety_name_review').val(data.variety_name).trigger('input');
+                $('#esc_variety_name_hidden').val(data.variety_name);
                 $('#esc_variety_name_review').closest('.esc-form-field').addClass('esc-ai-populated');
                 $('#esc_variety_name_review').closest('.esc-form-field').find('label:not(:has(.esc-ai-badge))').append(' <span class="esc-ai-badge">AI</span>');
                 addToChangesList('variety_name', 'Variety name');

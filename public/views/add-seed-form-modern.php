@@ -29,9 +29,13 @@ wp_localize_script('esc-ai-results-fixes', 'esc_ajax_object', [
 <div id="esc-add-seed-form-container" class="esc-container esc-modern-form">
     <h2><?php esc_html_e( 'Add New Seed to Catalog', 'erins-seed-catalog' ); ?></h2>
 
-    <div id="esc-form-messages" class="esc-message" style="display: none;"></div>
-
     <form id="esc-add-seed-form" class="esc-form" method="post">
+        <!-- Message area for form feedback -->
+        <div id="esc-form-messages" class="esc-message" style="display: none;"></div>
+
+        <!-- Hidden fields for actual form submission -->
+        <input type="hidden" id="esc_seed_name_hidden" name="seed_name" value="">
+        <input type="hidden" id="esc_variety_name_hidden" name="variety_name" value="">
         <!-- Phase 1: AI Input -->
         <div class="esc-phase esc-phase-ai active" id="esc-phase-ai-input">
             <div class="esc-form-card esc-ai-card">
@@ -44,7 +48,7 @@ wp_localize_script('esc-ai-results-fixes', 'esc_ajax_object', [
                     <div class="esc-seed-variety-row">
                         <div class="esc-seed-field">
                             <div class="esc-floating-label">
-                                <input type="text" id="esc_seed_name" name="seed_name" placeholder=" " required autocomplete="off">
+                                <input type="text" id="esc_seed_name" placeholder=" " required autocomplete="off" data-target="esc_seed_name_hidden">
                                 <label for="esc_seed_name"><?php esc_html_e('Seed Type', 'erins-seed-catalog'); ?> <span class="required">*</span></label>
                                 <p class="description"><?php esc_html_e('Enter seed name.', 'erins-seed-catalog'); ?></p>
                             </div>
@@ -52,7 +56,7 @@ wp_localize_script('esc-ai-results-fixes', 'esc_ajax_object', [
 
                         <div class="esc-variety-field">
                             <div class="esc-floating-label">
-                                <input type="text" id="esc_variety_name" name="variety_name" placeholder=" " autocomplete="off">
+                                <input type="text" id="esc_variety_name" placeholder=" " autocomplete="off" data-target="esc_variety_name_hidden">
                                 <label for="esc_variety_name"><?php esc_html_e('Variety (Optional)', 'erins-seed-catalog'); ?></label>
                                 <p class="description"><?php esc_html_e('Select or enter variety name.', 'erins-seed-catalog'); ?></p>
                             </div>
@@ -160,7 +164,7 @@ wp_localize_script('esc-ai-results-fixes', 'esc_ajax_object', [
                                 <div class="esc-form-field">
                                     <div class="esc-floating-label">
                                         <div class="esc-input-with-confidence">
-                                            <input type="text" id="esc_seed_name_review" name="seed_name" placeholder=" " required>
+                                            <input type="text" id="esc_seed_name_review" placeholder=" " required data-target="esc_seed_name_hidden">
                                             <label for="esc_seed_name_review"><?php esc_html_e('Seed Type', 'erins-seed-catalog'); ?> <span class="required">*</span></label>
                                             <div class="esc-confidence-indicator" data-confidence="high">
                                                 <span class="dashicons dashicons-shield"></span>
@@ -173,7 +177,7 @@ wp_localize_script('esc-ai-results-fixes', 'esc_ajax_object', [
                                 <div class="esc-form-field">
                                     <div class="esc-floating-label">
                                         <div class="esc-input-with-confidence">
-                                            <input type="text" id="esc_variety_name_review" name="variety_name" placeholder=" ">
+                                            <input type="text" id="esc_variety_name_review" placeholder=" " data-target="esc_variety_name_hidden">
                                             <label for="esc_variety_name_review"><?php esc_html_e('Variety', 'erins-seed-catalog'); ?></label>
                                             <div class="esc-confidence-indicator" data-confidence="high">
                                                 <span class="dashicons dashicons-shield"></span>
@@ -522,22 +526,26 @@ jQuery(document).ready(function($) {
         const $form = $('#esc-add-seed-form');
         const $messageDiv = $('#esc-form-messages');
 
-        // Ensure the seed_name field is properly populated
-        const seedNameValue = $('#esc_seed_name').val() || $('#esc_seed_name_review').val();
+        // Make sure hidden fields are up to date with the latest values
+        $('input[data-target]').each(function() {
+            const value = $(this).val();
+            const targetId = $(this).data('target');
+            if (value) {
+                $('#' + targetId).val(value);
+            }
+        });
+
+        // Check if seed_name is populated
+        const seedNameValue = $('#esc_seed_name_hidden').val();
         console.log('Inline script - Seed Name Value:', seedNameValue);
 
-        // If we have a value, make sure both fields have it
-        if (seedNameValue) {
-            $('#esc_seed_name, #esc_seed_name_review').val(seedNameValue);
+        if (!seedNameValue) {
+            $messageDiv.removeClass('loading').addClass('error').text('Seed Type is required.').show();
+            return;
         }
 
         // Serialize form data
         let formData = $form.serialize() + '&action=esc_add_seed&nonce=' + esc_ajax_object.nonce;
-
-        // Manually add seed_name if it's not in the serialized data
-        if (formData.indexOf('seed_name=') === -1 && seedNameValue) {
-            formData += '&seed_name=' + encodeURIComponent(seedNameValue);
-        }
 
         // Show loading message
         $messageDiv.empty().removeClass('success error').addClass('loading').text('Saving...').show();

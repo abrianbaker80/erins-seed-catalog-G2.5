@@ -80,14 +80,24 @@ jQuery(document).ready(function($) {
             $messageDiv.empty().removeClass('success error').addClass('loading').text('Saving...').show();
             $submitButton.prop('disabled', true);
 
-            // Ensure the seed_name field is properly populated
-            // Get the value from either the AI input phase or the review phase
-            const seedNameValue = $('#esc_seed_name').val() || $('#esc_seed_name_review').val();
+            // Make sure hidden fields are up to date with the latest values
+            // This ensures we're submitting the most current data
+            $('input[data-target]').each(function() {
+                const value = $(this).val();
+                const targetId = $(this).data('target');
+                if (value) {
+                    $('#' + targetId).val(value);
+                }
+            });
+
+            // Check if seed_name is populated
+            const seedNameValue = $('#esc_seed_name_hidden').val();
             console.log('Seed Name Value:', seedNameValue);
 
-            // If we have a value, make sure both fields have it
-            if (seedNameValue) {
-                $('#esc_seed_name, #esc_seed_name_review').val(seedNameValue);
+            if (!seedNameValue) {
+                $messageDiv.removeClass('loading').addClass('error').text('Seed Type is required.').show();
+                $submitButton.prop('disabled', false);
+                return;
             }
 
             // Serialize form data
@@ -96,11 +106,6 @@ jQuery(document).ready(function($) {
 
             // Add AJAX action and nonce
             formData += '&action=esc_add_seed&nonce=' + esc_ajax_object.nonce;
-
-            // Manually add seed_name if it's not in the serialized data
-            if (formData.indexOf('seed_name=') === -1 && seedNameValue) {
-                formData += '&seed_name=' + encodeURIComponent(seedNameValue);
-            }
 
             // Submit the form via AJAX
             console.log('Submitting form via AJAX...');
@@ -202,18 +207,29 @@ jQuery(document).ready(function($) {
         });
     }
 
-    // Function to synchronize seed name fields
-    function syncSeedNameFields() {
-        // When either seed name field changes, update the other one
-        $('#esc_seed_name, #esc_seed_name_review').on('input', function() {
+    // Function to synchronize form fields with hidden fields
+    function setupFormFieldSync() {
+        // Find all input fields with data-target attribute
+        $('input[data-target]').on('input', function() {
             const value = $(this).val();
-            console.log('Syncing seed name fields with value:', value);
+            const targetId = $(this).data('target');
 
-            // Update the other field
-            if (this.id === 'esc_seed_name') {
-                $('#esc_seed_name_review').val(value);
-            } else {
-                $('#esc_seed_name').val(value);
+            // Update the hidden field
+            $('#' + targetId).val(value);
+            console.log('Updated hidden field ' + targetId + ' with value: ' + value);
+
+            // Also update any other visible fields with the same target
+            $('input[data-target="' + targetId + '"]').not(this).val(value);
+        });
+
+        // Initialize hidden fields with values from visible fields
+        $('input[data-target]').each(function() {
+            const value = $(this).val();
+            const targetId = $(this).data('target');
+
+            if (value) {
+                $('#' + targetId).val(value);
+                console.log('Initialized hidden field ' + targetId + ' with value: ' + value);
             }
         });
     }
@@ -225,7 +241,7 @@ jQuery(document).ready(function($) {
         convertSeedCategoriesToText();
         renameSaveButton();
         fixTextAlignment();
-        syncSeedNameFields();
+        setupFormFieldSync();
 
         // Wait a moment for other scripts to finish initializing
         setTimeout(function() {
