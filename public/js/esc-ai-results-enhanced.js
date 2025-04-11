@@ -195,119 +195,9 @@ jQuery(document).ready(function($) {
 
             // Trigger the button click to use a single submission handler
             $('#esc-submit-seed').trigger('click');
-
-            // The following code is now redundant since we're using the button click handler
-            /*
-            if (!window.escIsSubmitting) {
-                // Get the form
-                const $form = $(this);
-                const $messageDiv = $('#esc-form-messages');
-
-                // Make sure hidden fields are up to date
-                $('input[data-target]').each(function() {
-                    const value = $(this).val();
-                    const targetId = $(this).data('target');
-                    if (value) {
-                        $('#' + targetId).val(value);
-                    }
-                });
-
-                // Check if seed_name is populated
-                const seedNameValue = $('#esc_seed_name_hidden').val();
-                console.log('Form submit - Seed Name Value:', seedNameValue);
-
-                if (!seedNameValue) {
-                    $messageDiv.removeClass('loading').addClass('error').text('Seed Type is required.').show();
-                    return;
-                }
-
-                // Mark as submitting
-                window.escIsSubmitting = true;
-
-                // Serialize form data
-                var formData = $form.serialize();
-                console.log('Form data:', formData);
-
-                // Add AJAX action and nonce
-                formData += '&action=esc_add_seed&nonce=' + esc_ajax_object.nonce;
-
-                // Show loading state
-                $messageDiv.empty().removeClass('success error').addClass('loading').text('Saving...').show();
-                $('#esc-submit-seed').prop('disabled', true);
-
-                // Submit the form via AJAX
-                $.ajax({
-                    url: esc_ajax_object.ajax_url,
-                    type: 'POST',
-                    data: formData,
-                    dataType: 'json',
-                    success: function(response) {
-                        console.log('AJAX success:', response);
-                        if (response.success) {
-                            // Hide message
-                            $messageDiv.hide();
-
-                            // Show confirmation
-                            $('.esc-confirmation-container').addClass('active');
-
-                            // Handle "Add Another Seed" button
-                            $('.esc-add-another').off('click').on('click', function() {
-                                // Hide confirmation
-                                $('.esc-confirmation-container').removeClass('active');
-
-                                // Reset form
-                                $form[0].reset();
-
-                                // Reset hidden fields
-                                $('#esc_seed_name_hidden, #esc_variety_name_hidden').val('');
-
-                                // Reset to initial AI search form
-                                $('.esc-phase').hide();
-                                $('#esc-phase-ai-input').show();
-
-                                // Reset submitting flag
-                                window.escIsSubmitting = false;
-
-                                // Re-enable submit button
-                                $('#esc-submit-seed').prop('disabled', false);
-                            });
-
-                            // Handle "View Catalog" button
-                            $('.esc-view-catalog').off('click').on('click', function() {
-                                // Redirect to catalog page
-                                window.location.href = esc_ajax_object.catalog_url || '/';
-                            });
-                        } else {
-                            // Show error message
-                            let errorMsg = response.data.message || 'Error adding seed.';
-                            $messageDiv.removeClass('loading').addClass('error').text(errorMsg);
-                            console.error('Add Seed Error:', response.data);
-
-                            // Reset submitting flag
-                            window.escIsSubmitting = false;
-
-                            // Re-enable submit button
-                            $('#esc-submit-seed').prop('disabled', false);
-                        }
-                    },
-                    error: function(_, textStatus, errorThrown) {
-                        // Show error message
-                        console.error('AJAX Error:', textStatus, errorThrown);
-                        $messageDiv.removeClass('loading').addClass('error').text('An error occurred: ' + textStatus);
-
-                        // Reset submitting flag
-                        window.escIsSubmitting = false;
-
-                        // Re-enable submit button
-                        $('#esc-submit-seed').prop('disabled', false);
-                    }
-                });
-            }
         });
-        */
-    }
 
-    // Improve form fields
+    } // Improve form fields
     function improveFormFields() {
         // Add placeholder text to empty fields
         $('.esc-form-field input, .esc-form-field textarea').each(function() {
@@ -326,7 +216,7 @@ jQuery(document).ready(function($) {
         }).on('blur', function() {
             $(this).closest('.esc-form-field').removeClass('esc-field-focused');
         });
-    }
+    }// Add animations
 
     // Add animations
     function addAnimations() {
@@ -340,7 +230,7 @@ jQuery(document).ready(function($) {
                 'animation-fill-mode': 'both'
             });
         });
-    }
+    }// Run enhancements when page loads
 
     // Run enhancements when page loads
     $(function() {
