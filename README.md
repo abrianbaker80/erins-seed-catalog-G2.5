@@ -2,6 +2,11 @@
 
 A WordPress plugin designed to help gardeners catalog and track their vegetable garden seeds.
 
+## Version 1.2.2 - 2025-04-12 16:48:21
+
+### Other Changes
+- Make README.md updates automatic by default in simple-release.ps1
+
 ## Version 1.2.1 - 2025-04-12 16:44:12
 
 ### New Features
@@ -14,6 +19,11 @@ A WordPress plugin designed to help gardeners catalog and track their vegetable 
 - Update README.md with version 1.2.0 changes and new features
 - Bump version to 1.2.0 for production release
 - Complete UI refactoring with fixed form functionality
+
+## Version 1.2.2 - 2025-04-12 16:48:21
+
+### Other Changes
+- Make README.md updates automatic by default in simple-release.ps1
 
 ## Version 1.2.0 Updates
 
@@ -139,4 +149,5 @@ This project is configured for debugging with Xdebug. To use it:
 ## License
 
 This project is licensed under the GPL v2 or later.
+
 
