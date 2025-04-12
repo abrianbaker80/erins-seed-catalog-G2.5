@@ -2,6 +2,27 @@
 
 A WordPress plugin designed to help gardeners catalog and track their vegetable garden seeds.
 
+## Version 1.2.0 Updates
+
+### UI Refactoring
+- Completely refactored the user interface with a modern design system
+- Implemented BEM methodology for consistent CSS naming conventions
+- Added responsive design improvements for better mobile experience
+- Fixed form field styling inconsistencies
+
+### Form Functionality Improvements
+- Fixed AI-assisted seed information population
+- Improved field validation and error handling
+- Enhanced user feedback during form submission
+- Added proper handling for boolean values (Yes/No fields)
+- Fixed category dropdown with Select2 integration
+
+### Code Quality Improvements
+- Reorganized JavaScript into modular components
+- Added debug mode for easier troubleshooting
+- Fixed circular references in logging functions
+- Improved error handling and user feedback
+
 ## Development Setup
 
 This project is set up for development with VS Code and Laragon/XAMPP.
@@ -51,6 +72,23 @@ The following extensions are recommended for development:
 3. Use the debugging tools in VS Code to troubleshoot issues
 4. Commit your changes to Git
 
+### Deployment
+
+To deploy the plugin to a production WordPress site:
+
+1. Create a deployment package:
+   ```
+   Compress-Archive -Path * -DestinationPath 'erins-seed-catalog-v1.2.0.zip' -Force
+   ```
+
+2. Use the included deployment script:
+   ```
+   # Edit deploy-to-wordpress.ps1 to update server details
+   ./deploy-to-wordpress.ps1
+   ```
+
+3. Alternatively, manually upload the zip file to your WordPress site and install it through the WordPress admin interface.
+
 ### Debugging
 
 This project is configured for debugging with Xdebug. To use it:
@@ -62,6 +100,7 @@ This project is configured for debugging with Xdebug. To use it:
 
 ## Features
 
+### Core Features
 - AI-Assisted Information: Uses Google's Gemini API to automatically fetch detailed information about seeds
 - Custom Database: Stores seed data in a dedicated database table
 - Mobile-First Design: Optimized for viewing and managing the catalog on smartphones and tablets
@@ -69,6 +108,20 @@ This project is configured for debugging with Xdebug. To use it:
 - Categorization: Organizes seeds using a hierarchical category system
 - Admin Management: Includes admin interfaces to manage the seed catalog and plugin settings
 - Excel Export: Allows exporting the seed catalog to CSV
+
+### UI Components
+- Modern Design System: Consistent styling across all plugin components
+- Interactive Form Cards: Collapsible sections for better organization of form fields
+- Loading Animations: Visual feedback during AI data fetching
+- Confidence Indicators: Shows confidence level of AI-generated information
+- Success Confirmation: Modal dialog with action buttons after successful submission
+
+### Technical Features
+- Modular JavaScript Architecture: Organized into core, UI, form, AI, and variety modules
+- BEM CSS Methodology: Consistent and maintainable CSS naming conventions
+- Select2 Integration: Enhanced dropdowns for better user experience
+- Debug Mode: Configurable logging for easier troubleshooting
+- Responsive Design: Works on all device sizes from mobile to desktop
 
 ## License
 
