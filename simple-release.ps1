@@ -88,8 +88,8 @@ function Get-ChangesSinceLastTag {
         $lastTag = git rev-list --max-parents=0 HEAD
     }
 
-    # Get commits since last tag
-    $commits = git log "$lastTag..HEAD" --pretty=format:"%s" --no-merges
+    # Get all commits since last tag (including merges)
+    $commits = git log "$lastTag..HEAD" --pretty=format:"%s"
 
     # Categorize commits
     $features = @()
@@ -98,13 +98,19 @@ function Get-ChangesSinceLastTag {
     $other = @()
 
     foreach ($commit in $commits) {
-        if ($commit -match "^feat|^feature|^add|^new|^implement") {
+        # Skip release commits
+        if ($commit -match "^Release v\d+\.\d+\.\d+") {
+            continue
+        }
+
+        # Categorize based on more flexible patterns
+        if ($commit -match "add|new|implement|feature|feat|enhance|improve") {
             $features += $commit
         }
-        elseif ($commit -match "^fix|^bug|^issue|^error|^warning|^notice") {
+        elseif ($commit -match "fix|bug|issue|error|warning|notice|resolve|correct") {
             $fixes += $commit
         }
-        elseif ($commit -match "^doc|^docs|^readme|^documentation") {
+        elseif ($commit -match "doc|docs|readme|documentation") {
             $docs += $commit
         }
         else {
@@ -122,7 +128,10 @@ function Get-ChangesSinceLastTag {
         foreach ($feature in $features) {
             # Clean up commit message
             $feature = $feature -replace "^feat\(.*\):\s*", "" -replace "^feature:\s*", ""
-            $feature = $feature.Substring(0, 1).ToUpper() + $feature.Substring(1)
+            # Ensure first letter is uppercase
+            if ($feature.Length -gt 0) {
+                $feature = $feature.Substring(0, 1).ToUpper() + $feature.Substring(1)
+            }
             $changelog += "- $feature`n"
         }
         $changelog += "`n"
@@ -133,7 +142,10 @@ function Get-ChangesSinceLastTag {
         foreach ($fix in $fixes) {
             # Clean up commit message
             $fix = $fix -replace "^fix\(.*\):\s*", "" -replace "^bug:\s*", ""
-            $fix = $fix.Substring(0, 1).ToUpper() + $fix.Substring(1)
+            # Ensure first letter is uppercase
+            if ($fix.Length -gt 0) {
+                $fix = $fix.Substring(0, 1).ToUpper() + $fix.Substring(1)
+            }
             $changelog += "- $fix`n"
         }
         $changelog += "`n"
@@ -144,7 +156,10 @@ function Get-ChangesSinceLastTag {
         foreach ($doc in $docs) {
             # Clean up commit message
             $doc = $doc -replace "^docs\(.*\):\s*", "" -replace "^doc:\s*", ""
-            $doc = $doc.Substring(0, 1).ToUpper() + $doc.Substring(1)
+            # Ensure first letter is uppercase
+            if ($doc.Length -gt 0) {
+                $doc = $doc.Substring(0, 1).ToUpper() + $doc.Substring(1)
+            }
             $changelog += "- $doc`n"
         }
         $changelog += "`n"
@@ -154,7 +169,10 @@ function Get-ChangesSinceLastTag {
         $changelog += "### Other Changes`n"
         foreach ($change in $other) {
             # Clean up commit message
-            $change = $change.Substring(0, 1).ToUpper() + $change.Substring(1)
+            # Ensure first letter is uppercase
+            if ($change.Length -gt 0) {
+                $change = $change.Substring(0, 1).ToUpper() + $change.Substring(1)
+            }
             $changelog += "- $change`n"
         }
         $changelog += "`n"
@@ -210,6 +228,66 @@ function Update-ReadmeChangelog {
         return
     }
 
+    # Clean up the README.md file first
+    Write-Host "Cleaning up README.md file to remove duplicate version entries..." -ForegroundColor Cyan
+
+    # Extract the header part (everything before the first version section)
+    $headerMatch = $readmeContent -match "^([\s\S]*?)($versionPattern)"
+    if ($headerMatch) {
+        $headerContent = $Matches[1]
+        Write-Host "Extracted header content ($(($headerContent | Measure-Object -Character).Characters) characters)" -ForegroundColor Green
+
+        # Find all version sections
+        $versionSections = [regex]::Matches($readmeContent, "$versionPattern[\s\S]*?(?=$versionPattern|$)")
+        Write-Host "Found $($versionSections.Count) version sections" -ForegroundColor Green
+
+        # Create a hashtable to store unique version sections
+        $uniqueVersions = @{}
+
+        foreach ($section in $versionSections) {
+            # Extract the version number
+            $versionMatch = $section.Value -match "## Version (\d+\.\d+\.\d+)"
+            if ($versionMatch) {
+                $versionNumber = $Matches[1]
+                if (-not $uniqueVersions.ContainsKey($versionNumber)) {
+                    $uniqueVersions[$versionNumber] = $section.Value
+                    Write-Host "Added version $versionNumber to unique versions" -ForegroundColor Green
+                }
+            }
+        }
+
+        # Find the development section (everything after the last version section)
+        $devSectionMatch = $readmeContent -match "$versionPattern[\s\S]*?\n\n(## [^V][\s\S]*)"
+        $devSection = ""
+        if ($devSectionMatch) {
+            $devSection = $Matches[1]
+            Write-Host "Found development section ($(($devSection | Measure-Object -Character).Characters) characters)" -ForegroundColor Green
+        }
+
+        # Rebuild the README.md file with unique version sections
+        $newReadmeContent = $headerContent
+
+        # Add the new changelog
+        $newReadmeContent += $changelog
+
+        # Add unique version sections in descending order
+        $uniqueVersions.Keys | Sort-Object -Descending | ForEach-Object {
+            $newReadmeContent += $uniqueVersions[$_]
+        }
+
+        # Add the development section
+        if ($devSection) {
+            $newReadmeContent += "`n`n$devSection"
+        }
+
+        # Update the README.md file
+        Set-Content -Path "README.md" -Value $newReadmeContent
+        Write-Host "README.md updated with cleaned up version sections and new changelog" -ForegroundColor Green
+        return
+    }
+
+    # If we couldn't parse the file structure, fall back to the original method
+    Write-Host "Could not parse README.md structure. Using fallback method." -ForegroundColor Yellow
     if ($readmeContent -match $versionPattern) {
         Write-Host "Found existing version section: $($Matches[0])" -ForegroundColor Green
         # Insert the new changelog before the first version section
@@ -263,7 +341,9 @@ function Update-Files {
         Set-Content -Path "readme.txt" -Value $readmeContent
     }
 
-    # Update README.md if requested
+    # Always update README.md with changelog
+    # We're setting shouldUpdateReadme to $true to ensure it always happens
+    $shouldUpdateReadme = $true
     if ($shouldUpdateReadme) {
         $changelog = Get-ChangesSinceLastTag -newVersion $newVersion
 
