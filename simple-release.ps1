@@ -6,6 +6,8 @@
 #   ./simple-release.ps1 -Minor           - Increment minor version (0.x.0)
 #   ./simple-release.ps1 -DryRun          - Show what would happen without making changes
 #   ./simple-release.ps1 -ReleaseTitle "Title" -ReleaseDescription "Description" - Custom release info
+#   ./simple-release.ps1 -UpdateReadme    - Update README.md with changelog
+#   ./simple-release.ps1 -SkipReadmeUpdate - Don't update README.md (default behavior)
 
 param (
     [string]$VersionType = "patch",
@@ -13,7 +15,9 @@ param (
     [string]$ReleaseTitle = "",
     [string]$ReleaseDescription = "",
     [switch]$Major = $false,
-    [switch]$Minor = $false
+    [switch]$Minor = $false,
+    [switch]$UpdateReadme = $false,
+    [switch]$SkipReadmeUpdate = $false
 )
 
 # Handle version type from switches
@@ -22,6 +26,15 @@ if ($Major) {
 }
 elseif ($Minor) {
     $VersionType = "minor"
+}
+
+# Determine if README should be updated
+$shouldUpdateReadme = $UpdateReadme -or (-not $SkipReadmeUpdate)
+
+if ($shouldUpdateReadme) {
+    Write-Host "README.md will be updated with changelog" -ForegroundColor Cyan
+} else {
+    Write-Host "README.md will not be updated" -ForegroundColor Yellow
 }
 
 # Configuration
@@ -60,6 +73,147 @@ function Update-Version {
     return "$major.$minor.$patch"
 }
 
+# Get changes since last tag
+function Get-ChangesSinceLastTag {
+    param (
+        [string]$newVersion
+    )
+
+    Write-Host "Getting changes since last tag..." -ForegroundColor Cyan
+
+    # Get the last tag
+    $lastTag = git describe --tags --abbrev=0 2>$null
+
+    if (-not $lastTag) {
+        Write-Host "No previous tags found. Using first commit." -ForegroundColor Yellow
+        $lastTag = git rev-list --max-parents=0 HEAD
+    }
+
+    # Get commits since last tag
+    $commits = git log "$lastTag..HEAD" --pretty=format:"%s" --no-merges
+
+    # Categorize commits
+    $features = @()
+    $fixes = @()
+    $docs = @()
+    $other = @()
+
+    foreach ($commit in $commits) {
+        if ($commit -match "^feat|^feature|^add|^new|^implement") {
+            $features += $commit
+        }
+        elseif ($commit -match "^fix|^bug|^issue|^error|^warning|^notice") {
+            $fixes += $commit
+        }
+        elseif ($commit -match "^doc|^docs|^readme|^documentation") {
+            $docs += $commit
+        }
+        else {
+            $other += $commit
+        }
+    }
+
+    # Build changelog
+    $changelog = "## Version $newVersion`n`n"
+
+    if ($features.Count -gt 0) {
+        $changelog += "### New Features`n"
+        foreach ($feature in $features) {
+            # Clean up commit message
+            $feature = $feature -replace "^feat\(.*\):\s*", "" -replace "^feature:\s*", ""
+            $feature = $feature.Substring(0, 1).ToUpper() + $feature.Substring(1)
+            $changelog += "- $feature`n"
+        }
+        $changelog += "`n"
+    }
+
+    if ($fixes.Count -gt 0) {
+        $changelog += "### Bug Fixes`n"
+        foreach ($fix in $fixes) {
+            # Clean up commit message
+            $fix = $fix -replace "^fix\(.*\):\s*", "" -replace "^bug:\s*", ""
+            $fix = $fix.Substring(0, 1).ToUpper() + $fix.Substring(1)
+            $changelog += "- $fix`n"
+        }
+        $changelog += "`n"
+    }
+
+    if ($docs.Count -gt 0) {
+        $changelog += "### Documentation`n"
+        foreach ($doc in $docs) {
+            # Clean up commit message
+            $doc = $doc -replace "^docs\(.*\):\s*", "" -replace "^doc:\s*", ""
+            $doc = $doc.Substring(0, 1).ToUpper() + $doc.Substring(1)
+            $changelog += "- $doc`n"
+        }
+        $changelog += "`n"
+    }
+
+    if ($other.Count -gt 0) {
+        $changelog += "### Other Changes`n"
+        foreach ($change in $other) {
+            # Clean up commit message
+            $change = $change.Substring(0, 1).ToUpper() + $change.Substring(1)
+            $changelog += "- $change`n"
+        }
+        $changelog += "`n"
+    }
+
+    # If no changes were categorized, add a generic message
+    if ($features.Count -eq 0 -and $fixes.Count -eq 0 -and $docs.Count -eq 0 -and $other.Count -eq 0) {
+        $changelog += "### Changes`n"
+        $changelog += "- Version bump to $newVersion`n`n"
+    }
+
+    return $changelog
+}
+
+# Update README.md with changelog
+function Update-ReadmeChangelog {
+    param (
+        [string]$newVersion,
+        [string]$changelog
+    )
+
+    if ($DryRun) {
+        Write-Host "DRY RUN: Would update README.md with changelog for version $newVersion" -ForegroundColor Yellow
+        Write-Host "DRY RUN: Changelog content:" -ForegroundColor Yellow
+        Write-Host $changelog -ForegroundColor Gray
+        return
+    }
+
+    Write-Host "Updating README.md with changelog..." -ForegroundColor Cyan
+
+    # Check if README.md exists
+    if (-not (Test-Path "README.md")) {
+        Write-Host "README.md not found. Creating new file." -ForegroundColor Yellow
+        $readmeContent = "# Erin's Seed Catalog`n`nA WordPress plugin designed to help gardeners catalog and track their vegetable garden seeds.`n`n$changelog"
+        Set-Content -Path "README.md" -Value $readmeContent
+        return
+    }
+
+    # Read current README.md
+    $readmeContent = Get-Content "README.md" -Raw
+
+    # Check if there's already a version section
+    if ($readmeContent -match "## Version \d+\.\d+\.\d+") {
+        # Insert the new changelog before the first version section
+        $readmeContent = $readmeContent -replace "(## Version \d+\.\d+\.\d+)", "$changelog`$1"
+    } else {
+        # Find the first ## heading and insert before it
+        if ($readmeContent -match "## [^#]") {
+            $readmeContent = $readmeContent -replace "(## [^#])", "$changelog`$1"
+        } else {
+            # Append to the end if no ## heading found
+            $readmeContent += "`n`n$changelog"
+        }
+    }
+
+    # Write updated content back to README.md
+    Set-Content -Path "README.md" -Value $readmeContent
+    Write-Host "README.md updated with changelog for version $newVersion" -ForegroundColor Green
+}
+
 # Update version in files
 function Update-Files {
     param (
@@ -86,6 +240,12 @@ function Update-Files {
         $readmeContent = Get-Content "readme.txt" -Raw
         $readmeContent = $readmeContent -replace "Stable tag:\s*$oldVersion", "Stable tag: $newVersion"
         Set-Content -Path "readme.txt" -Value $readmeContent
+    }
+
+    # Update README.md if requested
+    if ($shouldUpdateReadme) {
+        $changelog = Get-ChangesSinceLastTag -newVersion $newVersion
+        Update-ReadmeChangelog -newVersion $newVersion -changelog $changelog
     }
 }
 
