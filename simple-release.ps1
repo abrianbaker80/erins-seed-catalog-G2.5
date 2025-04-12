@@ -115,6 +115,7 @@ function Get-ChangesSinceLastTag {
 
     # Build changelog with timestamp
     $currentDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    Write-Host "Adding timestamp: $currentDate" -ForegroundColor Cyan
     $changelog = "## Version $newVersion - $currentDate`n`n"
 
     if ($features.Count -gt 0) {
@@ -246,6 +247,11 @@ function Update-Files {
     # Update README.md if requested
     if ($shouldUpdateReadme) {
         $changelog = Get-ChangesSinceLastTag -newVersion $newVersion
+
+        # Debug output to show the generated changelog
+        Write-Host "Generated changelog:" -ForegroundColor Cyan
+        Write-Host $changelog -ForegroundColor Gray
+
         Update-ReadmeChangelog -newVersion $newVersion -changelog $changelog
     }
 }
