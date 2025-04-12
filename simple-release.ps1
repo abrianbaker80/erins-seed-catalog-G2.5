@@ -195,18 +195,31 @@ function Update-ReadmeChangelog {
 
     # Read current README.md
     $readmeContent = Get-Content "README.md" -Raw
+    Write-Host "README.md content length: $(($readmeContent | Measure-Object -Character).Characters) characters" -ForegroundColor Cyan
+    Write-Host "First 100 characters of README.md:" -ForegroundColor Cyan
+    Write-Host $readmeContent.Substring(0, [Math]::Min(100, $readmeContent.Length)) -ForegroundColor Gray
 
     # Check if there's already a version section (with or without timestamp)
-    if ($readmeContent -match "## Version \d+\.\d+\.\d+(?:\s*-\s*\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})?") {
+    Write-Host "Checking README.md for existing version sections..." -ForegroundColor Cyan
+    $versionPattern = "## Version \d+\.\d+\.\d+(?:\s*-\s*\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})?"
+
+    if ($readmeContent -match $versionPattern) {
+        Write-Host "Found existing version section: $($Matches[0])" -ForegroundColor Green
         # Insert the new changelog before the first version section
-        $readmeContent = $readmeContent -replace "(## Version \d+\.\d+\.\d+(?:\s*-\s*\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})?)", "$changelog`$1"
+        $readmeContent = $readmeContent -replace "($versionPattern)", "$changelog`$1"
+        Write-Host "Inserted new changelog before existing version section" -ForegroundColor Green
     } else {
+        Write-Host "No existing version section found in README.md" -ForegroundColor Yellow
         # Find the first ## heading and insert before it
         if ($readmeContent -match "## [^#]") {
+            Write-Host "Found another heading: $($Matches[0])" -ForegroundColor Green
             $readmeContent = $readmeContent -replace "(## [^#])", "$changelog`$1"
+            Write-Host "Inserted new changelog before heading" -ForegroundColor Green
         } else {
             # Append to the end if no ## heading found
+            Write-Host "No headings found, appending to the end of README.md" -ForegroundColor Yellow
             $readmeContent += "`n`n$changelog"
+            Write-Host "Appended new changelog to the end of README.md" -ForegroundColor Green
         }
     }
 
