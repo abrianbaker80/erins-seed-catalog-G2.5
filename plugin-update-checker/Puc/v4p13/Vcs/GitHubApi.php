@@ -99,8 +99,8 @@ if ( !class_exists('Puc_v4p13_Vcs_GitHubApi', false) ):
 			}
 
 			if ( !empty($release->body) ) {
-				/** @noinspection PhpUndefinedClassInspection */
-				$reference->changelog = Parsedown::instance()->text($release->body);
+				// Use the release body as-is without Markdown parsing
+				$reference->changelog = '<pre>' . esc_html($release->body) . '</pre>';
 			}
 
 			return $reference;

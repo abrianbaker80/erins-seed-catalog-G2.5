@@ -2,240 +2,480 @@
 
 A WordPress plugin designed to help gardeners catalog and track their vegetable garden seeds.
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.6 - 2025-04-12 17:20:48
 
 ### New Features
 - Add comprehensive shortcode documentation to readme.txt and README.md
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.5 - 2025-04-12 17:08:25
 
 ### Other Changes
 - Remove UI Test menu item and functionality
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.6 - 2025-04-12 17:20:48
 
 ### New Features
 - Add comprehensive shortcode documentation to readme.txt and README.md
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.4 - 2025-04-12 16:56:15
 
 ### Bug Fixes
 - Fix duplicate version entries in README.md updates
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.6 - 2025-04-12 17:20:48
 
 ### New Features
 - Add comprehensive shortcode documentation to readme.txt and README.md
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.5 - 2025-04-12 17:08:25
 
 ### Other Changes
 - Remove UI Test menu item and functionality
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.6 - 2025-04-12 17:20:48
 
 ### New Features
 - Add comprehensive shortcode documentation to readme.txt and README.md
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.3 - 2025-04-12 16:51:28
 
 ### New Features
 - Add debug output to README.md update process in simple-release.ps1
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.6 - 2025-04-12 17:20:48
 
 ### New Features
 - Add comprehensive shortcode documentation to readme.txt and README.md
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.5 - 2025-04-12 17:08:25
 
 ### Other Changes
 - Remove UI Test menu item and functionality
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.6 - 2025-04-12 17:20:48
 
 ### New Features
 - Add comprehensive shortcode documentation to readme.txt and README.md
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.4 - 2025-04-12 16:56:15
 
 ### Bug Fixes
 - Fix duplicate version entries in README.md updates
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.6 - 2025-04-12 17:20:48
 
 ### New Features
 - Add comprehensive shortcode documentation to readme.txt and README.md
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.5 - 2025-04-12 17:08:25
 
 ### Other Changes
 - Remove UI Test menu item and functionality
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.6 - 2025-04-12 17:20:48
 
 ### New Features
 - Add comprehensive shortcode documentation to readme.txt and README.md
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.2 - 2025-04-12 16:48:21
 
 ### Other Changes
 - Make README.md updates automatic by default in simple-release.ps1
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.6 - 2025-04-12 17:20:48
 
 ### New Features
 - Add comprehensive shortcode documentation to readme.txt and README.md
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.5 - 2025-04-12 17:08:25
 
 ### Other Changes
 - Remove UI Test menu item and functionality
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.6 - 2025-04-12 17:20:48
 
 ### New Features
 - Add comprehensive shortcode documentation to readme.txt and README.md
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.4 - 2025-04-12 16:56:15
 
 ### Bug Fixes
 - Fix duplicate version entries in README.md updates
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.6 - 2025-04-12 17:20:48
 
 ### New Features
 - Add comprehensive shortcode documentation to readme.txt and README.md
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.5 - 2025-04-12 17:08:25
 
 ### Other Changes
 - Remove UI Test menu item and functionality
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.6 - 2025-04-12 17:20:48
 
 ### New Features
 - Add comprehensive shortcode documentation to readme.txt and README.md
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.1 - 2025-04-12 16:44:12
 
@@ -250,80 +490,160 @@ A WordPress plugin designed to help gardeners catalog and track their vegetable 
 - Bump version to 1.2.0 for production release
 - Complete UI refactoring with fixed form functionality
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.6 - 2025-04-12 17:20:48
 
 ### New Features
 - Add comprehensive shortcode documentation to readme.txt and README.md
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.5 - 2025-04-12 17:08:25
 
 ### Other Changes
 - Remove UI Test menu item and functionality
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.6 - 2025-04-12 17:20:48
 
 ### New Features
 - Add comprehensive shortcode documentation to readme.txt and README.md
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.4 - 2025-04-12 16:56:15
 
 ### Bug Fixes
 - Fix duplicate version entries in README.md updates
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.6 - 2025-04-12 17:20:48
 
 ### New Features
 - Add comprehensive shortcode documentation to readme.txt and README.md
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.5 - 2025-04-12 17:08:25
 
 ### Other Changes
 - Remove UI Test menu item and functionality
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.6 - 2025-04-12 17:20:48
 
 ### New Features
 - Add comprehensive shortcode documentation to readme.txt and README.md
 
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
+
 ## Version 1.2.7 - 2025-04-12 17:30:00
 
 ### Changes
 - Version bump to 1.2.7
+
+## Version 1.2.8 - 2025-04-12 17:39:01
+
+### Changes
+- Version bump to 1.2.8
 
 ## Version 1.2.0 Updates
 
@@ -546,6 +866,7 @@ These shortcodes are primarily for development and testing purposes:
 ## License
 
 This project is licensed under the GPL v2 or later.
+
 
 
 
