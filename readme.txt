@@ -30,13 +30,27 @@ Requires a Google Gemini API key.
 2.  Activate the plugin through the 'Plugins' menu in WordPress.
 3.  Go to the "Seed Catalog" -> "Settings" page in the WordPress admin menu.
 4.  Enter your Google Gemini API Key and save the settings.
-5.  Use the shortcodes on your pages/posts:
-    *   `[erins_seed_catalog_add_form]` - Displays the form to add a new seed.
-    *   `[erins_seed_catalog_view]` - Displays the seed catalog.
-    *   `[erins_seed_catalog_enhanced_view]` - Displays the seed catalog with enhanced visual cards.
-    *   `[erins_seed_catalog_search]` - Displays the search form for the catalog.
-    *   `[erins_seed_catalog_categories]` - Displays the list of seed categories.
-    *   `[erins_seed_catalog_export]` - Displays a form to export the catalog to Excel with column selection.
+5.  Create pages for your seed catalog features using the shortcodes below.
+
+=== Recommended Page Setup ===
+
+For the best user experience, we recommend creating the following pages:
+
+1. **Seed Catalog Page** - Main page to display your seed collection
+   * Use the enhanced view: `[erins_seed_catalog_enhanced_view]`
+   * Add the search form at the top: `[erins_seed_catalog_search]`
+
+2. **Add Seed Page** - Page for adding new seeds
+   * Use: `[erins_seed_catalog_add_form]`
+
+3. **Categories Page** - Page to browse seeds by category
+   * Use: `[erins_seed_catalog_categories show_count="true"]`
+
+4. **Export Page** - Page for exporting the catalog (optional, admin-only)
+   * Use: `[erins_seed_catalog_export]`
+   * Consider restricting this page to administrators
+
+See the Shortcodes section below for detailed information about each shortcode and its parameters.
 
 == Frequently Asked Questions ==
 
@@ -50,12 +64,128 @@ When adding a seed, enter the Seed Name (and optionally Variety, Brand, SKU). Cl
 
 == Shortcodes ==
 
-*   `[erins_seed_catalog_add_form]`
-*   `[erins_seed_catalog_view]`
-*   `[erins_seed_catalog_enhanced_view]`
-*   `[erins_seed_catalog_search]`
-*   `[erins_seed_catalog_categories]`
-*   `[erins_seed_catalog_export]`
+=== Main Shortcodes ===
+
+**1. Add Seed Form**
+
+`[erins_seed_catalog_add_form]`
+
+Displays a form for adding new seeds to the catalog. This form includes AI-assisted information retrieval via the Gemini API.
+
+*Parameters:* None
+
+*Example:*
+```
+[erins_seed_catalog_add_form]
+```
+
+**2. Basic Seed Catalog View**
+
+`[erins_seed_catalog_view]`
+
+Displays the seed catalog in a basic list format with pagination.
+
+*Parameters:*
+* `per_page` - Number of seeds to display per page (default: 12)
+* `category` - Filter by category slug or ID (default: empty, shows all)
+
+*Examples:*
+```
+[erins_seed_catalog_view]
+[erins_seed_catalog_view per_page="20"]
+[erins_seed_catalog_view category="vegetables"]
+```
+
+**3. Enhanced Seed Catalog View**
+
+`[erins_seed_catalog_enhanced_view]`
+
+Displays the seed catalog with enhanced visual cards, improved layout, and interactive features.
+
+*Parameters:*
+* `per_page` - Number of seeds to display per page (default: 12)
+* `category` - Filter by category slug or ID (default: empty, shows all)
+
+*Examples:*
+```
+[erins_seed_catalog_enhanced_view]
+[erins_seed_catalog_enhanced_view per_page="16"]
+[erins_seed_catalog_enhanced_view category="flowers"]
+```
+
+**4. Seed Search Form**
+
+`[erins_seed_catalog_search]`
+
+Displays a search form that allows users to search the seed catalog.
+
+*Parameters:* None
+
+*Example:*
+```
+[erins_seed_catalog_search]
+```
+
+**5. Seed Categories List**
+
+`[erins_seed_catalog_categories]`
+
+Displays a list of seed categories, optionally showing the count of seeds in each category.
+
+*Parameters:*
+* `show_count` - Show number of seeds per category (default: false)
+* `hierarchical` - Display categories hierarchically (default: true)
+* `orderby` - Order categories by this field (default: 'name')
+* `order` - Sort order, ASC or DESC (default: 'ASC')
+* `title_li` - Title for the list item (default: empty)
+
+*Examples:*
+```
+[erins_seed_catalog_categories]
+[erins_seed_catalog_categories show_count="true"]
+[erins_seed_catalog_categories hierarchical="false" orderby="count" order="DESC"]
+```
+
+**6. Seed Catalog Export Form**
+
+`[erins_seed_catalog_export]`
+
+Displays a form to export the seed catalog to Excel/CSV with customizable column selection.
+
+*Parameters:* None
+
+*Example:*
+```
+[erins_seed_catalog_export]
+```
+
+=== Development/Testing Shortcodes ===
+
+These shortcodes are primarily for development and testing purposes:
+
+**7. Modern Add Seed Form**
+
+`[erins_seed_catalog_add_form_modern]`
+
+Displays the modern version of the add seed form. This is a development shortcode.
+
+**8. Refactored Add Seed Form**
+
+`[erins_seed_catalog_add_form_refactored]`
+
+Displays the refactored version of the add seed form with improved UI. This is now used by the main add_form shortcode.
+
+**9. Test AI Results**
+
+`[erins_seed_catalog_test_ai_results]`
+
+Test shortcode for the enhanced AI results page. Used for development purposes.
+
+**10. Test Integration**
+
+`[erins_seed_catalog_test_integration]`
+
+Test shortcode for integration testing. Used for development purposes.
 
 == Screenshots ==
 

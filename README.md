@@ -192,6 +192,103 @@ This project is configured for debugging with Xdebug. To use it:
 - Admin Management: Includes admin interfaces to manage the seed catalog and plugin settings
 - Excel Export: Allows exporting the seed catalog to CSV
 
+## Shortcodes
+
+### Main Shortcodes
+
+#### 1. Add Seed Form
+
+```
+[erins_seed_catalog_add_form]
+```
+
+Displays a form for adding new seeds to the catalog. This form includes AI-assisted information retrieval via the Gemini API.
+
+#### 2. Basic Seed Catalog View
+
+```
+[erins_seed_catalog_view]
+```
+
+Displays the seed catalog in a basic list format with pagination.
+
+**Parameters:**
+- `per_page` - Number of seeds to display per page (default: 12)
+- `category` - Filter by category slug or ID (default: empty, shows all)
+
+**Examples:**
+```
+[erins_seed_catalog_view]
+[erins_seed_catalog_view per_page="20"]
+[erins_seed_catalog_view category="vegetables"]
+```
+
+#### 3. Enhanced Seed Catalog View
+
+```
+[erins_seed_catalog_enhanced_view]
+```
+
+Displays the seed catalog with enhanced visual cards, improved layout, and interactive features.
+
+**Parameters:**
+- `per_page` - Number of seeds to display per page (default: 12)
+- `category` - Filter by category slug or ID (default: empty, shows all)
+
+**Examples:**
+```
+[erins_seed_catalog_enhanced_view]
+[erins_seed_catalog_enhanced_view per_page="16"]
+[erins_seed_catalog_enhanced_view category="flowers"]
+```
+
+#### 4. Seed Search Form
+
+```
+[erins_seed_catalog_search]
+```
+
+Displays a search form that allows users to search the seed catalog.
+
+#### 5. Seed Categories List
+
+```
+[erins_seed_catalog_categories]
+```
+
+Displays a list of seed categories, optionally showing the count of seeds in each category.
+
+**Parameters:**
+- `show_count` - Show number of seeds per category (default: false)
+- `hierarchical` - Display categories hierarchically (default: true)
+- `orderby` - Order categories by this field (default: 'name')
+- `order` - Sort order, ASC or DESC (default: 'ASC')
+- `title_li` - Title for the list item (default: empty)
+
+**Examples:**
+```
+[erins_seed_catalog_categories]
+[erins_seed_catalog_categories show_count="true"]
+[erins_seed_catalog_categories hierarchical="false" orderby="count" order="DESC"]
+```
+
+#### 6. Seed Catalog Export Form
+
+```
+[erins_seed_catalog_export]
+```
+
+Displays a form to export the seed catalog to Excel/CSV with customizable column selection.
+
+### Development/Testing Shortcodes
+
+These shortcodes are primarily for development and testing purposes:
+
+- `[erins_seed_catalog_add_form_modern]` - Modern version of the add seed form
+- `[erins_seed_catalog_add_form_refactored]` - Refactored version with improved UI
+- `[erins_seed_catalog_test_ai_results]` - Test shortcode for the enhanced AI results page
+- `[erins_seed_catalog_test_integration]` - Test shortcode for integration testing
+
 ### UI Components
 - Modern Design System: Consistent styling across all plugin components
 - Interactive Form Cards: Collapsible sections for better organization of form fields
