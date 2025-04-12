@@ -1,0 +1,95 @@
+/**
+ * Erin's Seed Catalog - Variety Dropdown CSS
+ *
+ * Styles for the variety lookup dropdown.
+ */
+
+/* Variety Dropdown */
+#esc-variety-dropdown,
+.esc-dropdown__menu {
+    position: absolute !important;
+    top: calc(100% + 5px) !important; /* Position below the input with a small gap */
+    left: 0 !important;
+    width: 100% !important;
+    max-height: 200px !important;
+    overflow-y: auto !important;
+    background-color: #fff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    z-index: 9999 !important;
+    margin-top: 2px !important;
+}
+
+/* Variety Suggestions */
+.esc-variety-suggestion,
+.esc-dropdown__menu div {
+    padding: 10px 12px !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+    font-size: 14px !important;
+    color: #4a5568 !important;
+    display: block !important;
+    border-bottom: 1px solid #f0f4f8 !important;
+}
+
+.esc-variety-suggestion:hover,
+.esc-dropdown__menu div:hover {
+    background-color: #ebf5fb !important;
+}
+
+.esc-variety-suggestion:last-child,
+.esc-dropdown__menu div:last-child {
+    border-bottom: none !important;
+}
+
+/* Error and Empty Messages */
+.esc-variety-error,
+.esc-variety-empty {
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #718096;
+    text-align: center;
+}
+
+.esc-variety-error {
+    color: #e53e3e;
+}
+
+/* Loading Indicator */
+.esc-variety-loading {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #718096;
+    display: none;
+}
+
+/* Animation for loading indicator */
+.esc-animate-pulse {
+    animation: esc-pulse 1.5s infinite;
+}
+
+@keyframes esc-pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Ensure the variety field has position relative for proper dropdown positioning */
+.esc-variety-field,
+.esc-form__field--variety,
+.esc-form__field--variety-name {
+    position: relative !important;
+}

@@ -6,11 +6,13 @@ jQuery(document).ready(function($) {
 
     // Initialize enhancements
     function initEnhancements() {
+        console.log('Initializing AI results enhancements');
         renameUIElements();
         enhanceSunRequirements();
         setupConfirmationFlow();
         improveFormFields();
         addAnimations();
+        ensureAllSectionsPopulated();
     }
 
     // Rename UI elements
@@ -41,6 +43,7 @@ jQuery(document).ready(function($) {
     function enhanceSunRequirements() {
         // Function disabled - we want to keep the original text input field
         // without adding icons or enhanced UI
+        console.log('Sun requirements enhancement disabled - using text input only');
         return;
     }
 
@@ -230,7 +233,36 @@ jQuery(document).ready(function($) {
                 'animation-fill-mode': 'both'
             });
         });
-    }// Run enhancements when page loads
+    }
+
+    // Ensure all sections are properly populated with AI data
+    function ensureAllSectionsPopulated() {
+        console.log('Checking if all sections are properly populated');
+
+        // Check if we have any sections that need review
+        const $needsReviewSections = $('.esc-form-card[data-ai-status="partially-populated"], .esc-form-card[data-ai-status="not-populated"]');
+
+        if ($needsReviewSections.length > 0) {
+            console.log('Found sections that need review:', $needsReviewSections.length);
+
+            // Log the sections that need review
+            $needsReviewSections.each(function() {
+                const sectionName = $(this).find('.esc-card-header h3').text().trim();
+                console.log('Section needs review:', sectionName);
+
+                // Check which fields are missing values
+                const $emptyFields = $(this).find('.esc-form-field:not(.esc-ai-populated)');
+                console.log('Empty fields in section:', $emptyFields.length);
+
+                $emptyFields.each(function() {
+                    const fieldId = $(this).find('input, textarea, select').attr('id') || 'unknown';
+                    console.log('Empty field:', fieldId);
+                });
+            });
+        } else {
+            console.log('All sections appear to be properly populated');
+        }
+    }
 
     // Run enhancements when page loads
     $(function() {

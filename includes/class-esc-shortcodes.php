@@ -26,6 +26,12 @@ class ESC_Shortcodes {
 
 		// Add a test shortcode for the enhanced AI results page
 		add_shortcode( 'erins_seed_catalog_test_ai_results', [ __CLASS__, 'render_test_ai_results' ] );
+
+		// Add a shortcode for the refactored form
+		add_shortcode( 'erins_seed_catalog_add_form_refactored', [ __CLASS__, 'render_add_form_refactored' ] );
+
+		// Add a test shortcode for integration testing
+		add_shortcode( 'erins_seed_catalog_test_integration', [ __CLASS__, 'render_test_integration' ] );
 	}
 
 	/**
@@ -40,12 +46,8 @@ class ESC_Shortcodes {
 		// 	'redirect' => '',
 		// ), $atts, 'erins_seed_catalog_add_form' );
 
-		// Force debug output to help troubleshoot
-		echo '<!-- Using modern form template -->';
-
-		ob_start();
-		include ESC_PLUGIN_DIR . 'public/views/add-seed-form-modern.php';
-		return ob_get_clean();
+		// Use the refactored form as the default
+		return self::render_add_form_refactored($atts);
 	}
 
 	/**
@@ -252,15 +254,90 @@ class ESC_Shortcodes {
 	 * @return string HTML output for the test AI results page.
 	 */
 	public static function render_test_ai_results( $atts = [] ) {
-		// Make sure modern form CSS is loaded first
-		wp_enqueue_style('esc-modern-form', ESC_PLUGIN_URL . 'public/css/esc-modern-form.css', [], ESC_VERSION . '.' . time());
+		// Enqueue refactored CSS first
+		wp_enqueue_style('esc-refactored', ESC_PLUGIN_URL . 'public/css/esc-refactored.css', [], ESC_VERSION . '.' . time());
+
+		// Then load modern form CSS for backward compatibility
+		wp_enqueue_style('esc-modern-form', ESC_PLUGIN_URL . 'public/css/esc-modern-form.css', ['esc-refactored'], ESC_VERSION . '.' . time());
 
 		// Enqueue enhanced AI results CSS and JS
-		wp_enqueue_style('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/css/esc-ai-results-enhanced.css', ['esc-modern-form'], ESC_VERSION . '.' . time());
+		wp_enqueue_style('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/css/esc-ai-results-enhanced.css', ['esc-refactored', 'esc-modern-form'], ESC_VERSION . '.' . time());
 		wp_enqueue_script('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/js/esc-ai-results-enhanced.js', ['jquery'], ESC_VERSION . '.' . time(), true);
 
 		ob_start();
 		include ESC_PLUGIN_DIR . 'public/views/test-ai-results.php';
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render the [erins_seed_catalog_add_form_refactored] shortcode.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string HTML output for the refactored form.
+	 */
+	public static function render_add_form_refactored( $atts = [] ) {
+		// Enqueue design system and components CSS directly
+		wp_enqueue_style('esc-design-system', ESC_PLUGIN_URL . 'public/css/esc-design-system.css', [], ESC_VERSION);
+		wp_enqueue_style('esc-components', ESC_PLUGIN_URL . 'public/css/esc-components.css', ['esc-design-system'], ESC_VERSION);
+
+		// Enqueue refactored CSS after its dependencies
+		wp_enqueue_style('esc-refactored', ESC_PLUGIN_URL . 'public/css/esc-refactored.css', ['esc-design-system', 'esc-components'], ESC_VERSION);
+		wp_enqueue_style('esc-variety-dropdown', ESC_PLUGIN_URL . 'public/css/esc-variety-dropdown.css', ['esc-refactored'], ESC_VERSION);
+
+		// Enqueue modern form CSS for backward compatibility
+		wp_enqueue_style('esc-modern-form', ESC_PLUGIN_URL . 'public/css/esc-modern-form.css', ['esc-refactored'], ESC_VERSION);
+
+		// Enqueue our new modular JavaScript files
+		wp_enqueue_script('esc-core', ESC_PLUGIN_URL . 'public/js/esc-core.js', ['jquery'], ESC_VERSION, true);
+		wp_enqueue_script('esc-ui', ESC_PLUGIN_URL . 'public/js/esc-ui.js', ['esc-core'], ESC_VERSION, true);
+		wp_enqueue_script('esc-form', ESC_PLUGIN_URL . 'public/js/esc-form.js', ['esc-core', 'esc-ui'], ESC_VERSION, true);
+		wp_enqueue_script('esc-ai', ESC_PLUGIN_URL . 'public/js/esc-ai.js', ['esc-core', 'esc-form'], ESC_VERSION, true);
+		wp_enqueue_script('esc-variety', ESC_PLUGIN_URL . 'public/js/esc-variety.js', ['esc-core', 'esc-form'], ESC_VERSION, true);
+
+		// Localize script for AJAX calls
+		$ajax_data = [
+			'ajax_url' => admin_url('admin-ajax.php'),
+			'nonce' => wp_create_nonce('esc_ajax_nonce'),
+			'loading_text' => __('Loading...', 'erins-seed-catalog'),
+			'error_text' => __('An error occurred.', 'erins-seed-catalog'),
+			'gemini_error_text' => __('Error fetching AI info:', 'erins-seed-catalog'),
+			'form_submit_success' => __('Seed added successfully!', 'erins-seed-catalog'),
+			'form_submit_error' => __('Error adding seed.', 'erins-seed-catalog'),
+			'catalog_url' => home_url('/seed-catalog/'),
+			'add_another_text' => __('Add Another Seed', 'erins-seed-catalog'),
+			'view_catalog_text' => __('View Catalog', 'erins-seed-catalog'),
+			'debug' => true // Enable debug mode for troubleshooting
+		];
+
+		wp_localize_script('esc-core', 'esc_ajax_object', $ajax_data);
+
+		// Enqueue dashicons
+		wp_enqueue_style('dashicons');
+
+		// Enqueue Select2 for category dropdown
+		wp_enqueue_style('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', [], '4.1.0-rc.0');
+		wp_enqueue_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', ['jquery'], '4.1.0-rc.0', true);
+
+		ob_start();
+		include ESC_PLUGIN_DIR . 'public/views/add-seed-form-refactored.php';
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render the [erins_seed_catalog_test_integration] shortcode.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string HTML output for the integration test page.
+	 */
+	public static function render_test_integration( $atts = [] ) {
+		// Enqueue all necessary styles and scripts
+		wp_enqueue_style('esc-refactored', ESC_PLUGIN_URL . 'public/css/esc-refactored.css', [], ESC_VERSION);
+		wp_enqueue_style('esc-modern-form', ESC_PLUGIN_URL . 'public/css/esc-modern-form.css', [], ESC_VERSION);
+		wp_enqueue_style('dashicons');
+
+		// Include the test integration template
+		ob_start();
+		include ESC_PLUGIN_DIR . 'public/views/test-integration.php';
 		return ob_get_clean();
 	}
 }

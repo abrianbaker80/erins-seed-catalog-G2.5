@@ -1,0 +1,303 @@
+/**
+ * Erin's Seed Catalog Design System
+ * A comprehensive set of design tokens and base styles
+ */
+
+:root {
+  /* Primary Colors */
+  --esc-color-primary-100: #ebf8ff;
+  --esc-color-primary-200: #bee3f8;
+  --esc-color-primary-300: #90cdf4;
+  --esc-color-primary-400: #63b3ed;
+  --esc-color-primary-500: #4299e1; /* Primary brand color */
+  --esc-color-primary-600: #3182ce;
+  --esc-color-primary-700: #2b6cb0;
+  
+  /* Success Colors */
+  --esc-color-success-100: #f0fff4;
+  --esc-color-success-200: #c6f6d5;
+  --esc-color-success-300: #9ae6b4;
+  --esc-color-success-400: #68d391;
+  --esc-color-success-500: #48bb78; /* Primary success color */
+  --esc-color-success-600: #38a169;
+  --esc-color-success-700: #2f855a;
+  
+  /* Warning Colors */
+  --esc-color-warning-100: #fffaf0;
+  --esc-color-warning-200: #feebc8;
+  --esc-color-warning-300: #fbd38d;
+  --esc-color-warning-400: #f6ad55;
+  --esc-color-warning-500: #ed8936; /* Primary warning color */
+  --esc-color-warning-600: #dd6b20;
+  --esc-color-warning-700: #c05621;
+  
+  /* Error Colors */
+  --esc-color-error-100: #fff5f5;
+  --esc-color-error-200: #fed7d7;
+  --esc-color-error-300: #feb2b2;
+  --esc-color-error-400: #fc8181;
+  --esc-color-error-500: #f56565; /* Primary error color */
+  --esc-color-error-600: #e53e3e;
+  --esc-color-error-700: #c53030;
+  
+  /* Neutral Colors */
+  --esc-color-gray-100: #f7fafc;
+  --esc-color-gray-200: #edf2f7;
+  --esc-color-gray-300: #e2e8f0;
+  --esc-color-gray-400: #cbd5e0;
+  --esc-color-gray-500: #a0aec0;
+  --esc-color-gray-600: #718096;
+  --esc-color-gray-700: #4a5568;
+  --esc-color-gray-800: #2d3748;
+  --esc-color-gray-900: #1a202c;
+  
+  /* Spacing System */
+  --esc-space-1: 0.25rem;  /* 4px */
+  --esc-space-2: 0.5rem;   /* 8px */
+  --esc-space-3: 0.75rem;  /* 12px */
+  --esc-space-4: 1rem;     /* 16px */
+  --esc-space-5: 1.25rem;  /* 20px */
+  --esc-space-6: 1.5rem;   /* 24px */
+  --esc-space-8: 2rem;     /* 32px */
+  --esc-space-10: 2.5rem;  /* 40px */
+  --esc-space-12: 3rem;    /* 48px */
+  --esc-space-16: 4rem;    /* 64px */
+  
+  /* Typography */
+  --esc-font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  --esc-font-size-xs: 0.75rem;   /* 12px */
+  --esc-font-size-sm: 0.875rem;  /* 14px */
+  --esc-font-size-md: 1rem;      /* 16px */
+  --esc-font-size-lg: 1.125rem;  /* 18px */
+  --esc-font-size-xl: 1.25rem;   /* 20px */
+  --esc-font-size-2xl: 1.5rem;   /* 24px */
+  --esc-font-size-3xl: 1.875rem; /* 30px */
+  
+  /* Font Weights */
+  --esc-font-weight-normal: 400;
+  --esc-font-weight-medium: 500;
+  --esc-font-weight-semibold: 600;
+  --esc-font-weight-bold: 700;
+  
+  /* Line Heights */
+  --esc-line-height-tight: 1.25;
+  --esc-line-height-base: 1.5;
+  --esc-line-height-relaxed: 1.75;
+  
+  /* Border Radius */
+  --esc-radius-sm: 0.125rem; /* 2px */
+  --esc-radius-md: 0.25rem;  /* 4px */
+  --esc-radius-lg: 0.5rem;   /* 8px */
+  --esc-radius-xl: 0.75rem;  /* 12px */
+  --esc-radius-2xl: 1rem;    /* 16px */
+  --esc-radius-full: 9999px;
+  
+  /* Shadows */
+  --esc-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --esc-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --esc-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --esc-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Transitions */
+  --esc-transition-fast: 150ms;
+  --esc-transition-normal: 300ms;
+  --esc-transition-slow: 500ms;
+  
+  /* Z-index */
+  --esc-z-index-dropdown: 1000;
+  --esc-z-index-sticky: 1100;
+  --esc-z-index-fixed: 1200;
+  --esc-z-index-modal-backdrop: 1300;
+  --esc-z-index-modal: 1400;
+  --esc-z-index-popover: 1500;
+  --esc-z-index-tooltip: 1600;
+}
+
+/* Base Element Styling */
+.esc-container {
+  font-family: var(--esc-font-family-base);
+  color: var(--esc-color-gray-800);
+  line-height: var(--esc-line-height-base);
+  font-size: var(--esc-font-size-md);
+}
+
+/* Typography Utilities */
+.esc-text-xs { font-size: var(--esc-font-size-xs); }
+.esc-text-sm { font-size: var(--esc-font-size-sm); }
+.esc-text-md { font-size: var(--esc-font-size-md); }
+.esc-text-lg { font-size: var(--esc-font-size-lg); }
+.esc-text-xl { font-size: var(--esc-font-size-xl); }
+.esc-text-2xl { font-size: var(--esc-font-size-2xl); }
+.esc-text-3xl { font-size: var(--esc-font-size-3xl); }
+
+.esc-font-normal { font-weight: var(--esc-font-weight-normal); }
+.esc-font-medium { font-weight: var(--esc-font-weight-medium); }
+.esc-font-semibold { font-weight: var(--esc-font-weight-semibold); }
+.esc-font-bold { font-weight: var(--esc-font-weight-bold); }
+
+/* Spacing Utilities */
+.esc-m-0 { margin: 0; }
+.esc-m-1 { margin: var(--esc-space-1); }
+.esc-m-2 { margin: var(--esc-space-2); }
+.esc-m-3 { margin: var(--esc-space-3); }
+.esc-m-4 { margin: var(--esc-space-4); }
+.esc-m-5 { margin: var(--esc-space-5); }
+.esc-m-6 { margin: var(--esc-space-6); }
+
+.esc-p-0 { padding: 0; }
+.esc-p-1 { padding: var(--esc-space-1); }
+.esc-p-2 { padding: var(--esc-space-2); }
+.esc-p-3 { padding: var(--esc-space-3); }
+.esc-p-4 { padding: var(--esc-space-4); }
+.esc-p-5 { padding: var(--esc-space-5); }
+.esc-p-6 { padding: var(--esc-space-6); }
+
+/* Directional margin utilities */
+.esc-mt-1 { margin-top: var(--esc-space-1); }
+.esc-mt-2 { margin-top: var(--esc-space-2); }
+.esc-mt-3 { margin-top: var(--esc-space-3); }
+.esc-mt-4 { margin-top: var(--esc-space-4); }
+.esc-mt-5 { margin-top: var(--esc-space-5); }
+.esc-mt-6 { margin-top: var(--esc-space-6); }
+
+.esc-mb-1 { margin-bottom: var(--esc-space-1); }
+.esc-mb-2 { margin-bottom: var(--esc-space-2); }
+.esc-mb-3 { margin-bottom: var(--esc-space-3); }
+.esc-mb-4 { margin-bottom: var(--esc-space-4); }
+.esc-mb-5 { margin-bottom: var(--esc-space-5); }
+.esc-mb-6 { margin-bottom: var(--esc-space-6); }
+
+/* Directional padding utilities */
+.esc-pt-1 { padding-top: var(--esc-space-1); }
+.esc-pt-2 { padding-top: var(--esc-space-2); }
+.esc-pt-3 { padding-top: var(--esc-space-3); }
+.esc-pt-4 { padding-top: var(--esc-space-4); }
+.esc-pt-5 { padding-top: var(--esc-space-5); }
+.esc-pt-6 { padding-top: var(--esc-space-6); }
+
+.esc-pb-1 { padding-bottom: var(--esc-space-1); }
+.esc-pb-2 { padding-bottom: var(--esc-space-2); }
+.esc-pb-3 { padding-bottom: var(--esc-space-3); }
+.esc-pb-4 { padding-bottom: var(--esc-space-4); }
+.esc-pb-5 { padding-bottom: var(--esc-space-5); }
+.esc-pb-6 { padding-bottom: var(--esc-space-6); }
+
+/* Display Utilities */
+.esc-flex { display: flex; }
+.esc-inline-flex { display: inline-flex; }
+.esc-block { display: block; }
+.esc-inline-block { display: inline-block; }
+.esc-hidden { display: none; }
+
+/* Flex Utilities */
+.esc-flex-row { flex-direction: row; }
+.esc-flex-col { flex-direction: column; }
+.esc-items-center { align-items: center; }
+.esc-justify-center { justify-content: center; }
+.esc-justify-between { justify-content: space-between; }
+.esc-flex-wrap { flex-wrap: wrap; }
+.esc-flex-1 { flex: 1 1 0%; }
+.esc-flex-auto { flex: 1 1 auto; }
+.esc-flex-initial { flex: 0 1 auto; }
+.esc-flex-none { flex: none; }
+
+/* Text Alignment */
+.esc-text-left { text-align: left; }
+.esc-text-center { text-align: center; }
+.esc-text-right { text-align: right; }
+
+/* Text Colors */
+.esc-text-primary { color: var(--esc-color-primary-600); }
+.esc-text-success { color: var(--esc-color-success-600); }
+.esc-text-warning { color: var(--esc-color-warning-600); }
+.esc-text-error { color: var(--esc-color-error-600); }
+.esc-text-gray { color: var(--esc-color-gray-600); }
+.esc-text-dark { color: var(--esc-color-gray-800); }
+.esc-text-light { color: var(--esc-color-gray-100); }
+
+/* Background Colors */
+.esc-bg-primary { background-color: var(--esc-color-primary-500); }
+.esc-bg-primary-light { background-color: var(--esc-color-primary-100); }
+.esc-bg-success { background-color: var(--esc-color-success-500); }
+.esc-bg-success-light { background-color: var(--esc-color-success-100); }
+.esc-bg-warning { background-color: var(--esc-color-warning-500); }
+.esc-bg-warning-light { background-color: var(--esc-color-warning-100); }
+.esc-bg-error { background-color: var(--esc-color-error-500); }
+.esc-bg-error-light { background-color: var(--esc-color-error-100); }
+.esc-bg-gray { background-color: var(--esc-color-gray-200); }
+.esc-bg-white { background-color: white; }
+
+/* Border Radius */
+.esc-rounded-sm { border-radius: var(--esc-radius-sm); }
+.esc-rounded { border-radius: var(--esc-radius-md); }
+.esc-rounded-lg { border-radius: var(--esc-radius-lg); }
+.esc-rounded-xl { border-radius: var(--esc-radius-xl); }
+.esc-rounded-2xl { border-radius: var(--esc-radius-2xl); }
+.esc-rounded-full { border-radius: var(--esc-radius-full); }
+
+/* Shadows */
+.esc-shadow-sm { box-shadow: var(--esc-shadow-sm); }
+.esc-shadow { box-shadow: var(--esc-shadow-md); }
+.esc-shadow-lg { box-shadow: var(--esc-shadow-lg); }
+.esc-shadow-xl { box-shadow: var(--esc-shadow-xl); }
+.esc-shadow-none { box-shadow: none; }
+
+/* Transitions */
+.esc-transition { transition: all var(--esc-transition-normal); }
+.esc-transition-fast { transition: all var(--esc-transition-fast); }
+.esc-transition-slow { transition: all var(--esc-transition-slow); }
+
+/* Animations */
+@keyframes esc-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes esc-slide-in-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes esc-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(66, 153, 225, 0.4);
+    transform: scale(0.95);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(66, 153, 225, 0);
+    transform: scale(1);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(66, 153, 225, 0);
+    transform: scale(0.95);
+  }
+}
+
+.esc-animate-fade-in {
+  animation: esc-fade-in var(--esc-transition-normal) ease-in-out;
+}
+
+.esc-animate-slide-in {
+  animation: esc-slide-in-up var(--esc-transition-normal) ease-out;
+}
+
+.esc-animate-pulse {
+  animation: esc-pulse 2s infinite;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 640px) {
+  .esc-sm-flex-col { flex-direction: column; }
+  .esc-sm-w-full { width: 100%; }
+}
+
+@media (max-width: 768px) {
+  .esc-md-flex-col { flex-direction: column; }
+  .esc-md-w-full { width: 100%; }
+}

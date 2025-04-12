@@ -86,6 +86,18 @@ class ESC_Admin {
                 'esc-usage-stats',                                   // Menu slug
                 [ __CLASS__, 'render_usage_stats_page' ]             // Callback function
             );
+
+            // Add UI Refactoring Test Page (only in development)
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                add_submenu_page(
+                    'erins-seed-catalog',                            // Parent slug
+                    __( 'UI Refactoring Test', 'erins-seed-catalog' ), // Page title
+                    __( 'UI Test', 'erins-seed-catalog' ),           // Menu title
+                    'manage_options',                                // Capability
+                    'esc-test-refactored-ui',                        // Menu slug
+                    [ __CLASS__, 'render_test_refactored_ui_page' ]  // Callback function
+                );
+            }
          }
     }
 
@@ -594,6 +606,23 @@ class ESC_Admin {
 
         // Include the usage statistics template
         include ESC_PLUGIN_DIR . 'admin/views/usage-stats-page.php';
+    }
+
+    /**
+     * Render the UI refactoring test page.
+     */
+    public static function render_test_refactored_ui_page() {
+        if (!current_user_can('manage_options')) {
+            wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'erins-seed-catalog'));
+        }
+
+        // Enqueue necessary scripts and styles
+        wp_enqueue_style('wp-admin');
+        wp_enqueue_style('dashicons');
+        wp_enqueue_script('jquery');
+
+        // Include the test page template
+        include ESC_PLUGIN_DIR . 'public/views/test-refactored-ui.php';
     }
 
 }

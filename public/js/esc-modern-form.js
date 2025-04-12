@@ -282,15 +282,16 @@
                     console.error('Error fetching seed information:', response.data?.message);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function(_, status, errorThrown) {
                 stopLoadingStageAnimation();
                 showAIStatus('error');
-                console.error('AJAX Error:', status, error);
+                console.error('AJAX Error:', status, errorThrown);
             }
         });
     }
 
-    // This function is no longer used - we use populateReviewForm instead
+    // This function is kept for backward compatibility but marked as deprecated
+    // eslint-disable-next-line no-unused-vars
     function fillFormFields(data) {
         console.log('fillFormFields is deprecated - using populateReviewForm instead');
         populateReviewForm(data);
@@ -376,6 +377,9 @@
             console.error('Invalid data received for form population:', data);
             return;
         }
+
+        // Log all available fields in the data for debugging
+        console.log('Available fields in AI response:', Object.keys(data));
 
         // Populate fields in all form phases (review and manual)
         for (const key in data) {
@@ -539,22 +543,21 @@
             }
         }
 
-        // Special handling for sunlight radio buttons
+        // Special handling for sunlight/sun_requirements
         if (data.sunlight) {
-            // First uncheck all options
-            $('input[name="sunlight"]').prop('checked', false);
+            console.log('Setting sun requirements from sunlight:', data.sunlight);
+            // Set the sun_requirements field
+            $('#esc_sun_requirements').val(data.sunlight).trigger('input');
+            $('#esc_sun_requirements').closest('.esc-form-field').addClass('esc-ai-populated');
+            addToChangesList('sun_requirements', data.sunlight);
+        }
 
-            // Then check only the one that matches exactly
-            const sunlightValue = data.sunlight.trim();
-            $('input[name="sunlight"][value="' + sunlightValue + '"]').prop('checked', true);
-
-            // If none match exactly, check the first one
-            if ($('input[name="sunlight"]:checked').length === 0 && $('input[name="sunlight"]').length > 0) {
-                $('input[name="sunlight"]:first').prop('checked', true);
-            }
-
-            $('input[name="sunlight"]').closest('.esc-form-field').addClass('esc-ai-populated');
-            addToChangesList('sunlight', $('input[name="sunlight"]:checked').val() || sunlightValue);
+        // Also check for sun_requirements directly (in case the API uses this field name)
+        if (data.sun_requirements && !data.sunlight) {
+            console.log('Setting sun requirements directly:', data.sun_requirements);
+            $('#esc_sun_requirements').val(data.sun_requirements).trigger('input');
+            $('#esc_sun_requirements').closest('.esc-form-field').addClass('esc-ai-populated');
+            addToChangesList('sun_requirements', data.sun_requirements);
         }
 
         // Special handling for sowing method dropdown
@@ -713,15 +716,20 @@
             $('.esc-form-card').each(function() {
                 const $card = $(this);
                 const $fields = $card.find('.esc-form-field');
+                const sectionName = $card.find('.esc-card-header h3').text().trim();
+
+                console.log('Updating AI status for section:', sectionName);
 
                 // First mark fields with values as populated
                 $fields.each(function() {
                     try {
                         const $field = $(this);
                         const $input = $field.find('input, textarea, select');
+                        const fieldId = $input.attr('id') || 'unknown';
 
                         // Skip if already marked as populated
                         if ($field.hasClass('esc-ai-populated')) {
+                            console.log('Field already marked as populated:', fieldId);
                             return;
                         }
 
@@ -731,13 +739,16 @@
                             const radioName = $input.attr('name');
                             if ($('input[name="' + radioName + '"]:checked').length > 0) {
                                 $field.addClass('esc-ai-populated');
+                                console.log('Radio field populated:', radioName);
                             }
                         } else if ($input.length && $input.val()) {
                             const val = $input.val();
                             if (typeof val === 'string' && val.trim() !== '') {
                                 $field.addClass('esc-ai-populated');
+                                console.log('Field populated:', fieldId, 'with value:', val.substring(0, 20) + (val.length > 20 ? '...' : ''));
                             } else if (val) {
                                 $field.addClass('esc-ai-populated');
+                                console.log('Field populated with non-string value:', fieldId);
                             }
                         }
                     } catch (e) {
@@ -747,30 +758,38 @@
 
                 // Now count populated fields
                 const $populatedFields = $card.find('.esc-form-field.esc-ai-populated');
-                console.log('Card:', $card.find('.esc-card-header h3').text(),
+                console.log('Section:', sectionName,
                           'Fields:', $fields.length,
                           'Populated:', $populatedFields.length);
 
-            if ($populatedFields.length === 0) {
-                $card.attr('data-ai-status', 'not-populated');
-                $card.find('.esc-ai-status-badge .esc-badge-text').text('Not Found');
-                $card.find('.esc-ai-status-badge .dashicons')
-                    .removeClass('dashicons-yes dashicons-marker')
-                    .addClass('dashicons-warning');
-            } else if ($populatedFields.length === $fields.length) {
-                $card.attr('data-ai-status', 'fully-populated');
-                $card.find('.esc-ai-status-badge .esc-badge-text').text('AI Complete');
-                $card.find('.esc-ai-status-badge .dashicons')
-                    .removeClass('dashicons-warning dashicons-marker')
-                    .addClass('dashicons-yes');
-            } else {
-                $card.attr('data-ai-status', 'partially-populated');
-                $card.find('.esc-ai-status-badge .esc-badge-text').text('Needs Review');
-                $card.find('.esc-ai-status-badge .dashicons')
-                    .removeClass('dashicons-yes dashicons-warning')
-                    .addClass('dashicons-marker');
-            }
-        });
+                // Calculate the percentage of fields populated
+                const populationPercentage = ($populatedFields.length / $fields.length) * 100;
+                console.log('Population percentage:', populationPercentage.toFixed(2) + '%');
+
+                // Update the card status based on population percentage
+                if ($populatedFields.length === 0) {
+                    $card.attr('data-ai-status', 'not-populated');
+                    $card.find('.esc-ai-status-badge .esc-badge-text').text('Not Found');
+                    $card.find('.esc-ai-status-badge .dashicons')
+                        .removeClass('dashicons-yes dashicons-marker')
+                        .addClass('dashicons-warning');
+                    console.log('Section status: Not Found');
+                } else if (populationPercentage >= 75) { // Consider 75% or more as fully populated
+                    $card.attr('data-ai-status', 'fully-populated');
+                    $card.find('.esc-ai-status-badge .esc-badge-text').text('AI Complete');
+                    $card.find('.esc-ai-status-badge .dashicons')
+                        .removeClass('dashicons-warning dashicons-marker')
+                        .addClass('dashicons-yes');
+                    console.log('Section status: AI Complete');
+                } else {
+                    $card.attr('data-ai-status', 'partially-populated');
+                    $card.find('.esc-ai-status-badge .esc-badge-text').text('Needs Review');
+                    $card.find('.esc-ai-status-badge .dashicons')
+                        .removeClass('dashicons-yes dashicons-warning')
+                        .addClass('dashicons-marker');
+                    console.log('Section status: Needs Review');
+                }
+            });
         } catch (error) {
             console.error('Error updating AI status badges:', error);
         }
@@ -819,21 +838,24 @@
 
     // Retry AI for section
     function retryAIForSection() {
-        const section = $(this).data('section');
+        // Get the section name from the data attribute
+        const sectionName = $(this).data('section');
+        console.log('Retrying AI for section:', sectionName);
 
         // Show loading state
         const $card = $(this).closest('.esc-form-card');
         $card.find('.esc-retry-ai').hide();
         $card.find('.esc-card-content').append('<div class="esc-section-loading"><span class="dashicons dashicons-update-alt esc-spin"></span> Searching for more information...</div>');
 
-        // TODO: Implement section-specific AI retry
-        // For now, just simulate a delay and then show a message
-        setTimeout(function() {
+        // Get the seed name and variety
+        const seedName = $('#esc_seed_name_review').val() || $('#esc_seed_name').val();
+        const varietyName = $('#esc_variety_name_review').val() || $('#esc_variety_name').val();
+
+        if (!seedName) {
+            // If no seed name, show error and return
             $card.find('.esc-section-loading').remove();
             $card.find('.esc-retry-ai').show();
-
-            // Show a message
-            $card.find('.esc-card-content').append('<div class="esc-section-message">No additional information found for this section.</div>');
+            $card.find('.esc-card-content').append('<div class="esc-section-message esc-error">Seed name is required to retry AI search.</div>');
 
             // Remove the message after a few seconds
             setTimeout(function() {
@@ -841,7 +863,73 @@
                     $(this).remove();
                 });
             }, 3000);
-        }, 2000);
+            return;
+        }
+
+        // Make AJAX request to get seed info for this section
+        $.ajax({
+            url: esc_ajax_object.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'esc_gemini_search',
+                nonce: esc_ajax_object.nonce,
+                seed_name: seedName,
+                variety: varietyName,
+                section: sectionName // Pass section to backend
+            },
+            success: function(response) {
+                console.log('AI retry response for section ' + sectionName + ':', response);
+
+                // Remove loading state
+                $card.find('.esc-section-loading').remove();
+                $card.find('.esc-retry-ai').show();
+
+                if (response.success && response.data) {
+                    // Process the data for this section
+                    const sectionData = response.data;
+
+                    // Show success message
+                    $card.find('.esc-card-content').append('<div class="esc-section-message esc-success">Updated information found!</div>');
+
+                    // Update the fields in this section
+                    populateReviewForm(sectionData);
+
+                    // Remove the message after a few seconds
+                    setTimeout(function() {
+                        $card.find('.esc-section-message').fadeOut(function() {
+                            $(this).remove();
+                        });
+                    }, 3000);
+                } else {
+                    // Show error message
+                    $card.find('.esc-card-content').append('<div class="esc-section-message">No additional information found for this section.</div>');
+
+                    // Remove the message after a few seconds
+                    setTimeout(function() {
+                        $card.find('.esc-section-message').fadeOut(function() {
+                            $(this).remove();
+                        });
+                    }, 3000);
+                }
+            },
+            error: function(_, status, errorThrown) {
+                console.error('AI retry error:', status, errorThrown);
+
+                // Remove loading state
+                $card.find('.esc-section-loading').remove();
+                $card.find('.esc-retry-ai').show();
+
+                // Show error message
+                $card.find('.esc-card-content').append('<div class="esc-section-message esc-error">Error: ' + status + '</div>');
+
+                // Remove the message after a few seconds
+                setTimeout(function() {
+                    $card.find('.esc-section-message').fadeOut(function() {
+                        $(this).remove();
+                    });
+                }, 3000);
+            }
+        });
     }
 
     // Sync range slider

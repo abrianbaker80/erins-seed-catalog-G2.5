@@ -43,11 +43,20 @@ class ESC_Functions {
                 has_shortcode( $post->post_content, 'erins_seed_catalog_export' )
             )) {
 
-            // Enqueue Modern Form CSS first (base styles)
+            // Enqueue Refactored CSS (includes design system and components)
+            wp_enqueue_style(
+                'esc-refactored',
+                ESC_PLUGIN_URL . 'public/css/esc-refactored.css',
+                [],
+                ESC_VERSION
+            );
+
+            // Keep the original CSS files for backward compatibility
+            // but load them after the refactored CSS so our new styles take precedence
             wp_enqueue_style(
                 'esc-modern-form',
                 ESC_PLUGIN_URL . 'public/css/esc-modern-form.css',
-                [],
+                ['esc-refactored'],
                 ESC_VERSION
             );
 
@@ -55,7 +64,7 @@ class ESC_Functions {
             wp_enqueue_style(
                 'esc-simplified',
                 ESC_PLUGIN_URL . 'public/css/esc-simplified.css',
-                ['esc-modern-form'],
+                ['esc-refactored', 'esc-modern-form'],
                 ESC_VERSION
             );
 
@@ -63,7 +72,7 @@ class ESC_Functions {
             wp_enqueue_style(
                 'esc-variety-suggestions',
                 ESC_PLUGIN_URL . 'public/css/esc-variety-suggestions.css',
-                ['esc-modern-form', 'esc-simplified'],
+                ['esc-refactored', 'esc-modern-form', 'esc-simplified'],
                 ESC_VERSION
             );
 
