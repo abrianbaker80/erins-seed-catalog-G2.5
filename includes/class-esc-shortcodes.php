@@ -63,6 +63,14 @@ class ESC_Shortcodes {
             'category' => '', // Allow filtering by category slug/ID initially
 		], $atts, 'erins_seed_catalog_view' );
 
+        // Enqueue necessary styles for the catalog view
+        wp_enqueue_style(
+            'esc-public-styles',
+            ESC_PLUGIN_URL . 'public/css/esc-public-styles.css',
+            [],
+            ESC_VERSION
+        );
+
         $paged = get_query_var('paged') ? absint(get_query_var('paged')) : 1;
         $per_page = absint($atts['per_page']);
         $initial_category_id = 0;
