@@ -6,8 +6,8 @@
 #   ./simple-release.ps1 -Minor           - Increment minor version (0.x.0)
 #   ./simple-release.ps1 -DryRun          - Show what would happen without making changes
 #   ./simple-release.ps1 -ReleaseTitle "Title" -ReleaseDescription "Description" - Custom release info
-#   ./simple-release.ps1 -UpdateReadme    - Update README.md with changelog
-#   ./simple-release.ps1 -SkipReadmeUpdate - Don't update README.md (default behavior)
+#   ./simple-release.ps1                  - README.md is updated with changelog by default
+#   ./simple-release.ps1 -SkipReadmeUpdate - Don't update README.md
 
 param (
     [string]$VersionType = "patch",
@@ -16,7 +16,6 @@ param (
     [string]$ReleaseDescription = "",
     [switch]$Major = $false,
     [switch]$Minor = $false,
-    [switch]$UpdateReadme = $false,
     [switch]$SkipReadmeUpdate = $false
 )
 
@@ -28,8 +27,8 @@ elseif ($Minor) {
     $VersionType = "minor"
 }
 
-# Determine if README should be updated
-$shouldUpdateReadme = $UpdateReadme -or (-not $SkipReadmeUpdate)
+# Determine if README should be updated - default is to update unless explicitly skipped
+$shouldUpdateReadme = -not $SkipReadmeUpdate
 
 if ($shouldUpdateReadme) {
     Write-Host "README.md will be updated with changelog" -ForegroundColor Cyan
