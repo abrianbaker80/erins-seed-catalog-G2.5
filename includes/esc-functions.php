@@ -79,25 +79,31 @@ class ESC_Functions {
             // Enqueue Dashicons for the loading spinner
             wp_enqueue_style('dashicons');
 
-            // Enqueue Simplified JS
-            wp_enqueue_script(
-                'esc-simplified',
-                ESC_PLUGIN_URL . 'public/js/esc-simplified.js',
-                [ 'jquery' ],
-                ESC_VERSION,
-                true // Load in footer
-            );
+            // Only load the simplified JS and variety suggestions JS on pages with the add form shortcodes
+            if (has_shortcode($post->post_content, 'erins_seed_catalog_add_form') ||
+                has_shortcode($post->post_content, 'erins_seed_catalog_add_form_modern') ||
+                has_shortcode($post->post_content, 'erins_seed_catalog_add_form_refactored')) {
 
-            // Enqueue Variety Suggestions JS
-            wp_enqueue_script(
-                'esc-variety-suggestions',
-                ESC_PLUGIN_URL . 'public/js/esc-variety-suggestions.js',
-                [ 'jquery' ],
-                ESC_VERSION,
-                true // Load in footer
-            );
+                // Enqueue Simplified JS
+                wp_enqueue_script(
+                    'esc-simplified',
+                    ESC_PLUGIN_URL . 'public/js/esc-simplified.js',
+                    [ 'jquery' ],
+                    ESC_VERSION,
+                    true // Load in footer
+                );
 
-            // Localize script for AJAX calls - apply to both scripts
+                // Enqueue Variety Suggestions JS
+                wp_enqueue_script(
+                    'esc-variety-suggestions',
+                    ESC_PLUGIN_URL . 'public/js/esc-variety-suggestions.js',
+                    [ 'jquery' ],
+                    ESC_VERSION,
+                    true // Load in footer
+                );
+            }
+
+            // Prepare AJAX data for scripts
             $ajax_data = [
                 'ajax_url' => admin_url( 'admin-ajax.php' ),
                 'nonce'    => wp_create_nonce( 'esc_ajax_nonce' ), // Create a nonce
@@ -108,8 +114,13 @@ class ESC_Functions {
                 'form_submit_error' => __('Error adding seed.', 'erins-seed-catalog'),
             ];
 
-            wp_localize_script('esc-simplified', 'esc_ajax_object', $ajax_data);
-            wp_localize_script('esc-variety-suggestions', 'esc_ajax_object', $ajax_data);
+            // Only localize the scripts if they are enqueued
+            if (has_shortcode($post->post_content, 'erins_seed_catalog_add_form') ||
+                has_shortcode($post->post_content, 'erins_seed_catalog_add_form_modern') ||
+                has_shortcode($post->post_content, 'erins_seed_catalog_add_form_refactored')) {
+                wp_localize_script('esc-simplified', 'esc_ajax_object', $ajax_data);
+                wp_localize_script('esc-variety-suggestions', 'esc_ajax_object', $ajax_data);
+            }
         }
 	}
 
