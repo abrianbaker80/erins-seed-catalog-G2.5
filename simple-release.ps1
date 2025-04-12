@@ -1,11 +1,28 @@
 # Simple Release Script for Erin's Seed Catalog
+#
+# Usage:
+#   ./simple-release.ps1                  - Increment patch version (0.0.x)
+#   ./simple-release.ps1 -Major           - Increment major version (x.0.0)
+#   ./simple-release.ps1 -Minor           - Increment minor version (0.x.0)
+#   ./simple-release.ps1 -DryRun          - Show what would happen without making changes
+#   ./simple-release.ps1 -ReleaseTitle "Title" -ReleaseDescription "Description" - Custom release info
 
 param (
     [string]$VersionType = "patch",
     [switch]$DryRun = $false,
     [string]$ReleaseTitle = "",
-    [string]$ReleaseDescription = ""
+    [string]$ReleaseDescription = "",
+    [switch]$Major = $false,
+    [switch]$Minor = $false
 )
+
+# Handle version type from switches
+if ($Major) {
+    $VersionType = "major"
+}
+elseif ($Minor) {
+    $VersionType = "minor"
+}
 
 # Configuration
 $pluginFile = "erins-seed-catalog.php"
@@ -22,8 +39,8 @@ function Get-Version {
     }
 }
 
-# Increment version
-function Increment-Version {
+# Update version
+function Update-Version {
     param (
         [string]$version,
         [string]$type
@@ -76,7 +93,7 @@ function Update-Files {
 $currentVersion = Get-Version
 Write-Host "Current version: $currentVersion" -ForegroundColor Cyan
 
-$newVersion = Increment-Version -version $currentVersion -type $VersionType
+$newVersion = Update-Version -version $currentVersion -type $VersionType
 Write-Host "New version: $newVersion" -ForegroundColor Green
 
 if (-not $DryRun) {
@@ -92,8 +109,8 @@ if (-not $DryRun) {
 Update-Files -oldVersion $currentVersion -newVersion $newVersion
 Write-Host "Version updated successfully!" -ForegroundColor Green
 
-# Generate detailed commit message
-function Generate-CommitMessage {
+# Create detailed commit message
+function New-CommitMessage {
     param (
         [string]$version
     )
@@ -173,7 +190,7 @@ function Generate-CommitMessage {
 }
 
 # Commit changes
-$commitMessage = Generate-CommitMessage -version $newVersion
+$commitMessage = New-CommitMessage -version $newVersion
 Write-Host "Commit message:" -ForegroundColor Cyan
 Write-Host $commitMessage -ForegroundColor White
 
