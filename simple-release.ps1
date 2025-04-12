@@ -203,6 +203,13 @@ function Update-ReadmeChangelog {
     Write-Host "Checking README.md for existing version sections..." -ForegroundColor Cyan
     $versionPattern = "## Version \d+\.\d+\.\d+(?:\s*-\s*\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})?"
 
+    # Check if this exact version is already in the README
+    $exactVersionPattern = "## Version $newVersion(?:\s*-\s*\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})?"
+    if ($readmeContent -match $exactVersionPattern) {
+        Write-Host "This version ($newVersion) is already in the README.md file. Skipping update." -ForegroundColor Yellow
+        return
+    }
+
     if ($readmeContent -match $versionPattern) {
         Write-Host "Found existing version section: $($Matches[0])" -ForegroundColor Green
         # Insert the new changelog before the first version section
