@@ -113,8 +113,9 @@ function Get-ChangesSinceLastTag {
         }
     }
 
-    # Build changelog
-    $changelog = "## Version $newVersion`n`n"
+    # Build changelog with timestamp
+    $currentDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    $changelog = "## Version $newVersion - $currentDate`n`n"
 
     if ($features.Count -gt 0) {
         $changelog += "### New Features`n"
@@ -195,10 +196,10 @@ function Update-ReadmeChangelog {
     # Read current README.md
     $readmeContent = Get-Content "README.md" -Raw
 
-    # Check if there's already a version section
-    if ($readmeContent -match "## Version \d+\.\d+\.\d+") {
+    # Check if there's already a version section (with or without timestamp)
+    if ($readmeContent -match "## Version \d+\.\d+\.\d+(?:\s*-\s*\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})?") {
         # Insert the new changelog before the first version section
-        $readmeContent = $readmeContent -replace "(## Version \d+\.\d+\.\d+)", "$changelog`$1"
+        $readmeContent = $readmeContent -replace "(## Version \d+\.\d+\.\d+(?:\s*-\s*\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})?)", "$changelog`$1"
     } else {
         # Find the first ## heading and insert before it
         if ($readmeContent -match "## [^#]") {
