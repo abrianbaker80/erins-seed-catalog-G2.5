@@ -346,11 +346,14 @@
             }, 50); // Short delay to batch mutations
         });
 
-        // Start observing the form container
-        mutationObserver.observe(document.getElementById('esc-add-seed-form-container'), {
-            childList: true,
-            subtree: true
-        });
+        // Start observing the form container if it exists
+        const formContainer = document.getElementById('esc-add-seed-form-container');
+        if (formContainer) {
+            mutationObserver.observe(formContainer, {
+                childList: true,
+                subtree: true
+            });
+        }
     }
 
     // Initialize floating labels
@@ -1677,13 +1680,30 @@
         }
     }
 
+    // Cleanup function to handle resources when navigating away
+    function cleanup() {
+        // Disconnect mutation observer if it exists
+        if (mutationObserver) {
+            mutationObserver.disconnect();
+        }
+
+        // Clear any timers
+        clearTimeout(typingTimer);
+        if (typeof loadingStageInterval !== 'undefined') {
+            clearInterval(loadingStageInterval);
+        }
+
+        // Hide any dropdowns
+        hideVarietyDropdown();
+    }
+
     // Track initialization state
     let isInitialized = false;
 
     // Initialize when document is ready
     $(document).ready(function() {
-        // Only initialize once
-        if (!isInitialized) {
+        // Only initialize if the form container exists and we haven't initialized yet
+        if (!isInitialized && $('#esc-add-seed-form-container').length > 0) {
             isInitialized = true;
 
             // Run initialization immediately
@@ -1706,7 +1726,8 @@
 
     // Also run when the window loads to ensure everything is properly styled
     $(window).on('load', function() {
-        if (isInitialized) {
+        // Only run if we're initialized and the form container still exists
+        if (isInitialized && $('#esc-add-seed-form-container').length > 0) {
             cleanupFormStructure();
             createModernUIStructure();
 
@@ -1719,9 +1740,12 @@
 
     // Handle any clicks on the document that might reveal hidden elements
     $(document).on('click', function() {
-        setTimeout(function() {
-            cleanupFormStructure();
-        }, 100);
+        // Only run if the form container exists
+        if ($('#esc-add-seed-form-container').length > 0) {
+            setTimeout(function() {
+                cleanupFormStructure();
+            }, 100);
+        }
     });
 
 })(jQuery);

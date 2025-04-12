@@ -80,10 +80,13 @@ class ESC_Functions {
             wp_enqueue_style('dashicons');
 
             // Only load the simplified JS and variety suggestions JS on pages with the add form shortcodes
-            if (has_shortcode($post->post_content, 'erins_seed_catalog_add_form') ||
+            $load_form_scripts = (
+                has_shortcode($post->post_content, 'erins_seed_catalog_add_form') ||
                 has_shortcode($post->post_content, 'erins_seed_catalog_add_form_modern') ||
-                has_shortcode($post->post_content, 'erins_seed_catalog_add_form_refactored')) {
+                has_shortcode($post->post_content, 'erins_seed_catalog_add_form_refactored')
+            );
 
+            if ($load_form_scripts) {
                 // Enqueue Simplified JS
                 wp_enqueue_script(
                     'esc-simplified',
@@ -114,12 +117,24 @@ class ESC_Functions {
                 'form_submit_error' => __('Error adding seed.', 'erins-seed-catalog'),
             ];
 
-            // Only localize the scripts if they are enqueued
-            if (has_shortcode($post->post_content, 'erins_seed_catalog_add_form') ||
-                has_shortcode($post->post_content, 'erins_seed_catalog_add_form_modern') ||
-                has_shortcode($post->post_content, 'erins_seed_catalog_add_form_refactored')) {
-                wp_localize_script('esc-simplified', 'esc_ajax_object', $ajax_data);
-                wp_localize_script('esc-variety-suggestions', 'esc_ajax_object', $ajax_data);
+            // Only localize the form scripts if they are enqueued
+            if ($load_form_scripts) {
+                // Check if the scripts are actually registered before localizing them
+                if (wp_script_is('esc-simplified', 'registered')) {
+                    wp_localize_script('esc-simplified', 'esc_ajax_object', $ajax_data);
+                }
+
+                if (wp_script_is('esc-variety-suggestions', 'registered')) {
+                    wp_localize_script('esc-variety-suggestions', 'esc_ajax_object', $ajax_data);
+                }
+            }
+
+            // For other shortcodes that might need AJAX data (like enhanced view)
+            if (has_shortcode($post->post_content, 'erins_seed_catalog_enhanced_view')) {
+                // Ensure the enhanced cards script has the AJAX data it needs
+                if (wp_script_is('esc-enhanced-cards-scripts', 'registered')) {
+                    wp_localize_script('esc-enhanced-cards-scripts', 'esc_ajax_object', $ajax_data);
+                }
             }
         }
 	}
