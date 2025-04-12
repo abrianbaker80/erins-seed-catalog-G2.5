@@ -9,8 +9,7 @@ phpdoc-templates.php
 .php-cs-fixer.cache
 
 # Keep release automation files
-!release.ps1
-!release.bat
+!simple-release.ps1
 !RELEASE.md
 
 # Composer

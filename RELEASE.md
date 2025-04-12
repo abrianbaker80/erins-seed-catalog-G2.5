@@ -8,64 +8,64 @@ Before using the release automation script, ensure you have the following instal
 
 1. **Git** - For version control operations
 2. **PowerShell** - For running the release script
-3. **GitHub CLI** - For creating GitHub releases
+3. **GitHub CLI** (optional) - For creating GitHub releases
 
 You also need to be authenticated with GitHub. You can either:
 - Run `gh auth login` to authenticate the GitHub CLI
 - Set the `GITHUB_TOKEN` environment variable with a personal access token
 
-## Using the Release Script
+## Using the Simple Release Script
 
 ### Basic Usage
 
 To create a new release with default settings (patch version increment):
 
 ```
-.\release.bat
+.\simple-release.ps1
 ```
 
 This will:
 1. Increment the patch version (e.g., 1.0.0 → 1.0.1)
 2. Update version numbers in the plugin files
-3. Generate a commit message based on changes
-4. Commit and push changes to GitHub
-5. Create a new GitHub release
+3. Update README.md with changelog information
+4. Generate a commit message based on changes
+5. Commit and push changes to GitHub (with confirmation)
+6. Create a new GitHub release (with confirmation)
 
 ### Command Line Options
 
 The release script supports several command line options:
 
 ```
-release.bat [options]
+.\simple-release.ps1 [options]
 ```
 
 Options:
-- `--major` - Increment major version (x.0.0)
-- `--minor` - Increment minor version (0.x.0)
-- `--patch` - Increment patch version (0.0.x) [default]
-- `--title "TITLE"` - Set custom release title
-- `--description "DESC"` - Set custom release description
-- `--dry-run` - Run without making actual changes
-- `--help` - Show help message
+- `-Major` - Increment major version (x.0.0)
+- `-Minor` - Increment minor version (0.x.0)
+- `-DryRun` - Run without making actual changes
+- `-ReleaseTitle "TITLE"` - Set custom release title
+- `-ReleaseDescription "DESC"` - Set custom release description
+- `-SkipReadmeUpdate` - Don't update README.md with changelog
 
 ### Examples
 
 #### Create a minor version release:
 
 ```
-.\release.bat --minor
+.\simple-release.ps1 -Minor
 ```
 
 #### Create a major version release with custom title:
 
 ```
-.\release.bat --major --title "Major Release with New Features"
+.\simple-release.ps1 -Major -ReleaseTitle "Major Release with New Features"
 ```
 
 #### Test the release process without making changes:
 
 ```
-.\release.bat --dry-run
+.\simple-release.ps1 -DryRun
 ```
 
 ## How It Works
@@ -74,9 +74,10 @@ The release script performs the following steps:
 
 1. **Version Increment**: Automatically increments the version number based on SemVer (major.minor.patch)
 2. **File Updates**: Updates version numbers in the main plugin file and readme.txt
-3. **Commit Message Generation**: Analyzes changes and generates a structured commit message
-4. **Git Operations**: Commits changes, creates a version tag, and pushes to GitHub
-5. **GitHub Release**: Creates a new release on GitHub with release notes
+3. **README Updates**: Updates README.md with changelog information including timestamp
+4. **Commit Message Generation**: Analyzes changes and generates a structured commit message
+5. **Git Operations**: Commits changes, creates a version tag, and pushes to GitHub (with confirmation)
+6. **GitHub Release**: Creates a new release on GitHub with release notes (with confirmation)
 
 ## Troubleshooting
 
@@ -85,23 +86,6 @@ If you encounter issues with the release script:
 1. **Authentication Issues**: Ensure you're authenticated with GitHub by running `gh auth status`
 2. **Permission Issues**: Make sure you have write access to the repository
 3. **Execution Policy**: If PowerShell blocks script execution, run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`
-
-## Simple Release Script
-
-If you encounter issues with the main release script, you can use the simplified version:
-
-```
-.\simple-release.bat [--major|--minor|--patch]
-```
-
-This script performs the basic release tasks:
-
-1. Updates version numbers in plugin files
-2. Commits changes with a standard release message
-3. Creates and pushes a version tag
-4. Creates a GitHub release (if GitHub CLI is installed)
-
-The simple script has fewer features but is more reliable and easier to use.
 
 ## Manual Release
 
