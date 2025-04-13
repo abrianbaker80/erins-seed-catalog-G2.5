@@ -3,7 +3,7 @@
  * Plugin Name:       Erin's Seed Catalog
  * Plugin URI:        https://github.com/abrianbaker80/erins-seed-catalog-G2.5.git
  * Description:       Catalog and track your vegetable garden seeds with AI-assisted information retrieval via the Gemini API. Mobile-first design.
- * Version:           1.2.16
+ * Version:           1.2.17
  * Requires at least: 6.0
  * Requires PHP:      8.2
  * Author:            Allen Baker
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define Constants
-define('ESC_VERSION', '1.2.16');
+define('ESC_VERSION', '1.2.17');
 define( 'ESC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ESC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'ESC_PLUGIN_FILE', __FILE__ );
@@ -128,7 +128,36 @@ function esc_init_plugin() {
 
     // Initialize the update checker
     if (file_exists(ESC_PLUGIN_DIR . 'plugin-update-checker/plugin-update-checker.php')) {
+        // Check if the vendor directory exists in the plugin-update-checker
+        $vendorDir = ESC_PLUGIN_DIR . 'plugin-update-checker/vendor/';
+        $vendorExists = is_dir($vendorDir);
+
+        // If vendor directory doesn't exist, create it
+        if (!$vendorExists && !is_dir($vendorDir)) {
+            @mkdir($vendorDir, 0755, true);
+        }
+
+        // Check for required parser files and copy them if needed
+        $pucReadmeParserFile = $vendorDir . 'PucReadmeParser.php';
+        $parsedownFile = $vendorDir . 'Parsedown.php';
+
+        // Copy from our includes/vendor directory if files exist there
+        if (!file_exists($pucReadmeParserFile) && file_exists(ESC_PLUGIN_DIR . 'includes/vendor/PucReadmeParser.php')) {
+            @copy(ESC_PLUGIN_DIR . 'includes/vendor/PucReadmeParser.php', $pucReadmeParserFile);
+        }
+
+        if (!file_exists($parsedownFile) && file_exists(ESC_PLUGIN_DIR . 'includes/vendor/Parsedown.php')) {
+            @copy(ESC_PLUGIN_DIR . 'includes/vendor/Parsedown.php', $parsedownFile);
+        }
+
+        // Now load the update checker
         require_once ESC_PLUGIN_DIR . 'plugin-update-checker/plugin-update-checker.php';
+
+        // Disable readme parsing completely if the required files still don't exist
+        if (!file_exists($pucReadmeParserFile) || !file_exists($parsedownFile)) {
+            add_filter('puc_github_enable_release_details', '__return_false');
+        }
+
         $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
             'https://github.com/abrianbaker80/erins-seed-catalog-G2.5/',
             __FILE__,
@@ -138,21 +167,34 @@ function esc_init_plugin() {
         // Set the branch that contains the stable release
         $myUpdateChecker->setBranch('master');
 
-        // Disable readme parsing to avoid PucReadmeParser errors
+        // Always provide plugin info regardless of readme parsing
         add_filter('puc_request_info_result-erins-seed-catalog', function($pluginInfo) {
-            if (is_object($pluginInfo)) {
-                // Set required and tested versions from plugin headers instead of readme
-                $pluginInfo->requires = '6.0';
-                $pluginInfo->tested = '6.7.2';
-                $pluginInfo->requires_php = '8.2';
-
-                // Add a simple changelog section if it doesn't exist
-                if (empty($pluginInfo->sections['changelog'])) {
-                    $pluginInfo->sections['changelog'] = '<p>See <a href="https://github.com/abrianbaker80/erins-seed-catalog-G2.5/releases">GitHub releases</a> for detailed changelog.</p>';
-                }
+            // If plugin info is completely missing, create a basic object
+            if (!is_object($pluginInfo)) {
+                $pluginInfo = new stdClass();
             }
+
+            // We could get plugin data from the main file if needed
+            // $pluginData = get_plugin_data(__FILE__);
+
+            // Set required and tested versions from plugin headers
+            $pluginInfo->requires = !empty($pluginInfo->requires) ? $pluginInfo->requires : '6.0';
+            $pluginInfo->tested = !empty($pluginInfo->tested) ? $pluginInfo->tested : '6.7.2';
+            $pluginInfo->requires_php = !empty($pluginInfo->requires_php) ? $pluginInfo->requires_php : '8.2';
+            $pluginInfo->version = !empty($pluginInfo->version) ? $pluginInfo->version : ESC_VERSION;
+
+            // Ensure sections array exists
+            if (!isset($pluginInfo->sections) || !is_array($pluginInfo->sections)) {
+                $pluginInfo->sections = array();
+            }
+
+            // Add a simple changelog section if it doesn't exist
+            if (empty($pluginInfo->sections['changelog'])) {
+                $pluginInfo->sections['changelog'] = '<p>See <a href="https://github.com/abrianbaker80/erins-seed-catalog-G2.5/releases">GitHub releases</a> for detailed changelog.</p>';
+            }
+
             return $pluginInfo;
-        }, 10, 2);
+        }, 10, 1);
     } else {
         // Fallback to the old update checker if the library is not available
         $update_checker = new ESC_Update_Checker();
@@ -183,6 +225,7 @@ function esc_uninstall_plugin() {
     flush_rewrite_rules();
 }
 // register_uninstall_hook( ESC_PLUGIN_FILE, 'esc_uninstall_plugin' ); // Uncomment to enable uninstall cleanup
+
 
 
 

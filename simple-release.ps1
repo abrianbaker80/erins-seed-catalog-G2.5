@@ -356,103 +356,139 @@ function Update-ReadmeChangelog {
     # Read current README.md
     $readmeContent = Get-Content "README.md" -Raw
     Write-Host "README.md content length: $(($readmeContent | Measure-Object -Character).Characters) characters" -ForegroundColor Cyan
-    Write-Host "First 100 characters of README.md:" -ForegroundColor Cyan
-    Write-Host $readmeContent.Substring(0, [Math]::Min(100, $readmeContent.Length)) -ForegroundColor Gray
 
-    # Check if there's already a version section (with or without timestamp)
-    Write-Host "Checking README.md for existing version sections..." -ForegroundColor Cyan
-    $versionPattern = "## Version \d+\.\d+\.\d+(?:\s*-\s*\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})?"
+    # IMPROVED APPROACH: Complete rewrite of the README.md handling
+    # This approach will properly handle the file structure and avoid duplications
 
-    # Check if this exact version is already in the README
-    $exactVersionPattern = "## Version $newVersion(?:\s*-\s*\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})?"
-    if ($readmeContent -match $exactVersionPattern) {
-        Write-Host "This version ($newVersion) is already in the README.md file. Skipping update." -ForegroundColor Yellow
-        return
+    # Step 1: Extract the header (everything before version history)
+    $headerPattern = "(?s)^(.*?)(?:## Version History|## Version \d|### Version \d)"
+    $headerMatch = [regex]::Match($readmeContent, $headerPattern)
+    $headerContent = ""
+
+    if ($headerMatch.Success) {
+        $headerContent = $headerMatch.Groups[1].Value.Trim()
+        Write-Host "Extracted header content ($(($headerContent | Measure-Object -Character).Characters) characters)" -ForegroundColor Green
+    } else {
+        # If no header found, use a default header
+        $headerContent = "# Erin's Seed Catalog`n`nA WordPress plugin designed to help gardeners catalog and track their vegetable garden seeds."
+        Write-Host "No header found, using default header" -ForegroundColor Yellow
     }
 
-    # Clean up the README.md file first
-    Write-Host "Cleaning up README.md file to remove duplicate version entries..." -ForegroundColor Cyan
+    # Step 2: Extract all version entries (both ## and ### formats)
+    $versionPattern = "(?:## |### )Version [\d\.]+(?:\s*-\s*(?:\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}|[^\n]*))?[\s\S]*?(?=(?:## |### )Version|## [^V]|$)"
+    $versionMatches = [regex]::Matches($readmeContent, $versionPattern)
 
-    # Extract the header part (everything before the first version section)
-    $headerMatch = $readmeContent -match "^([\s\S]*?)($versionPattern)"
-    if ($headerMatch) {
-        $headerContent = $Matches[1]
-        Write-Host "Extracted header content ($(($headerContent | Measure-Object -Character).Characters) characters)" -ForegroundColor Green
+    Write-Host "Found $($versionMatches.Count) version entries" -ForegroundColor Green
 
-        # Find all version sections
-        $versionSections = [regex]::Matches($readmeContent, "$versionPattern[\s\S]*?(?=$versionPattern|$)")
-        Write-Host "Found $($versionSections.Count) version sections" -ForegroundColor Green
+    # Step 3: Extract unique versions and their content
+    $uniqueVersions = @{}
+    $versionNumbers = @{}
 
-        # Create a hashtable to store unique version sections
-        $uniqueVersions = @{}
+    foreach ($match in $versionMatches) {
+        $versionText = $match.Value
+        $versionNumberMatch = [regex]::Match($versionText, "Version ([\d\.]+)")
 
-        foreach ($section in $versionSections) {
-            # Extract the version number
-            $versionMatch = $section.Value -match "## Version (\d+\.\d+\.\d+)"
-            if ($versionMatch) {
-                $versionNumber = $Matches[1]
-                if (-not $uniqueVersions.ContainsKey($versionNumber)) {
-                    $uniqueVersions[$versionNumber] = $section.Value
-                    Write-Host "Added version $versionNumber to unique versions" -ForegroundColor Green
-                }
+        if ($versionNumberMatch.Success) {
+            $versionNumber = $versionNumberMatch.Groups[1].Value
+
+            # Store the version number and its content
+            if (-not $uniqueVersions.ContainsKey($versionNumber)) {
+                $uniqueVersions[$versionNumber] = $versionText.Trim()
+                $versionNumbers[$versionNumber] = [version]$versionNumber
+                Write-Host "Added version $versionNumber to unique versions" -ForegroundColor Green
             }
         }
-
-        # Find the development section (everything after the last version section)
-        $devSectionMatch = $readmeContent -match "$versionPattern[\s\S]*?\n\n(## [^V][\s\S]*)"
-        $devSection = ""
-        if ($devSectionMatch) {
-            $devSection = $Matches[1]
-            Write-Host "Found development section ($(($devSection | Measure-Object -Character).Characters) characters)" -ForegroundColor Green
-        }
-
-        # Rebuild the README.md file with unique version sections
-        $newReadmeContent = $headerContent
-
-        # Add the new changelog
-        $newReadmeContent += $changelog
-
-        # Add unique version sections in descending order
-        $uniqueVersions.Keys | Sort-Object -Descending | ForEach-Object {
-            $newReadmeContent += $uniqueVersions[$_]
-        }
-
-        # Add the development section
-        if ($devSection) {
-            $newReadmeContent += "`n`n$devSection"
-        }
-
-        # Update the README.md file
-        Set-Content -Path "README.md" -Value $newReadmeContent
-        Write-Host "README.md updated with cleaned up version sections and new changelog" -ForegroundColor Green
-        return
     }
 
-    # If we couldn't parse the file structure, fall back to the original method
-    Write-Host "Could not parse README.md structure. Using fallback method." -ForegroundColor Yellow
-    if ($readmeContent -match $versionPattern) {
-        Write-Host "Found existing version section: $($Matches[0])" -ForegroundColor Green
-        # Insert the new changelog before the first version section
-        $readmeContent = $readmeContent -replace "($versionPattern)", "$changelog`$1"
-        Write-Host "Inserted new changelog before existing version section" -ForegroundColor Green
-    } else {
-        Write-Host "No existing version section found in README.md" -ForegroundColor Yellow
-        # Find the first ## heading and insert before it
-        if ($readmeContent -match "## [^#]") {
-            Write-Host "Found another heading: $($Matches[0])" -ForegroundColor Green
-            $readmeContent = $readmeContent -replace "(## [^#])", "$changelog`$1"
-            Write-Host "Inserted new changelog before heading" -ForegroundColor Green
+    # Step 4: Extract the development section (everything after version history)
+    $devSectionPattern = "(?s)(?:## Features|## Development|## License|## Shortcodes)[\s\S]*$"
+    $devSectionMatch = [regex]::Match($readmeContent, $devSectionPattern)
+    $devSection = ""
+
+    if ($devSectionMatch.Success) {
+        $devSection = $devSectionMatch.Value.Trim()
+        Write-Host "Found development section ($(($devSection | Measure-Object -Character).Characters) characters)" -ForegroundColor Green
+    }
+
+    # Step 5: Check for version bump entries that can be consolidated
+    $versionBumpEntries = @{}
+    $versionBumpPattern = "(?i)version bump|bump version|version bump only"
+
+    foreach ($version in $uniqueVersions.Keys) {
+        if ($uniqueVersions[$version] -match $versionBumpPattern) {
+            $versionBumpEntries[$version] = $true
+        }
+    }
+
+    # Step 6: Build the new README.md content
+    $newReadmeContent = $headerContent + "`n`n"
+
+    # Add Version History header if it doesn't exist
+    if (-not ($headerContent -match "## Version History")) {
+        $newReadmeContent += "## Version History`n`n"
+    }
+
+    # Add the new changelog
+    $newReadmeContent += $changelog + "`n"
+
+    # Consolidate version bump entries if there are consecutive ones
+    $sortedVersions = $versionNumbers.Keys | Sort-Object {$versionNumbers[$_]} -Descending
+
+    # Find consecutive version bump entries
+    $consolidatedBumps = @{}
+    $currentRange = @()
+
+    for ($i = 0; $i -lt $sortedVersions.Count; $i++) {
+        $version = $sortedVersions[$i]
+
+        if ($versionBumpEntries.ContainsKey($version)) {
+            $currentRange += $version
         } else {
-            # Append to the end if no ## heading found
-            Write-Host "No headings found, appending to the end of README.md" -ForegroundColor Yellow
-            $readmeContent += "`n`n$changelog"
-            Write-Host "Appended new changelog to the end of README.md" -ForegroundColor Green
+            if ($currentRange.Count -gt 1) {
+                $rangeStart = $currentRange[0]
+                $rangeEnd = $currentRange[$currentRange.Count - 1]
+                $consolidatedBumps["$rangeStart-$rangeEnd"] = $currentRange
+
+                foreach ($v in $currentRange) {
+                    $uniqueVersions.Remove($v)
+                }
+            }
+            $currentRange = @()
         }
     }
 
-    # Write updated content back to README.md
-    Set-Content -Path "README.md" -Value $readmeContent
-    Write-Host "README.md updated with changelog for version $newVersion" -ForegroundColor Green
+    # Handle any remaining range
+    if ($currentRange.Count -gt 1) {
+        $rangeStart = $currentRange[0]
+        $rangeEnd = $currentRange[$currentRange.Count - 1]
+        $consolidatedBumps["$rangeStart-$rangeEnd"] = $currentRange
+
+        foreach ($v in $currentRange) {
+            $uniqueVersions.Remove($v)
+        }
+    }
+
+    # Add consolidated version bump entries
+    foreach ($range in $consolidatedBumps.Keys) {
+        # No need to split the range, we can use it directly
+        $newReadmeContent += "### Version $range`n- Version bump only`n`n"
+    }
+
+    # Add remaining unique version entries in descending order
+    foreach ($version in $sortedVersions) {
+        if ($uniqueVersions.ContainsKey($version)) {
+            $newReadmeContent += $uniqueVersions[$version] + "`n`n"
+        }
+    }
+
+    # Add the development section
+    if ($devSection) {
+        $newReadmeContent += $devSection
+    }
+
+    # Update the README.md file
+    Set-Content -Path "README.md" -Value $newReadmeContent
+    Write-Host "README.md updated with cleaned up version sections and new changelog" -ForegroundColor Green
 }
 
 # Update version in files
