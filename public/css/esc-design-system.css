@@ -327,6 +327,8 @@
 .esc-manual-download-container {
   margin-top: var(--esc-space-4);
   margin-bottom: var(--esc-space-4);
+  width: 100%;
+  clear: both;
 }
 
 .esc-manual-download {
@@ -420,6 +422,24 @@
   text-align: center;
   margin-top: var(--esc-space-2);
   font-style: italic;
+}
+
+/* Manual Upload Progress Bar */
+.esc-manual-upload-progress {
+  margin-top: var(--esc-space-3);
+  display: none;
+  width: 100%;
+  height: 8px;
+  background-color: var(--esc-color-gray-200);
+  border-radius: var(--esc-radius-full);
+  overflow: hidden;
+}
+
+.esc-manual-progress-bar {
+  height: 100%;
+  background-color: var(--esc-color-primary-500);
+  width: 0%;
+  transition: width 0.3s ease;
 }
 
 /* Upload Progress Bar */
