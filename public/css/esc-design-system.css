@@ -330,6 +330,7 @@
   border: 1px solid var(--esc-color-primary-200);
   padding: var(--esc-space-4);
   margin-bottom: var(--esc-space-4);
+  border-radius: var(--esc-radius-lg);
 }
 
 .esc-manual-download-instructions h4 {
@@ -338,25 +339,36 @@
   margin-top: 0;
   margin-bottom: var(--esc-space-2);
   color: var(--esc-color-primary-700);
+  text-align: center;
 }
 
 .esc-manual-download-instructions p {
   margin-bottom: var(--esc-space-3);
+  line-height: var(--esc-line-height-relaxed);
 }
 
 .esc-manual-download-instructions ol {
   margin-bottom: var(--esc-space-4);
   padding-left: var(--esc-space-6);
+  line-height: var(--esc-line-height-relaxed);
 }
 
 .esc-manual-download-instructions li {
-  margin-bottom: var(--esc-space-2);
+  margin-bottom: var(--esc-space-3);
+  padding-left: var(--esc-space-2);
+}
+
+.esc-manual-download-instructions strong {
+  color: var(--esc-color-primary-700);
+  font-weight: var(--esc-font-weight-semibold);
 }
 
 .esc-manual-download .esc-button-group {
   display: flex;
   justify-content: center;
+  gap: var(--esc-space-3);
   margin-top: var(--esc-space-4);
+  margin-bottom: var(--esc-space-4);
 }
 
 .esc-manual-download .esc-button {
@@ -369,6 +381,7 @@
   text-decoration: none;
   cursor: pointer;
   transition: all var(--esc-transition-fast);
+  min-width: 140px;
 }
 
 .esc-manual-download .esc-button-primary {
@@ -381,4 +394,43 @@
   background-color: var(--esc-color-primary-700);
   transform: translateY(-1px);
   box-shadow: var(--esc-shadow-md);
+}
+
+.esc-manual-download .esc-button-secondary {
+  background-color: white;
+  color: var(--esc-color-primary-600);
+  border: 1px solid var(--esc-color-primary-300);
+}
+
+.esc-manual-download .esc-button-secondary:hover {
+  background-color: var(--esc-color-primary-50);
+  border-color: var(--esc-color-primary-400);
+  transform: translateY(-1px);
+  box-shadow: var(--esc-shadow-sm);
+}
+
+.esc-manual-download-note {
+  font-size: var(--esc-font-size-sm);
+  color: var(--esc-color-gray-600);
+  text-align: center;
+  margin-top: var(--esc-space-2);
+  font-style: italic;
+}
+
+/* Upload Progress Bar */
+.esc-upload-progress {
+  margin-top: var(--esc-space-3);
+  display: none;
+  width: 100%;
+  height: 8px;
+  background-color: var(--esc-color-gray-200);
+  border-radius: var(--esc-radius-full);
+  overflow: hidden;
+}
+
+.esc-progress-bar {
+  height: 100%;
+  background-color: var(--esc-color-primary-500);
+  width: 0%;
+  transition: width 0.3s ease;
 }
