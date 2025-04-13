@@ -631,26 +631,13 @@ ESC.AI = (function($) {
 
     // Function to show manual download instructions
     function _showManualDownloadInstructions(sourceUrl) {
-        ESC.log('Showing manual download instructions for source URL:', sourceUrl);
-
-        // Find the image uploader container
-        const $imageUploader = $('.esc-image-uploader');
-        if (!$imageUploader.length) {
-            ESC.error('Image uploader container not found');
-            return;
-        }
-
-        // Create or get the manual download container
-        let $container = $imageUploader.find('.esc-manual-download-container');
-        if (!$container.length) {
-            $container = $('<div class="esc-manual-download-container"></div>');
-            $imageUploader.append($container);
-        }
+        // Create the manual download UI
+        const $container = $('.esc-upload-error');
+        if (!$container.length) return;
 
         // Clear any existing content
-        $container.empty();
+        $container.removeClass('esc-error esc-success').addClass('esc-manual-download');
 
-        // Create the manual download UI
         let html = '<div class="esc-manual-download-instructions">';
         html += '<h4>Manual Image Download Required</h4>';
         html += '<p>The image could not be downloaded automatically. Please follow these steps:</p>';
@@ -667,34 +654,107 @@ ESC.AI = (function($) {
         if (sourceUrl) {
             html += '<div class="esc-button-group">';
             html += '<a href="' + sourceUrl + '" target="_blank" class="esc-button esc-button-primary">Visit Image Source</a>';
-            html += '<button type="button" class="esc-button esc-button-secondary esc-manual-upload-trigger">Upload Image</button>';
+            html += '<button type="button" class="esc-button esc-button-secondary esc-upload-trigger">Upload Image</button>';
             html += '</div>';
             html += '<p class="esc-manual-download-note">Note: If you can\'t find a suitable image on the source page, you can search for "' + $('#esc_seed_name').val() + ' plant" or "' + $('#esc_seed_name').val() + ' fruit" on Google Images and download an appropriate image.</p>';
         } else {
             html += '<div class="esc-button-group">';
-            html += '<button type="button" class="esc-button esc-button-secondary esc-manual-upload-trigger">Upload Image</button>';
+            html += '<button type="button" class="esc-button esc-button-secondary esc-upload-trigger">Upload Image</button>';
             html += '</div>';
         }
 
-        html += '<div class="esc-manual-upload-progress"><div class="esc-manual-progress-bar"></div></div>';
+        html += '<div class="esc-upload-progress"><div class="esc-progress-bar"></div></div>';
         html += '</div>';
 
-        // Add the HTML to the container
-        $container.html(html).addClass('esc-manual-download').show();
+        $container.html(html).show();
 
         // Add click handler for the upload trigger button
-        $container.find('.esc-manual-upload-trigger').on('click', function() {
-            ESC.log('Manual upload button clicked');
+        $('.esc-upload-trigger').on('click', function() {
+            // Create a hidden file input
+            const $fileInput = $('<input type="file" accept="image/*" style="display:none">');
+            $('body').append($fileInput);
 
-            // Trigger the existing file input in the image uploader
-            const $fileInput = $imageUploader.find('.esc-file-input');
-            if ($fileInput.length) {
-                ESC.log('Triggering file input click');
-                $fileInput.trigger('click');
-            } else {
-                ESC.error('File input not found in image uploader');
-                _showImageMessage('Error: File upload component not found.', 'error');
-            }
+            // Trigger the file selection dialog
+            $fileInput.trigger('click');
+
+            // Handle file selection
+            $fileInput.on('change', function() {
+                if (this.files && this.files[0]) {
+                    // Create a FormData object
+                    const formData = new FormData();
+                    formData.append('action', 'esc_upload_image');
+                    formData.append('nonce', ESC.getConfig().nonce);
+                    formData.append('image', this.files[0]);
+
+                    // Show progress indicator if available
+                    const $progress = $('.esc-upload-progress');
+                    const $progressBar = $('.esc-progress-bar');
+                    if ($progress.length && $progressBar.length) {
+                        $progress.show();
+                        $progressBar.css('width', '0%');
+                    }
+
+                    // Send AJAX request to upload the image
+                    $.ajax({
+                        url: ESC.getConfig().ajaxUrl,
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        xhr: function() {
+                            const xhr = new window.XMLHttpRequest();
+                            xhr.upload.addEventListener('progress', function(e) {
+                                if (e.lengthComputable && $progressBar.length) {
+                                    const percent = (e.loaded / e.total) * 100;
+                                    $progressBar.css('width', percent + '%');
+                                }
+                            }, false);
+                            return xhr;
+                        },
+                        success: function(response) {
+                            // Hide progress indicator
+                            if ($progress.length) {
+                                $progress.hide();
+                            }
+
+                            // Remove the file input
+                            $fileInput.remove();
+
+                            if (response.success) {
+                                // Update the image URL in the form
+                                $('#esc_image_url').val(response.data.url);
+
+                                // Update the image preview
+                                const $preview = $('.esc-image-preview');
+                                const $previewImg = $('.esc-preview-image');
+                                if ($preview.length && $previewImg.length) {
+                                    $previewImg.attr('src', response.data.url);
+                                    $preview.show();
+                                    $('.esc-dropzone').addClass('has-image');
+                                }
+
+                                // Show success message
+                                _showImageMessage('Image uploaded successfully and linked to this seed.', 'success');
+                            } else {
+                                // Show error message
+                                _showImageMessage(response.data?.message || 'Error uploading image.', 'error');
+                            }
+                        },
+                        error: function() {
+                            // Hide progress indicator
+                            if ($progress.length) {
+                                $progress.hide();
+                            }
+
+                            // Remove the file input
+                            $fileInput.remove();
+
+                            // Show error message
+                            _showImageMessage('Error uploading image. Please try again.', 'error');
+                        }
+                    });
+                }
+            });
         });
     }
 

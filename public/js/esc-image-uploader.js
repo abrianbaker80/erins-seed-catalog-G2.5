@@ -188,12 +188,6 @@
                 $previewImg.attr('src', url);
                 $preview.show();
                 $dropzone.addClass('has-image');
-
-                // Hide manual download container if it exists
-                const $manualContainer = $container.find('.esc-manual-download-container');
-                if ($manualContainer.length) {
-                    $manualContainer.hide();
-                }
             }
 
             // Function to remove image
@@ -202,12 +196,6 @@
                 $preview.hide();
                 $dropzone.removeClass('has-image');
                 $fileInput.val('');
-
-                // Show manual download container if it exists
-                const $manualContainer = $container.find('.esc-manual-download-container');
-                if ($manualContainer.length) {
-                    $manualContainer.show();
-                }
             }
 
             // Function to show error message
