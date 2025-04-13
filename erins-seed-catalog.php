@@ -3,7 +3,7 @@
  * Plugin Name:       Erin's Seed Catalog
  * Plugin URI:        https://github.com/abrianbaker80/erins-seed-catalog-G2.5.git
  * Description:       Catalog and track your vegetable garden seeds with AI-assisted information retrieval via the Gemini API. Mobile-first design.
- * Version:           1.2.22
+ * Version:           1.2.23
  * Requires at least: 6.0
  * Requires PHP:      8.2
  * Author:            Allen Baker
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define Constants
-define('ESC_VERSION', '1.2.22');
+define('ESC_VERSION', '1.2.23');
 define( 'ESC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ESC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'ESC_PLUGIN_FILE', __FILE__ );
@@ -174,34 +174,7 @@ function esc_init_plugin() {
         // Set the branch that contains the stable release
         $myUpdateChecker->setBranch('master');
 
-        // Provide all necessary plugin info directly
-        add_filter('puc_request_info_result-erins-seed-catalog', function($pluginInfo) {
-            // Create a new plugin info object if one doesn't exist
-            if (!is_object($pluginInfo)) {
-                $pluginInfo = new stdClass();
-            }
-
-            // Get plugin data from the main file
-            $pluginData = get_plugin_data(__FILE__);
-
-            // Set all required fields with values from the plugin header
-            $pluginInfo->name = $pluginData['Name'];
-            $pluginInfo->slug = 'erins-seed-catalog';
-            $pluginInfo->version = ESC_VERSION;
-            $pluginInfo->homepage = 'https://github.com/abrianbaker80/erins-seed-catalog-G2.5/';
-            $pluginInfo->requires = '6.0';
-            $pluginInfo->tested = '6.7.2';
-            $pluginInfo->requires_php = '8.2';
-            $pluginInfo->downloaded = 0;
-            $pluginInfo->last_updated = date('Y-m-d');
-            $pluginInfo->sections = [
-                'description' => $pluginData['Description'],
-                'changelog' => '<p>See <a href="https://github.com/abrianbaker80/erins-seed-catalog-G2.5/releases">GitHub releases</a> for detailed changelog.</p>',
-            ];
-            $pluginInfo->download_url = 'https://github.com/abrianbaker80/erins-seed-catalog-G2.5/archive/master.zip';
-
-            return $pluginInfo;
-        }, 10, 1);
+        // We're already providing plugin info through the esc_override_plugin_info function
     } else {
         // Fallback to the old update checker if the library is not available
         $update_checker = new ESC_Update_Checker();
@@ -232,6 +205,7 @@ function esc_uninstall_plugin() {
     flush_rewrite_rules();
 }
 // register_uninstall_hook( ESC_PLUGIN_FILE, 'esc_uninstall_plugin' ); // Uncomment to enable uninstall cleanup
+
 
 
 
