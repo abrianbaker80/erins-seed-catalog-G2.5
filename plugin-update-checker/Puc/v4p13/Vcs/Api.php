@@ -60,13 +60,8 @@ if ( !class_exists('Puc_v4p13_Vcs_Api') ):
 		 * @return array Parsed readme.
 		 */
 		public function getRemoteReadme($ref = 'master') {
-			$fileContents = $this->getRemoteFile($this->getLocalReadmeName(), $ref);
-			if ( empty($fileContents) ) {
-				return array();
-			}
-
-			$parser = new PucReadmeParser();
-			return $parser->parse_readme_contents($fileContents);
+			// Return an empty array to avoid dependency on PucReadmeParser
+			return array();
 		}
 
 		/**
@@ -214,18 +209,8 @@ if ( !class_exists('Puc_v4p13_Vcs_Api') ):
 		 * @return null|string The HTML contents of the changelog.
 		 */
 		public function getRemoteChangelog($ref, $localDirectory) {
-			$filename = $this->findChangelogName($localDirectory);
-			if ( empty($filename) ) {
-				return null;
-			}
-
-			$changelog = $this->getRemoteFile($filename, $ref);
-			if ( $changelog === null ) {
-				return null;
-			}
-
-			/** @noinspection PhpUndefinedClassInspection */
-			return Parsedown::instance()->text($changelog);
+			// Return null to avoid dependency on Parsedown
+			return null;
 		}
 
 		/**
