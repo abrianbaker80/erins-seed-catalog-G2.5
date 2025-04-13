@@ -649,6 +649,12 @@ ESC.AI = (function($) {
         formData.append('nonce', ESC.getConfig().nonce);
         formData.append('image_url', imageUrl);
 
+        // Add seed name for fallback image search if available
+        const seedName = $('#esc_seed_name').val() || $('#esc_seed_name_review').val() || $('#esc_seed_name_hidden').val();
+        if (seedName) {
+            formData.append('seed_name', seedName);
+        }
+
         // Send AJAX request to download the image
         $.ajax({
             url: ESC.getConfig().ajaxUrl,
@@ -684,7 +690,8 @@ ESC.AI = (function($) {
                     }
 
                     // Show success message if error container exists
-                    _showImageMessage('Image downloaded and saved to media library', 'success');
+                    const successMessage = response.data.message || 'Image downloaded and saved to media library';
+                    _showImageMessage(successMessage, 'success');
                 } else {
                     ESC.error('Error downloading image:', response.data?.message);
                     _showImageMessage(response.data?.message || 'Error downloading image', 'error');
