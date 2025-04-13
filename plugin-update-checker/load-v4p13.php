@@ -1,4 +1,7 @@
 <?php
+// Load vendor files first
+require dirname(__FILE__) . '/load-vendor.php';
+
 require dirname(__FILE__) . '/Puc/v4p13/Autoloader.php';
 new Puc_v4p13_Autoloader();
 

@@ -65,14 +65,6 @@ if ( !class_exists('Puc_v4p13_Vcs_Api') ):
 				return array();
 			}
 
-			// Include the PucReadmeParser class if it's not already loaded
-			if (!class_exists('PucReadmeParser', false)) {
-				$parserFile = dirname(__FILE__, 4) . '/vendor/PucReadmeParser.php';
-				if (file_exists($parserFile)) {
-					require_once $parserFile;
-				}
-			}
-
 			$parser = new PucReadmeParser();
 			return $parser->parse_readme_contents($fileContents);
 		}
@@ -230,14 +222,6 @@ if ( !class_exists('Puc_v4p13_Vcs_Api') ):
 			$changelog = $this->getRemoteFile($filename, $ref);
 			if ( $changelog === null ) {
 				return null;
-			}
-
-			// Include the Parsedown class if it's not already loaded
-			if (!class_exists('Parsedown', false)) {
-				$parsedownFile = dirname(__FILE__, 4) . '/vendor/Parsedown.php';
-				if (file_exists($parsedownFile)) {
-					require_once $parsedownFile;
-				}
 			}
 
 			/** @noinspection PhpUndefinedClassInspection */

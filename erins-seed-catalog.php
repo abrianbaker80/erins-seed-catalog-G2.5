@@ -3,7 +3,7 @@
  * Plugin Name:       Erin's Seed Catalog
  * Plugin URI:        https://github.com/abrianbaker80/erins-seed-catalog-G2.5.git
  * Description:       Catalog and track your vegetable garden seeds with AI-assisted information retrieval via the Gemini API. Mobile-first design.
- * Version:           1.2.13
+ * Version:           1.2.14
  * Requires at least: 6.0
  * Requires PHP:      8.2
  * Author:            Allen Baker
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define Constants
-define('ESC_VERSION', '1.2.13');
+define('ESC_VERSION', '1.2.14');
 define( 'ESC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ESC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'ESC_PLUGIN_FILE', __FILE__ );
@@ -138,9 +138,21 @@ function esc_init_plugin() {
         // Set the branch that contains the stable release
         $myUpdateChecker->setBranch('master');
 
-        // Note: If you want to enable release assets, make sure the VCS API supports it
-        // For now, we'll comment this out as the method doesn't exist
-        // $myUpdateChecker->getVcsApi()->enableReleaseAssets();
+        // Disable readme parsing to avoid PucReadmeParser errors
+        add_filter('puc_request_info_result-erins-seed-catalog', function($pluginInfo) {
+            if (is_object($pluginInfo)) {
+                // Set required and tested versions from plugin headers instead of readme
+                $pluginInfo->requires = '6.0';
+                $pluginInfo->tested = '6.7.2';
+                $pluginInfo->requires_php = '8.2';
+
+                // Add a simple changelog section if it doesn't exist
+                if (empty($pluginInfo->sections['changelog'])) {
+                    $pluginInfo->sections['changelog'] = '<p>See <a href="https://github.com/abrianbaker80/erins-seed-catalog-G2.5/releases">GitHub releases</a> for detailed changelog.</p>';
+                }
+            }
+            return $pluginInfo;
+        }, 10, 2);
     } else {
         // Fallback to the old update checker if the library is not available
         $update_checker = new ESC_Update_Checker();
@@ -171,6 +183,7 @@ function esc_uninstall_plugin() {
     flush_rewrite_rules();
 }
 // register_uninstall_hook( ESC_PLUGIN_FILE, 'esc_uninstall_plugin' ); // Uncomment to enable uninstall cleanup
+
 
 
 
