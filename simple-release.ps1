@@ -479,7 +479,8 @@ function Update-Files {
     # Update readme.txt if it exists
     if (Test-Path "readme.txt") {
         $readmeContent = Get-Content "readme.txt" -Raw
-        $readmeContent = $readmeContent -replace "Stable tag:\s*$oldVersion", "Stable tag: $newVersion"
+        # Update the stable tag regardless of its current value
+        $readmeContent = $readmeContent -replace "Stable tag:\s*[0-9\.]+", "Stable tag: $newVersion"
 
         # Also update the changelog in readme.txt
         $wpChangelog = Convert-MarkdownToWordPressChangelog -markdownChangelog $changelog -version $newVersion
