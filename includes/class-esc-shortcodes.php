@@ -312,12 +312,8 @@ class ESC_Shortcodes {
 
 		// Enqueue our new modular JavaScript files
 		wp_enqueue_script('esc-core', ESC_PLUGIN_URL . 'public/js/esc-core.js', ['jquery'], ESC_VERSION, true);
-		wp_enqueue_script('esc-ui', ESC_PLUGIN_URL . 'public/js/esc-ui.js', ['esc-core'], ESC_VERSION, true);
-		wp_enqueue_script('esc-form', ESC_PLUGIN_URL . 'public/js/esc-form.js', ['esc-core', 'esc-ui'], ESC_VERSION, true);
-		wp_enqueue_script('esc-ai', ESC_PLUGIN_URL . 'public/js/esc-ai.js', ['esc-core', 'esc-form'], ESC_VERSION, true);
-		wp_enqueue_script('esc-variety', ESC_PLUGIN_URL . 'public/js/esc-variety.js', ['esc-core', 'esc-form'], ESC_VERSION, true);
 
-		// Localize script for AJAX calls
+		// Localize script for AJAX calls before loading dependent scripts
 		$ajax_data = [
 			'ajax_url' => admin_url('admin-ajax.php'),
 			'nonce' => wp_create_nonce('esc_ajax_nonce'),
@@ -334,12 +330,29 @@ class ESC_Shortcodes {
 
 		wp_localize_script('esc-core', 'esc_ajax_object', $ajax_data);
 
+		// Now load dependent scripts
+		wp_enqueue_script('esc-ui', ESC_PLUGIN_URL . 'public/js/esc-ui.js', ['esc-core'], ESC_VERSION, true);
+		wp_enqueue_script('esc-form', ESC_PLUGIN_URL . 'public/js/esc-form.js', ['esc-core', 'esc-ui'], ESC_VERSION, true);
+		wp_enqueue_script('esc-ai', ESC_PLUGIN_URL . 'public/js/esc-ai.js', ['esc-core', 'esc-form'], ESC_VERSION, true);
+		wp_enqueue_script('esc-variety', ESC_PLUGIN_URL . 'public/js/esc-variety.js', ['esc-core', 'esc-form'], ESC_VERSION, true);
+
+		// AJAX data already localized above
+
 		// Enqueue dashicons
 		wp_enqueue_style('dashicons');
 
 		// Enqueue Select2 for category dropdown
 		wp_enqueue_style('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', [], '4.1.0-rc.0');
 		wp_enqueue_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', ['jquery'], '4.1.0-rc.0', true);
+
+		// Enqueue image uploader scripts and styles
+		wp_enqueue_style('esc-image-uploader', ESC_PLUGIN_URL . 'public/css/esc-image-uploader.css', [], ESC_VERSION);
+		wp_enqueue_script('esc-image-uploader', ESC_PLUGIN_URL . 'public/js/esc-image-uploader.js', ['jquery'], ESC_VERSION, true);
+
+		// Enqueue WordPress media if user can upload
+		if (current_user_can('upload_files')) {
+			wp_enqueue_media();
+		}
 
 		ob_start();
 		include ESC_PLUGIN_DIR . 'public/views/add-seed-form-refactored.php';
