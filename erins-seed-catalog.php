@@ -3,7 +3,7 @@
  * Plugin Name:       Erin's Seed Catalog
  * Plugin URI:        https://github.com/abrianbaker80/erins-seed-catalog-G2.5.git
  * Description:       Catalog and track your vegetable garden seeds with AI-assisted information retrieval via the Gemini API. Mobile-first design.
- * Version:           1.2.26
+ * Version:           1.2.27
  * Requires at least: 6.0
  * Requires PHP:      8.2
  * Author:            Allen Baker
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define Constants
-define('ESC_VERSION', '1.2.26');
+define('ESC_VERSION', '1.2.27');
 define( 'ESC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ESC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'ESC_PLUGIN_FILE', __FILE__ );
@@ -65,7 +65,7 @@ require_once ESC_PLUGIN_DIR . 'includes/esc-functions.php';
 require_once ESC_PLUGIN_DIR . 'includes/class-esc-ajax.php';
 require_once ESC_PLUGIN_DIR . 'includes/class-esc-shortcodes.php';
 require_once ESC_PLUGIN_DIR . 'includes/class-esc-admin.php';
-require_once ESC_PLUGIN_DIR . 'includes/class-esc-update-checker.php';
+
 require_once ESC_PLUGIN_DIR . 'includes/class-esc-variety-suggestions.php';
 require_once ESC_PLUGIN_DIR . 'includes/class-esc-image-uploader.php';
 
@@ -126,63 +126,9 @@ function esc_init_plugin() {
     ESC_Functions::init(); // For enqueueing
     ESC_Model_Updater::init(); // For model updates
 
-    // Initialize the update checker
-    if (file_exists(ESC_PLUGIN_DIR . 'plugin-update-checker/plugin-update-checker.php')) {
-        // Load the update checker
-        require_once ESC_PLUGIN_DIR . 'plugin-update-checker/plugin-update-checker.php';
-
-        // COMPLETELY DISABLE README PARSING AND OVERRIDE PLUGIN INFO
-        // This prevents the errors related to missing PucReadmeParser and Parsedown files
-        add_filter('puc_github_enable_release_details', '__return_false');
-
-        // Override the plugin info completely to avoid any readme or changelog parsing
-        add_filter('puc_request_info_result-erins-seed-catalog', 'esc_override_plugin_info');
-
-        // Function to override plugin info
-        function esc_override_plugin_info() {
-            // Create a completely new plugin info object
-            $info = new stdClass();
-
-            // Get plugin data from the main file
-            $pluginData = get_plugin_data(__FILE__);
-
-            // Set all required fields
-            $info->name = $pluginData['Name'];
-            $info->slug = 'erins-seed-catalog';
-            $info->version = ESC_VERSION;
-            $info->homepage = 'https://github.com/abrianbaker80/erins-seed-catalog-G2.5/';
-            $info->requires = '6.0';
-            $info->tested = '6.7.2';
-            $info->requires_php = '8.2';
-            $info->downloaded = 0;
-            $info->last_updated = date('Y-m-d');
-            $info->sections = [
-                'description' => $pluginData['Description'],
-            ];
-            $info->download_url = 'https://github.com/abrianbaker80/erins-seed-catalog-G2.5/archive/master.zip';
-
-            return $info;
-        }
-
-        // Note: We've directly modified the plugin update checker code to remove
-        // dependencies on PucReadmeParser and Parsedown
-
-        // Initialize the update checker
-        $myUpdateChecker = Puc_v4_Factory::buildUpdateChecker(
-            'https://github.com/abrianbaker80/erins-seed-catalog-G2.5/',
-            __FILE__,
-            'erins-seed-catalog'
-        );
-
-        // Set the branch that contains the stable release
-        $myUpdateChecker->setBranch('master');
-
-        // We're already providing plugin info through the esc_override_plugin_info function
-    } else {
-        // Fallback to the old update checker if the library is not available
-        $update_checker = new ESC_Update_Checker();
-        $update_checker->init();
-    }
+    // Update checking functionality has been removed
+    // Updates can be performed manually by downloading from GitHub
+    // https://github.com/abrianbaker80/erins-seed-catalog-G2.5/
 }
 add_action( 'plugins_loaded', 'esc_init_plugin' );
 
@@ -208,6 +154,7 @@ function esc_uninstall_plugin() {
     flush_rewrite_rules();
 }
 // register_uninstall_hook( ESC_PLUGIN_FILE, 'esc_uninstall_plugin' ); // Uncomment to enable uninstall cleanup
+
 
 
 

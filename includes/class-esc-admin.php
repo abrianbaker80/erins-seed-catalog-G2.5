@@ -536,38 +536,7 @@ class ESC_Admin {
         return $links;
     }
 
-    /**
-     * Add Check for Updates link to the plugin row actions.
-     *
-     * @param array  $actions     Array of plugin action links.
-     * @param string $plugin_file Path to the plugin file relative to the plugins directory.
-     * @param array  $plugin_data An array of plugin data.
-     * @param string $context     The plugin context. Defaults to 'all'.
-     * @return array Modified action links.
-     */
-    public static function add_plugin_update_check_link( $actions, $plugin_file, $plugin_data, $context ) {
-        // Only add the link to our plugin
-        if ( plugin_basename( ESC_PLUGIN_FILE ) === $plugin_file ) {
-            $check_update_url = wp_nonce_url(
-                add_query_arg(
-                    [
-                        'puc_check_for_updates' => 1,
-                        'puc_slug' => 'erins-seed-catalog',
-                    ],
-                    self_admin_url( 'plugins.php' )
-                ),
-                'puc_check_for_updates'
-            );
 
-            $actions['check-for-updates'] = sprintf(
-                '<a href="%s">%s</a>',
-                esc_url( $check_update_url ),
-                __( 'Check for Updates', 'erins-seed-catalog' )
-            );
-        }
-
-        return $actions;
-    }
 
     /**
      * Render the usage statistics page.
