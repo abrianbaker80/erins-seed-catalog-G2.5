@@ -4,6 +4,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// Define DAY_IN_SECONDS if not already defined
+if ( ! defined( 'DAY_IN_SECONDS' ) ) {
+    define( 'DAY_IN_SECONDS', 86400 ); // 60 * 60 * 24
+}
+
 /**
  * Class ESC_Model_Updater
  * Handles checking for and updating available Gemini models.

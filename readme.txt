@@ -4,7 +4,7 @@ Tags: seed catalog, garden, vegetables, gemini api, ai, mobile first
 Requires at least: 6.0
 Tested up to: 6.7.2
 Requires PHP: 8.2
-Stable tag: 1.2.31
+Stable tag: 1.2.35
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -189,6 +189,24 @@ Test shortcode for integration testing. Used for development purposes.
 
 == Changelog ==
 
+= 1.2.35 =
+* **Changes**
+* update checker work
+
+= 1.2.34 =
+* **Changes**
+* Fixed undefined constant `DAY_IN_SECONDS` in model updater class
+
+= 1.2.33 =
+* **Changes**
+* Fixed GitHub update checker to properly detect and display available updates
+* Added improved error logging for update checking
+* Enhanced the "Check for Updates" functionality to provide better feedback
+
+= 1.2.32 =
+* **Changes**
+* Fixed textdomain loading to use the 'init' hook instead of 'plugins_loaded' to prevent WordPress notices
+
 = 1.2.31 =
 * **Changes**
 * test
@@ -304,6 +322,15 @@ Test shortcode for integration testing. Used for development purposes.
 
 == Upgrade Notice ==
 
+= 1.2.35 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.34 =
+This update fixes an undefined constant issue in the model updater class.
+
+= 1.2.33 =
+This update fixes the GitHub update checker to properly detect and display available updates.
+
+= 1.2.32 =
+This update fixes textdomain loading to prevent WordPress notices.
+
 = 1.2.31 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.30 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.29 =
 This update implements a new lightweight GitHub-based update checker and fixes update checking functionality.
 
@@ -318,6 +345,7 @@ This update adds the ability to select different Gemini models, model testing, u
 
 = 1.0.0 =
 Initial release.
+
 
 
 
