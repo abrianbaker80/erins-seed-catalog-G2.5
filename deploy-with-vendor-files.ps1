@@ -37,7 +37,7 @@ if (Test-Path $includesVendorDir) {
 foreach ($file in $vendorFiles) {
     $sourcePath = Join-Path $sourceDir $file
     $destPath = Join-Path $vendorDir $file
-    
+
     if (Test-Path $sourcePath) {
         Write-Host "Copying $file to vendor directory" -ForegroundColor Green
         Copy-Item -Path $sourcePath -Destination $destPath -Force
@@ -49,7 +49,7 @@ foreach ($file in $vendorFiles) {
             Invoke-WebRequest -Uri $url -OutFile $destPath
             Write-Host "Downloaded $file successfully" -ForegroundColor Green
         } catch {
-            Write-Host "Failed to download $file: $_" -ForegroundColor Red
+            Write-Host "Failed to download $file" -ForegroundColor Red
         }
     }
 }
