@@ -219,7 +219,7 @@ ESC.AI = (function($) {
         $('#esc_variety_name_review').val(results.variety_name || $('#esc_variety_name').val());
         $('#esc_description').val(results.description || '');
 
-        // If image URL is provided, set it
+        // If image URL is provided, set it and download it
         if (results.image_url) {
             // This depends on how your image field works
             // For a standard input field:
@@ -229,6 +229,9 @@ ESC.AI = (function($) {
             if ($('.esc-image-preview').length) {
                 $('.esc-image-preview').attr('src', results.image_url).show();
             }
+
+            // Automatically download the image
+            _downloadImageFromUrl(results.image_url);
         }
 
         // Plant characteristics
@@ -549,6 +552,11 @@ ESC.AI = (function($) {
                     if ($('.esc-image-preview').length && data[field]) {
                         $('.esc-image-preview').attr('src', data[field]).show();
                     }
+
+                    // Automatically download the image if available
+                    if (data[field]) {
+                        _downloadImageFromUrl(data[field]);
+                    }
                 }
                 else if (field === 'sunlight' || field === 'sun_requirements') {
                     $('#esc_sun_requirements').val(data[field] || '');
@@ -610,6 +618,108 @@ ESC.AI = (function($) {
             $('html, body').animate({
                 scrollTop: $element.offset().top - offset
             }, 300);
+        }
+    }
+
+    // Function to download image from URL and update the form
+    function _downloadImageFromUrl(imageUrl) {
+        ESC.log('Attempting to download image from URL:', imageUrl);
+
+        // Validate URL
+        if (!imageUrl || !_isValidUrl(imageUrl)) {
+            ESC.error('Invalid image URL:', imageUrl);
+            return;
+        }
+
+        // Show progress indicator if available
+        const $progress = $('.esc-upload-progress');
+        const $progressBar = $('.esc-progress-bar');
+        if ($progress.length && $progressBar.length) {
+            $progress.show();
+            $progressBar.css('width', '0%');
+        }
+
+        // Create FormData for AJAX request
+        const formData = new FormData();
+        formData.append('action', 'esc_download_image');
+        formData.append('nonce', ESC.getConfig().nonce);
+        formData.append('image_url', imageUrl);
+
+        // Send AJAX request to download the image
+        $.ajax({
+            url: ESC.getConfig().ajaxUrl,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            xhr: function() {
+                const xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener('progress', function(e) {
+                    if (e.lengthComputable && $progressBar.length) {
+                        const percent = (e.loaded / e.total) * 100;
+                        $progressBar.css('width', percent + '%');
+                    }
+                }, false);
+                return xhr;
+            },
+            success: function(response) {
+                // Hide progress indicator
+                if ($progress.length) {
+                    $progress.hide();
+                }
+
+                if (response.success) {
+                    ESC.log('Image downloaded successfully:', response.data.url);
+
+                    // Update the image URL in the form
+                    $('#esc_image_url').val(response.data.url);
+
+                    // Update the image preview
+                    if ($('.esc-image-preview').length) {
+                        $('.esc-image-preview').attr('src', response.data.url);
+                    }
+
+                    // Show success message if error container exists
+                    _showImageMessage('Image downloaded and saved to media library', 'success');
+                } else {
+                    ESC.error('Error downloading image:', response.data?.message);
+                    _showImageMessage(response.data?.message || 'Error downloading image', 'error');
+                }
+            },
+            error: function(_, status, error) {
+                // Hide progress indicator
+                if ($progress.length) {
+                    $progress.hide();
+                }
+
+                ESC.error('AJAX error downloading image:', status, error);
+                _showImageMessage('Error downloading image. Please try again.', 'error');
+            }
+        });
+    }
+
+    // Function to show image message
+    function _showImageMessage(message, type) {
+        const $error = $('.esc-upload-error');
+        if ($error.length) {
+            $error.text(message);
+            $error.removeClass('esc-success esc-error').addClass('esc-' + type);
+            $error.show();
+
+            // Hide the message after 5 seconds
+            setTimeout(function() {
+                $error.fadeOut();
+            }, 5000);
+        }
+    }
+
+    // Function to validate URL
+    function _isValidUrl(url) {
+        try {
+            new URL(url);
+            return true;
+        } catch (e) {
+            return false;
         }
     }
 

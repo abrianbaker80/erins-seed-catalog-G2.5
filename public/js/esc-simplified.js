@@ -1193,6 +1193,16 @@
         updateAIStatusBadges();
     }
 
+    // Function to validate URL
+    function isValidUrl(url) {
+        try {
+            new URL(url);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
     // Function to download image from URL and update the form
     function downloadImageFromUrl(imageUrl) {
         console.log('Attempting to download image from URL:', imageUrl);
@@ -1211,15 +1221,36 @@
             $progressBar.css('width', '0%');
         }
 
+        // Get AJAX URL and nonce
+        let ajaxUrl, nonce;
+
+        // Try to get AJAX data from different sources
+        if (typeof esc_ajax_object !== 'undefined') {
+            // Use global esc_ajax_object if available
+            ajaxUrl = esc_ajax_object.ajax_url;
+            nonce = esc_ajax_object.nonce;
+            console.log('Using global esc_ajax_object for image download');
+        } else if (typeof ESC !== 'undefined' && ESC.getConfig) {
+            // Use ESC namespace if available
+            ajaxUrl = ESC.getConfig().ajaxUrl;
+            nonce = ESC.getConfig().nonce;
+            console.log('Using ESC namespace for image download');
+        } else {
+            // Last resort, try to find it in wp_localize_script data
+            ajaxUrl = window.ajaxurl || '/wp-admin/admin-ajax.php';
+            nonce = '';
+            console.log('Using fallback AJAX URL for image download:', ajaxUrl);
+        }
+
         // Create FormData for AJAX request
         const formData = new FormData();
         formData.append('action', 'esc_download_image');
-        formData.append('nonce', esc_ajax_object.nonce);
+        formData.append('nonce', nonce);
         formData.append('image_url', imageUrl);
 
         // Send AJAX request to download the image
         $.ajax({
-            url: esc_ajax_object.ajax_url,
+            url: ajaxUrl,
             type: 'POST',
             data: formData,
             processData: false,
@@ -1256,7 +1287,7 @@
                     showImageMessage(response.data?.message || 'Error downloading image', 'error');
                 }
             },
-            error: function(xhr, status, error) {
+            error: function(_, status, error) {
                 // Hide progress indicator
                 if ($progress.length) {
                     $progress.hide();
@@ -1283,15 +1314,7 @@
         }
     }
 
-    // Function to validate URL
-    function isValidUrl(url) {
-        try {
-            new URL(url);
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
+
 
     // Add to changes list
     function addToChangesList(key, value) {
