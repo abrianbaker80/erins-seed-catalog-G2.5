@@ -4,7 +4,7 @@ Tags: seed catalog, garden, vegetables, gemini api, ai, mobile first
 Requires at least: 6.0
 Tested up to: 6.7.2
 Requires PHP: 8.2
-Stable tag: 1.2.30
+Stable tag: 1.2.31
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -189,6 +189,10 @@ Test shortcode for integration testing. Used for development purposes.
 
 == Changelog ==
 
+= 1.2.31 =
+* **Changes**
+* test
+
 = 1.2.30 =
 * **Changes**
 * Implemented new update checker
@@ -300,7 +304,7 @@ Test shortcode for integration testing. Used for development purposes.
 
 == Upgrade Notice ==
 
-= 1.2.30 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.29 =
+= 1.2.31 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.30 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.29 =
 This update implements a new lightweight GitHub-based update checker and fixes update checking functionality.
 
 = 1.2.28 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.27 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.26 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.25 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.24 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.23 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.22 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.21 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.20 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.20 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.19 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.18 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.17 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.16 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.15 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.14 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.16 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.15 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.1.6 =
@@ -314,6 +318,7 @@ This update adds the ability to select different Gemini models, model testing, u
 
 = 1.0.0 =
 Initial release.
+
 
 
 
