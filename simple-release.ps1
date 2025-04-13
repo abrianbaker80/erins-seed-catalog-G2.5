@@ -511,16 +511,11 @@ function Update-Files {
     }
 
     # Always update README.md with changelog
-    # We're setting shouldUpdateReadme to $true to ensure it always happens
+    # We're using the pre-generated changelog
     $shouldUpdateReadme = $true
     if ($shouldUpdateReadme) {
-        # Pass the release description if provided
-        $changelog = Get-ChangesSinceLastTag -newVersion $newVersion -releaseDescription $ReleaseDescription
-
-        # Debug output to show the generated changelog
-        Write-Host "Generated changelog:" -ForegroundColor Cyan
-        Write-Host $changelog -ForegroundColor Gray
-
+        # Use the pre-generated changelog
+        Write-Host "Updating README.md with pre-generated changelog..." -ForegroundColor Cyan
         Update-ReadmeChangelog -newVersion $newVersion -changelog $changelog
     }
 }
@@ -532,8 +527,50 @@ Write-Host "Current version: $currentVersion" -ForegroundColor Cyan
 $newVersion = Update-Version -version $currentVersion -type $VersionType
 Write-Host "New version: $newVersion" -ForegroundColor Green
 
+# Generate the changelog first, before updating any files
+# This ensures we capture the actual changes, not just the version bump
+Write-Host "Generating changelog before updating files..." -ForegroundColor Cyan
+$changelog = Get-ChangesSinceLastTag -newVersion $newVersion -releaseDescription $ReleaseDescription
+
+# Debug output to show the generated changelog
+Write-Host "Generated changelog:" -ForegroundColor Cyan
+Write-Host $changelog -ForegroundColor Gray
+
+# Store a plain text version of the changelog for commit messages and release notes
+$plainChangelog = $changelog
+
+# Process the changelog line by line to convert to plain text
+$lines = $plainChangelog -split "`n"
+$plainTextLines = @()
+
+foreach ($line in $lines) {
+    # Skip version header
+    if ($line -match "^## Version") {
+        continue
+    }
+    # Convert section headers
+    elseif ($line -match "^### (.+)") {
+        $sectionName = $Matches[1]
+        $plainTextLines += "${sectionName}:"
+    }
+    # Convert bullet points
+    elseif ($line -match "^- (.+)") {
+        $bulletContent = $Matches[1]
+        $plainTextLines += "* $bulletContent"
+    }
+    # Keep other lines as is
+    elseif ($line.Trim()) {
+        $plainTextLines += $line
+    }
+}
+
+# Join the lines back together
+$plainChangelog = $plainTextLines -join "`n"
+
 if (-not $DryRun) {
-    $confirmation = Read-Host "Do you want to update to version $newVersion? (y/n)"
+    Write-Host "Changelog preview:" -ForegroundColor Cyan
+    Write-Host $plainChangelog -ForegroundColor White
+    $confirmation = Read-Host "Do you want to update to version $newVersion with these changes? (y/n)"
     if ($confirmation -ne "y") {
         Write-Host "Update cancelled" -ForegroundColor Yellow
         exit 0
@@ -542,6 +579,7 @@ if (-not $DryRun) {
     Write-Host "DRY RUN: Would prompt for confirmation to update to version $newVersion" -ForegroundColor Yellow
 }
 
+# Now update the files with the pre-generated changelog
 Update-Files -oldVersion $currentVersion -newVersion $newVersion
 Write-Host "Version updated successfully!" -ForegroundColor Green
 
@@ -626,7 +664,8 @@ function New-CommitMessage {
 }
 
 # Commit changes
-$commitMessage = New-CommitMessage -version $newVersion
+# Use the pre-generated changelog for the commit message instead of generating a new one
+$commitMessage = "Release v$newVersion`n`n$plainChangelog"
 Write-Host "Commit message:" -ForegroundColor Cyan
 Write-Host $commitMessage -ForegroundColor White
 
@@ -636,7 +675,7 @@ if ($DryRun) {
 } else {
     git add .
     git commit -m "$commitMessage"
-    git tag -a "v$newVersion" -m "Version $newVersion"
+    git tag -a "v$newVersion" -m "Version $newVersion - $plainChangelog"
 }
 
 # Push changes
@@ -663,7 +702,8 @@ if (-not $DryRun) {
 
         # Prepare release title and notes
         $title = if ($ReleaseTitle) { $ReleaseTitle } else { "Version $newVersion" }
-        $notes = if ($ReleaseDescription) { $ReleaseDescription } else { $commitMessage }
+        # Use the pre-generated changelog for release notes if no custom description is provided
+        $notes = if ($ReleaseDescription) { $ReleaseDescription } else { $plainChangelog }
 
         if ($ghInstalled) {
             # Use GitHub CLI
