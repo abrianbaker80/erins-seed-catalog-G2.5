@@ -72,10 +72,64 @@ function Update-Version {
     return "$major.$minor.$patch"
 }
 
+# Convert Markdown changelog to WordPress readme.txt format
+function Convert-MarkdownToWordPressChangelog {
+    param (
+        [string]$markdownChangelog,
+        [string]$version
+    )
+
+    # Extract content from the markdown changelog
+    $lines = $markdownChangelog -split "`n"
+
+    # Initialize WordPress format changelog
+    $wpChangelog = "= $version =`n"
+
+    # Track if we've added any content
+    $hasContent = $false
+
+    # Process each line
+    foreach ($line in $lines) {
+        # Skip empty lines
+        if (-not $line.Trim()) { continue }
+
+        # Skip the version header line
+        if ($line -match "^## Version") {
+            continue
+        }
+
+        # Handle section headers - add as comments in WordPress format
+        if ($line -match "^### (.+)") {
+            $sectionName = $Matches[1]
+            $wpChangelog += "* **$sectionName**`n"
+            $hasContent = $true
+            continue
+        }
+
+        # Handle bullet points
+        if ($line -match "^- (.+)") {
+            $bulletContent = $Matches[1]
+            $wpChangelog += "* $bulletContent`n"
+            $hasContent = $true
+        }
+    }
+
+    # If no content was added, add a generic message
+    if (-not $hasContent) {
+        $wpChangelog += "* Updated to version $version`n"
+    }
+
+    # Add a newline at the end
+    $wpChangelog += "`n"
+
+    return $wpChangelog
+}
+
 # Get changes since last tag
 function Get-ChangesSinceLastTag {
     param (
-        [string]$newVersion
+        [string]$newVersion,
+        [string]$releaseDescription = ""
     )
 
     Write-Host "Getting changes since last tag..." -ForegroundColor Cyan
@@ -88,8 +142,58 @@ function Get-ChangesSinceLastTag {
         $lastTag = git rev-list --max-parents=0 HEAD
     }
 
+    # Build changelog with timestamp
+    $currentDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    Write-Host "Adding timestamp: $currentDate" -ForegroundColor Cyan
+    $changelog = "## Version $newVersion - $currentDate`n`n"
+
+    # If a release description was provided, use it instead of generating from commits
+    if ($releaseDescription) {
+        Write-Host "Using provided release description" -ForegroundColor Green
+
+        # Split the description into lines and format as Markdown
+        $descLines = $releaseDescription -split "`n"
+        $inSection = $false
+
+        foreach ($line in $descLines) {
+            $line = $line.Trim()
+            if (-not $line) { continue }
+
+            # Check if this is a section header
+            if ($line -match "^(Features|Fixes|Documentation|Other Changes):") {
+                if ($inSection) { $changelog += "`n" }
+                $sectionName = $Matches[1]
+                $changelog += "### $sectionName`n"
+                $inSection = $true
+            }
+            # Check if this is a bullet point
+            elseif ($line -match "^[-*]\s+(.+)") {
+                $bulletContent = $Matches[1]
+                $changelog += "- $bulletContent`n"
+            }
+            # Otherwise, treat as a regular line
+            elseif ($inSection) {
+                $changelog += "- $line`n"
+            }
+            else {
+                # If we haven't started a section yet, create a default one
+                $changelog += "### Changes`n"
+                $changelog += "- $line`n"
+                $inSection = $true
+            }
+        }
+
+        $changelog += "`n"
+        return $changelog
+    }
+
     # Get all commits since last tag (including merges)
     $commits = git log "$lastTag..HEAD" --pretty=format:"%s"
+    Write-Host "Found $(($commits | Measure-Object).Count) commits since last tag" -ForegroundColor Cyan
+
+    # Get changed files since last tag
+    $changedFiles = git diff --name-only "$lastTag..HEAD"
+    Write-Host "Found $(($changedFiles | Measure-Object).Count) changed files since last tag" -ForegroundColor Cyan
 
     # Categorize commits
     $features = @()
@@ -118,11 +222,41 @@ function Get-ChangesSinceLastTag {
         }
     }
 
-    # Build changelog with timestamp
-    $currentDate = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    Write-Host "Adding timestamp: $currentDate" -ForegroundColor Cyan
-    $changelog = "## Version $newVersion - $currentDate`n`n"
+    # If no commits were categorized, try to categorize based on changed files
+    if ($features.Count -eq 0 -and $fixes.Count -eq 0 -and $docs.Count -eq 0 -and $other.Count -eq 0) {
+        Write-Host "No categorized commits found. Analyzing changed files..." -ForegroundColor Yellow
 
+        foreach ($file in $changedFiles) {
+            $extension = [System.IO.Path]::GetExtension($file)
+            $fileName = [System.IO.Path]::GetFileName($file)
+            $directory = [System.IO.Path]::GetDirectoryName($file)
+
+            # Skip version bump files
+            if ($fileName -eq "simple-release.ps1") { continue }
+
+            # Categorize based on file patterns
+            if ($fileName -match "README|readme") {
+                $docs += "Updated documentation in $fileName"
+            }
+            elseif ($directory -match "admin|includes" -and $extension -match "\.php$") {
+                # Try to determine if it's a feature or fix based on git diff
+                $diff = git diff "$lastTag..HEAD" -- $file
+                if ($diff -match "fix|bug|issue|error|warning|notice") {
+                    $fixes += "Fixed issues in $fileName"
+                } else {
+                    $features += "Updated functionality in $fileName"
+                }
+            }
+            elseif ($extension -match "\.css$|\.js$") {
+                $features += "Updated UI/UX in $fileName"
+            }
+            else {
+                $other += "Modified $fileName"
+            }
+        }
+    }
+
+    # Build the changelog sections
     if ($features.Count -gt 0) {
         $changelog += "### New Features`n"
         foreach ($feature in $features) {
@@ -178,10 +312,18 @@ function Get-ChangesSinceLastTag {
         $changelog += "`n"
     }
 
-    # If no changes were categorized, add a generic message
+    # If still no changes were categorized, prompt the user for a description
     if ($features.Count -eq 0 -and $fixes.Count -eq 0 -and $docs.Count -eq 0 -and $other.Count -eq 0) {
-        $changelog += "### Changes`n"
-        $changelog += "- Version bump to $newVersion`n`n"
+        Write-Host "No changes detected. Please enter a brief description of this release:" -ForegroundColor Yellow
+        $userDescription = Read-Host "Description (or press Enter for generic version bump)"
+
+        if ($userDescription) {
+            $changelog += "### Changes`n"
+            $changelog += "- $userDescription`n`n"
+        } else {
+            $changelog += "### Changes`n"
+            $changelog += "- Version bump to $newVersion`n`n"
+        }
     }
 
     return $changelog
@@ -338,6 +480,33 @@ function Update-Files {
     if (Test-Path "readme.txt") {
         $readmeContent = Get-Content "readme.txt" -Raw
         $readmeContent = $readmeContent -replace "Stable tag:\s*$oldVersion", "Stable tag: $newVersion"
+
+        # Also update the changelog in readme.txt
+        $wpChangelog = Convert-MarkdownToWordPressChangelog -markdownChangelog $changelog -version $newVersion
+
+        # Check if there's already a changelog section
+        if ($readmeContent -match "== Changelog ==[\r\n]+") {
+            # Insert the new changelog entry after the "== Changelog ==" heading
+            $readmeContent = $readmeContent -replace "(== Changelog ==[\r\n]+)", "`$1$wpChangelog"
+        } else {
+            # If no changelog section exists, add one before the upgrade notice or at the end
+            if ($readmeContent -match "== Upgrade Notice ==") {
+                $readmeContent = $readmeContent -replace "(== Upgrade Notice ==)", "== Changelog ==\n\n$wpChangelog\n\n`$1"
+            } else {
+                # Add at the end
+                $readmeContent += "\n\n== Changelog ==\n\n$wpChangelog"
+            }
+        }
+
+        # Also update the upgrade notice if it exists
+        if ($readmeContent -match "== Upgrade Notice ==[\r\n]+") {
+            # Create a simple upgrade notice
+            $upgradeNotice = "= $newVersion =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n"
+
+            # Insert the new upgrade notice after the "== Upgrade Notice ==" heading
+            $readmeContent = $readmeContent -replace "(== Upgrade Notice ==[\r\n]+)", "`$1$upgradeNotice"
+        }
+
         Set-Content -Path "readme.txt" -Value $readmeContent
     }
 
@@ -345,7 +514,8 @@ function Update-Files {
     # We're setting shouldUpdateReadme to $true to ensure it always happens
     $shouldUpdateReadme = $true
     if ($shouldUpdateReadme) {
-        $changelog = Get-ChangesSinceLastTag -newVersion $newVersion
+        # Pass the release description if provided
+        $changelog = Get-ChangesSinceLastTag -newVersion $newVersion -releaseDescription $ReleaseDescription
 
         # Debug output to show the generated changelog
         Write-Host "Generated changelog:" -ForegroundColor Cyan

@@ -193,6 +193,9 @@ Test shortcode for integration testing. Used for development purposes.
 
 == Changelog ==
 
+= 1.2.15 =
+* Updated to version 1.2.15
+
 = 1.1.6 =
 *   Fixed plugin update detection
 *   Added improved GitHub update checker
@@ -216,7 +219,7 @@ Test shortcode for integration testing. Used for development purposes.
 
 == Upgrade Notice ==
 
-= 1.1.6 =
+= 1.2.15 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.1.6 =
 This update fixes plugin update detection and adds an improved add seed form with modern UI and AI-powered variety suggestions.
 
 = 1.1.5 =
@@ -227,6 +230,7 @@ This update adds the ability to select different Gemini models, model testing, u
 
 = 1.0.0 =
 Initial release.
+
 
 
 
