@@ -219,19 +219,10 @@ ESC.AI = (function($) {
         $('#esc_variety_name_review').val(results.variety_name || $('#esc_variety_name').val());
         $('#esc_description').val(results.description || '');
 
-        // If image URL is provided, set it and download it
-        if (results.image_url) {
-            // This depends on how your image field works
-            // For a standard input field:
-            $('#esc_image_url').val(results.image_url);
-
-            // If there's a preview element:
-            if ($('.esc-image-preview').length) {
-                $('.esc-image-preview').attr('src', results.image_url).show();
-            }
-
-            // Automatically download the image with source URL
-            _downloadImageFromUrl(results.image_url, results.image_source_url || results.image_url);
+        // If image source URL is provided, show the manual download instructions
+        if (results.image_source_url) {
+            // Show manual download instructions
+            _showManualDownloadInstructions(results.image_source_url);
         }
 
         // Plant characteristics
@@ -546,16 +537,10 @@ ESC.AI = (function($) {
         fields.forEach(function(field) {
             if (data[field] !== undefined) {
                 // Handle special cases
-                if (field === 'image_url') {
-                    $('#esc_image_url').val(data[field] || '');
-
-                    if ($('.esc-image-preview').length && data[field]) {
-                        $('.esc-image-preview').attr('src', data[field]).show();
-                    }
-
-                    // Automatically download the image if available
+                if (field === 'image_source_url') {
+                    // Show manual download instructions if image source URL is available
                     if (data[field]) {
-                        _downloadImageFromUrl(data[field], data.image_source_url || data[field]);
+                        _showManualDownloadInstructions(data[field]);
                     }
                 }
                 else if (field === 'sunlight' || field === 'sun_requirements') {
@@ -621,104 +606,7 @@ ESC.AI = (function($) {
         }
     }
 
-    // Function to download image from URL and update the form
-    function _downloadImageFromUrl(imageUrl, sourceUrl) {
-        if (!imageUrl) {
-            ESC.error('No image URL provided');
-            return;
-        }
 
-        ESC.log('Attempting to download image from URL:', imageUrl);
-
-        // Validate URL
-        if (!_isValidUrl(imageUrl)) {
-            ESC.error('Invalid image URL:', imageUrl);
-            _showManualDownloadInstructions(sourceUrl);
-            return;
-        }
-
-        // Fix Wikimedia Commons URLs
-        imageUrl = _fixWikimediaUrl(imageUrl);
-        ESC.log('Using image URL (after fixes):', imageUrl);
-
-        // Show progress indicator if available
-        const $progress = $('.esc-upload-progress');
-        const $progressBar = $('.esc-progress-bar');
-        if ($progress.length && $progressBar.length) {
-            $progress.show();
-            $progressBar.css('width', '0%');
-        }
-
-        // Create FormData for AJAX request
-        const formData = new FormData();
-        formData.append('action', 'esc_download_image');
-        formData.append('nonce', ESC.getConfig().nonce);
-        formData.append('image_url', imageUrl);
-
-        // Add source URL if available
-        if (sourceUrl) {
-            formData.append('source_url', sourceUrl);
-        }
-
-        // Send AJAX request to download the image
-        $.ajax({
-            url: ESC.getConfig().ajaxUrl,
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            xhr: function() {
-                const xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener('progress', function(e) {
-                    if (e.lengthComputable && $progressBar.length) {
-                        const percent = (e.loaded / e.total) * 100;
-                        $progressBar.css('width', percent + '%');
-                    }
-                }, false);
-                return xhr;
-            },
-            success: function(response) {
-                // Hide progress indicator
-                if ($progress.length) {
-                    $progress.hide();
-                }
-
-                if (response.success) {
-                    ESC.log('Image downloaded successfully:', response.data.url);
-
-                    // Update the image URL in the form
-                    $('#esc_image_url').val(response.data.url);
-
-                    // Update the image preview
-                    if ($('.esc-image-preview').length) {
-                        $('.esc-image-preview').attr('src', response.data.url);
-                    }
-
-                    // Show success message if error container exists
-                    const successMessage = response.data.message || 'Image downloaded and saved to media library';
-                    _showImageMessage(successMessage, 'success');
-                } else {
-                    ESC.error('Error downloading image:', response.data?.message);
-
-                    // Check if we need to show manual download instructions
-                    if (response.data?.needs_manual_download) {
-                        _showManualDownloadInstructions(response.data?.source_url);
-                    } else {
-                        _showImageMessage(response.data?.message || 'Error downloading image', 'error');
-                    }
-                }
-            },
-            error: function(_, status, error) {
-                // Hide progress indicator
-                if ($progress.length) {
-                    $progress.hide();
-                }
-
-                ESC.error('AJAX error downloading image:', status, error);
-                _showImageMessage('Error downloading image. Please try again.', 'error');
-            }
-        });
-    }
 
     // Function to show image message
     function _showImageMessage(message, type) {
@@ -860,58 +748,7 @@ ESC.AI = (function($) {
         });
     }
 
-    // Function to validate URL
-    function _isValidUrl(url) {
-        try {
-            new URL(url);
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
 
-    // Function to check if a URL is a direct image URL
-    function _isDirectImageUrl(url) {
-        // Check if the URL ends with a common image extension
-        const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
-        const lowerUrl = url.toLowerCase();
-        return imageExtensions.some(ext => lowerUrl.endsWith(ext));
-    }
-
-    // Function to fix image URLs
-    function _fixWikimediaUrl(url) {
-        // If it's already a direct image URL, return it as is
-        if (_isDirectImageUrl(url)) {
-            return url;
-        }
-
-        // Check if this is a Wikimedia Commons URL
-        if (url.includes('upload.wikimedia.org')) {
-            // Check if it's a thumbnail URL (contains /thumb/ in the path)
-            if (url.includes('/thumb/')) {
-                // Extract the original file path by removing /thumb/ and the dimension part
-                const urlParts = url.split('/thumb/');
-                if (urlParts.length === 2) {
-                    const baseUrl = urlParts[0];
-                    const filePath = urlParts[1];
-
-                    // Remove the dimension part (e.g., /1280px-filename.jpg)
-                    const filePathParts = filePath.split('/');
-                    filePathParts.pop(); // Remove the last part (the resized filename)
-                    const originalFilePath = filePathParts.join('/');
-
-                    // Construct the direct file URL
-                    return baseUrl + '/' + originalFilePath;
-                }
-            }
-        }
-
-        // For Pixabay, Unsplash, Pexels, etc., we'll rely on the server-side processing
-        // since we can't easily scrape the pages from JavaScript due to CORS restrictions
-
-        // Return the original URL if it's not a URL we can fix client-side
-        return url;
-    }
 
     function _initSelect2() {
         ESC.log('Initializing Select2 for category dropdown');
