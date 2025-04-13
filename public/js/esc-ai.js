@@ -720,8 +720,12 @@ ESC.AI = (function($) {
 
                                 // Update the image preview
                                 if ($('.esc-image-preview').length) {
-                                    $('.esc-image-preview').attr('src', response.data.url).show();
+                                    $('.esc-image-preview').show();
+                                    $('.esc-preview-image').attr('src', response.data.url);
                                 }
+
+                                // Update the dropzone to show it has an image
+                                $('.esc-dropzone').addClass('has-image');
 
                                 // Show success message
                                 _showImageMessage('Image uploaded successfully and linked to this seed.', 'success');
