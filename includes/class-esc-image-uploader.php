@@ -220,6 +220,9 @@ class ESC_Image_Uploader {
             ] );
         }
 
+        // Fix Wikimedia Commons thumbnail URLs
+        $image_url = self::fix_wikimedia_url($image_url);
+
         // Get WordPress upload directory
         $upload_dir = wp_upload_dir();
 
@@ -295,6 +298,38 @@ class ESC_Image_Uploader {
             'url' => $attachment_url,
             'id' => $attachment_id,
         ] );
+    }
+
+    /**
+     * Fix Wikimedia Commons URLs to use direct file URLs instead of thumbnails.
+     *
+     * @param string $url The image URL to fix.
+     * @return string The fixed URL.
+     */
+    private static function fix_wikimedia_url( $url ) {
+        // Check if this is a Wikimedia Commons URL
+        if ( strpos( $url, 'upload.wikimedia.org' ) !== false ) {
+            // Check if it's a thumbnail URL (contains /thumb/ in the path)
+            if ( strpos( $url, '/thumb/' ) !== false ) {
+                // Extract the original file path by removing /thumb/ and the dimension part
+                $url_parts = explode( '/thumb/', $url );
+                if ( count( $url_parts ) === 2 ) {
+                    $base_url = $url_parts[0];
+                    $file_path = $url_parts[1];
+
+                    // Remove the dimension part (e.g., /1280px-filename.jpg)
+                    $file_path_parts = explode( '/', $file_path );
+                    array_pop( $file_path_parts ); // Remove the last part (the resized filename)
+                    $original_file_path = implode( '/', $file_path_parts );
+
+                    // Construct the direct file URL
+                    return $base_url . '/' . $original_file_path;
+                }
+            }
+        }
+
+        // Return the original URL if it's not a Wikimedia Commons URL or can't be fixed
+        return $url;
     }
 
     /**

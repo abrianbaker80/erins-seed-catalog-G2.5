@@ -631,6 +631,10 @@ ESC.AI = (function($) {
             return;
         }
 
+        // Fix Wikimedia Commons URLs
+        imageUrl = _fixWikimediaUrl(imageUrl);
+        ESC.log('Using image URL (after fixes):', imageUrl);
+
         // Show progress indicator if available
         const $progress = $('.esc-upload-progress');
         const $progressBar = $('.esc-progress-bar');
@@ -721,6 +725,33 @@ ESC.AI = (function($) {
         } catch (e) {
             return false;
         }
+    }
+
+    // Function to fix Wikimedia Commons URLs
+    function _fixWikimediaUrl(url) {
+        // Check if this is a Wikimedia Commons URL
+        if (url.includes('upload.wikimedia.org')) {
+            // Check if it's a thumbnail URL (contains /thumb/ in the path)
+            if (url.includes('/thumb/')) {
+                // Extract the original file path by removing /thumb/ and the dimension part
+                const urlParts = url.split('/thumb/');
+                if (urlParts.length === 2) {
+                    const baseUrl = urlParts[0];
+                    const filePath = urlParts[1];
+
+                    // Remove the dimension part (e.g., /1280px-filename.jpg)
+                    const filePathParts = filePath.split('/');
+                    filePathParts.pop(); // Remove the last part (the resized filename)
+                    const originalFilePath = filePathParts.join('/');
+
+                    // Construct the direct file URL
+                    return baseUrl + '/' + originalFilePath;
+                }
+            }
+        }
+
+        // Return the original URL if it's not a Wikimedia Commons URL or can't be fixed
+        return url;
     }
 
     function _initSelect2() {

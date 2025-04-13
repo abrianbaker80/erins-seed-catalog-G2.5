@@ -4,7 +4,7 @@ Tags: seed catalog, garden, vegetables, gemini api, ai, mobile first
 Requires at least: 6.0
 Tested up to: 6.7.2
 Requires PHP: 8.2
-Stable tag: 1.2.46
+Stable tag: 1.2.47
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -189,6 +189,10 @@ Test shortcode for integration testing. Used for development purposes.
 
 == Changelog ==
 
+= 1.2.47 =
+* **Changes**
+* image dl fixes
+
 = 1.2.46 =
 * **Changes**
 * fixed js for image download
@@ -368,7 +372,7 @@ Test shortcode for integration testing. Used for development purposes.
 
 == Upgrade Notice ==
 
-= 1.2.46 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.45 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.44 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.43 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.42 =
+= 1.2.47 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.46 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.45 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.44 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.43 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.42 =
 This update fixes a JavaScript error in the add seed form and improves JavaScript module loading.
 
 = 1.2.41 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.40 =
@@ -400,6 +404,7 @@ This update adds the ability to select different Gemini models, model testing, u
 
 = 1.0.0 =
 Initial release.
+
 
 
 
