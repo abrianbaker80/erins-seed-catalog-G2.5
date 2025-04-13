@@ -225,25 +225,11 @@ class ESC_Image_Uploader {
 
         // Check if the URL was successfully processed
         if (empty($image_url)) {
-            // If we couldn't process the URL, try to search for an image using the WordPress media API
-            if (!empty($_POST['seed_name'])) {
-                $seed_name = sanitize_text_field(wp_unslash($_POST['seed_name']));
-                $fallback_image = self::find_fallback_image($seed_name);
-
-                if (!empty($fallback_image)) {
-                    // Return the fallback image URL
-                    wp_send_json_success([
-                        'url' => $fallback_image['url'],
-                        'id' => $fallback_image['id'],
-                        'message' => __('Using a fallback image from the WordPress media library.', 'erins-seed-catalog'),
-                    ]);
-                    return;
-                }
-            }
-
-            // If we couldn't find a fallback image, return an error
+            // If we couldn't process the URL, return an error with instructions
             wp_send_json_error([
                 'message' => __('Could not process the image URL. The URL might point to a page rather than a direct image file.', 'erins-seed-catalog'),
+                'source_url' => isset($_POST['source_url']) ? esc_url_raw(wp_unslash($_POST['source_url'])) : '',
+                'needs_manual_download' => true
             ]);
         }
 
@@ -413,58 +399,7 @@ class ESC_Image_Uploader {
         return $url;
     }
 
-    /**
-     * Find a fallback image in the WordPress media library.
-     *
-     * @param string $seed_name The name of the seed to search for.
-     * @return array|null Array with 'url' and 'id' if found, null otherwise.
-     */
-    private static function find_fallback_image( $seed_name ) {
-        // Clean up the seed name for search
-        $search_terms = explode(' ', $seed_name);
-        $primary_term = $search_terms[0]; // Use the first word as the primary search term
 
-        // Search for images in the media library
-        $args = array(
-            'post_type' => 'attachment',
-            'post_status' => 'inherit',
-            'posts_per_page' => 1,
-            'post_mime_type' => 'image',
-            's' => $primary_term,
-        );
-
-        $query = new WP_Query( $args );
-
-        if ( $query->have_posts() ) {
-            $post = $query->posts[0];
-            $image_url = wp_get_attachment_url( $post->ID );
-
-            return array(
-                'url' => $image_url,
-                'id' => $post->ID,
-            );
-        }
-
-        // If no results with the primary term, try with 'plant' or 'flower' or 'vegetable'
-        $generic_terms = array('plant', 'flower', 'vegetable', 'fruit', 'herb');
-
-        foreach ( $generic_terms as $term ) {
-            $args['s'] = $term;
-            $query = new WP_Query( $args );
-
-            if ( $query->have_posts() ) {
-                $post = $query->posts[0];
-                $image_url = wp_get_attachment_url( $post->ID );
-
-                return array(
-                    'url' => $image_url,
-                    'id' => $post->ID,
-                );
-            }
-        }
-
-        return null;
-    }
 
     /**
      * Get error message for upload error code.

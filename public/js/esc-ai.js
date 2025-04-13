@@ -230,8 +230,8 @@ ESC.AI = (function($) {
                 $('.esc-image-preview').attr('src', results.image_url).show();
             }
 
-            // Automatically download the image
-            _downloadImageFromUrl(results.image_url);
+            // Automatically download the image with source URL
+            _downloadImageFromUrl(results.image_url, results.image_source_url || results.image_url);
         }
 
         // Plant characteristics
@@ -555,7 +555,7 @@ ESC.AI = (function($) {
 
                     // Automatically download the image if available
                     if (data[field]) {
-                        _downloadImageFromUrl(data[field]);
+                        _downloadImageFromUrl(data[field], data.image_source_url || data[field]);
                     }
                 }
                 else if (field === 'sunlight' || field === 'sun_requirements') {
@@ -622,12 +622,18 @@ ESC.AI = (function($) {
     }
 
     // Function to download image from URL and update the form
-    function _downloadImageFromUrl(imageUrl) {
+    function _downloadImageFromUrl(imageUrl, sourceUrl) {
+        if (!imageUrl) {
+            ESC.error('No image URL provided');
+            return;
+        }
+
         ESC.log('Attempting to download image from URL:', imageUrl);
 
         // Validate URL
-        if (!imageUrl || !_isValidUrl(imageUrl)) {
+        if (!_isValidUrl(imageUrl)) {
             ESC.error('Invalid image URL:', imageUrl);
+            _showManualDownloadInstructions(sourceUrl);
             return;
         }
 
@@ -649,10 +655,9 @@ ESC.AI = (function($) {
         formData.append('nonce', ESC.getConfig().nonce);
         formData.append('image_url', imageUrl);
 
-        // Add seed name for fallback image search if available
-        const seedName = $('#esc_seed_name').val() || $('#esc_seed_name_review').val() || $('#esc_seed_name_hidden').val();
-        if (seedName) {
-            formData.append('seed_name', seedName);
+        // Add source URL if available
+        if (sourceUrl) {
+            formData.append('source_url', sourceUrl);
         }
 
         // Send AJAX request to download the image
@@ -694,7 +699,13 @@ ESC.AI = (function($) {
                     _showImageMessage(successMessage, 'success');
                 } else {
                     ESC.error('Error downloading image:', response.data?.message);
-                    _showImageMessage(response.data?.message || 'Error downloading image', 'error');
+
+                    // Check if we need to show manual download instructions
+                    if (response.data?.needs_manual_download) {
+                        _showManualDownloadInstructions(response.data?.source_url);
+                    } else {
+                        _showImageMessage(response.data?.message || 'Error downloading image', 'error');
+                    }
                 }
             },
             error: function(_, status, error) {
@@ -714,7 +725,7 @@ ESC.AI = (function($) {
         const $error = $('.esc-upload-error');
         if ($error.length) {
             $error.text(message);
-            $error.removeClass('esc-success esc-error').addClass('esc-' + type);
+            $error.removeClass('esc-success esc-error esc-manual-download').addClass('esc-' + type);
             $error.show();
 
             // Hide the message after 5 seconds
@@ -722,6 +733,37 @@ ESC.AI = (function($) {
                 $error.fadeOut();
             }, 5000);
         }
+    }
+
+    // Function to show manual download instructions
+    function _showManualDownloadInstructions(sourceUrl) {
+        // Create the manual download UI
+        const $container = $('.esc-upload-error');
+        if (!$container.length) return;
+
+        // Clear any existing content
+        $container.removeClass('esc-error esc-success').addClass('esc-manual-download');
+
+        let html = '<div class="esc-manual-download-instructions">';
+        html += '<h4>Manual Image Download Required</h4>';
+        html += '<p>The image could not be downloaded automatically. Please follow these steps:</p>';
+        html += '<ol>';
+        html += '<li>Click the button below to open the source page</li>';
+        html += '<li>Right-click on the image and select "Save Image As..."</li>';
+        html += '<li>Save the image to your computer</li>';
+        html += '<li>Click the "Upload Image" button below and select the saved image</li>';
+        html += '</ol>';
+
+        // Add source URL button if available
+        if (sourceUrl) {
+            html += '<div class="esc-button-group">';
+            html += '<a href="' + sourceUrl + '" target="_blank" class="esc-button esc-button-primary">Open Source Page</a>';
+            html += '</div>';
+        }
+
+        html += '</div>';
+
+        $container.html(html).show();
     }
 
     // Function to validate URL
