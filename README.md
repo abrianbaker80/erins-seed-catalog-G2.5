@@ -4,11 +4,15 @@ A WordPress plugin designed to help gardeners catalog and track their vegetable 
 
 ## Version History
 
-## Version 1.2.54 - 2025-04-13 18:30:01
+## Version 1.2.55 - 2025-04-13 18:40:20
 
 ### Changes
-- image viewer
+- image fixes
 
+
+## Version 1.2.54 - 2025-04-13 18:30:01
+
+#
 
 ## Version 1.2.53 - 2025-04-13 18:23:06
 

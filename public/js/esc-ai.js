@@ -625,12 +625,16 @@ ESC.AI = (function($) {
 
     // Function to show manual download instructions
     function _showManualDownloadInstructions(sourceUrl) {
-        // Create the manual download UI
-        const $container = $('.esc-upload-error');
-        if (!$container.length) return;
+        // Create a container for the manual download UI if it doesn't exist
+        let $container = $('.esc-manual-download-container');
+        if (!$container.length) {
+            // Create a new container after the image preview
+            $container = $('<div class="esc-manual-download-container"></div>');
+            $('.esc-image-preview').after($container);
+        }
 
         // Clear any existing content
-        $container.removeClass('esc-error esc-success').addClass('esc-manual-download');
+        $container.empty();
 
         let html = '<div class="esc-manual-download-instructions">';
         html += '<h4>Manual Image Download Required</h4>';
@@ -660,7 +664,7 @@ ESC.AI = (function($) {
         html += '<div class="esc-upload-progress"><div class="esc-progress-bar"></div></div>';
         html += '</div>';
 
-        $container.html(html).show();
+        $container.html(html).addClass('esc-manual-download').show();
 
         // Add click handler for the upload trigger button
         $('.esc-upload-trigger').on('click', function() {
@@ -726,6 +730,9 @@ ESC.AI = (function($) {
 
                                 // Update the dropzone to show it has an image
                                 $('.esc-dropzone').addClass('has-image');
+
+                                // Hide the manual download container
+                                $('.esc-manual-download-container').hide();
 
                                 // Show success message
                                 _showImageMessage('Image uploaded successfully and linked to this seed.', 'success');

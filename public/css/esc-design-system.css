@@ -324,6 +324,11 @@
 }
 
 /* Manual Download Instructions */
+.esc-manual-download-container {
+  margin-top: var(--esc-space-4);
+  margin-bottom: var(--esc-space-4);
+}
+
 .esc-manual-download {
   color: var(--esc-color-primary-700);
   background-color: var(--esc-color-primary-100);
