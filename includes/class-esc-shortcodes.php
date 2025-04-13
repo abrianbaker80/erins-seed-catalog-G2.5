@@ -35,6 +35,9 @@ class ESC_Shortcodes {
 
 		// Add a test shortcode for the enhanced view
 		add_shortcode( 'erins_seed_catalog_test_enhanced_view', [ __CLASS__, 'render_test_enhanced_view' ] );
+
+		// Add a fixed shortcode for the enhanced view
+		add_shortcode( 'esc_fixed_enhanced_view', [ __CLASS__, 'render_fixed_enhanced_view' ] );
 	}
 
 	/**
@@ -402,6 +405,104 @@ class ESC_Shortcodes {
 		// Include the test enhanced view template
 		ob_start();
 		include ESC_PLUGIN_DIR . 'public/views/test-enhanced-view.php';
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render the [esc_fixed_enhanced_view] shortcode.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string HTML output for the fixed enhanced view.
+	 */
+	public static function render_fixed_enhanced_view( $atts = [] ) {
+		// Parse shortcode attributes
+		$atts = shortcode_atts( [
+			'per_page' => 12,
+			'category' => '',
+		], $atts, 'esc_fixed_enhanced_view' );
+
+		// Enqueue public styles first as a dependency
+		wp_enqueue_style(
+			'esc-public-styles',
+			ESC_PLUGIN_URL . 'public/css/esc-public-styles.css',
+			[],
+			ESC_VERSION
+		);
+
+		// Enqueue enhanced card scripts and styles
+		wp_enqueue_script(
+			'esc-enhanced-cards-scripts',
+			ESC_PLUGIN_URL . 'public/js/esc-enhanced-cards.js',
+			['jquery'],
+			ESC_VERSION,
+			true
+		);
+
+		// Localize script with AJAX data
+		wp_localize_script(
+			'esc-enhanced-cards-scripts',
+			'esc_ajax_object',
+			[
+				'ajax_url' => admin_url('admin-ajax.php'),
+				'nonce' => wp_create_nonce('esc_ajax_nonce'),
+				'loading_text' => __('Loading...', 'erins-seed-catalog'),
+				'error_text' => __('An error occurred.', 'erins-seed-catalog'),
+			]
+		);
+
+		// Enqueue enhanced cards styles with cache-busting
+		wp_enqueue_style(
+			'esc-enhanced-cards-styles',
+			ESC_PLUGIN_URL . 'public/css/esc-enhanced-cards.css',
+			['esc-public-styles'],
+			ESC_VERSION . '.' . time() // Add cache-busting
+		);
+
+		// Enqueue dashicons if not already loaded
+		wp_enqueue_style('dashicons');
+
+		// Get seeds from the database
+		$paged = get_query_var('paged') ? absint(get_query_var('paged')) : 1;
+		$per_page = absint($atts['per_page']);
+		$initial_category_id = 0;
+
+		if (!empty($atts['category'])) {
+			$term = get_term_by('slug', $atts['category'], ESC_Taxonomy::TAXONOMY_NAME) ?: get_term_by('id', $atts['category'], ESC_Taxonomy::TAXONOMY_NAME);
+			if ($term && !is_wp_error($term)) {
+				$initial_category_id = $term->term_id;
+			}
+		}
+
+		// Initial query args
+		$args = [
+			'limit'    => $per_page,
+			'offset'   => ($paged - 1) * $per_page,
+			'category' => $initial_category_id, // Pass term_id
+		];
+
+		$seeds = ESC_DB::get_seeds($args);
+		$total_seeds = ESC_DB::count_seeds(['category' => $initial_category_id]); // Count matching initial filter
+		$total_pages = ceil($total_seeds / $per_page);
+
+		// Debug output
+		$debug_output = '';
+		$debug_output .= '<div class="esc-debug" style="background: #f8f8f8; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd;">';
+		$debug_output .= '<h3>Debug Information</h3>';
+		$debug_output .= '<p>Total Seeds: ' . $total_seeds . '</p>';
+		$debug_output .= '<p>Seeds Retrieved: ' . count($seeds) . '</p>';
+		$debug_output .= '<p>Page: ' . $paged . ' of ' . $total_pages . '</p>';
+		$debug_output .= '</div>';
+
+		// Start output buffer
+		ob_start();
+
+		// Output debug information
+		echo $debug_output;
+
+		// Include the enhanced seed catalog display template
+		include ESC_PLUGIN_DIR . 'public/views/enhanced-seed-catalog-display.php';
+
+		// Return the output
 		return ob_get_clean();
 	}
 }
