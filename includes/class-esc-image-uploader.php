@@ -220,8 +220,15 @@ class ESC_Image_Uploader {
             ] );
         }
 
-        // Fix Wikimedia Commons thumbnail URLs
+        // Fix image URLs to get direct image files
         $image_url = self::fix_wikimedia_url($image_url);
+
+        // Check if the URL was successfully processed
+        if (empty($image_url)) {
+            wp_send_json_error([
+                'message' => __('Could not process the image URL. The URL might point to a page rather than a direct image file.', 'erins-seed-catalog'),
+            ]);
+        }
 
         // Get WordPress upload directory
         $upload_dir = wp_upload_dir();
@@ -301,10 +308,10 @@ class ESC_Image_Uploader {
     }
 
     /**
-     * Fix Wikimedia Commons URLs to use direct file URLs instead of thumbnails.
+     * Fix image URLs to ensure they point to direct image files.
      *
      * @param string $url The image URL to fix.
-     * @return string The fixed URL.
+     * @return string The fixed URL or empty string if the URL can't be fixed.
      */
     private static function fix_wikimedia_url( $url ) {
         // Check if this is a Wikimedia Commons URL
@@ -328,7 +335,64 @@ class ESC_Image_Uploader {
             }
         }
 
-        // Return the original URL if it's not a Wikimedia Commons URL or can't be fixed
+        // Handle Pixabay URLs
+        if ( strpos( $url, 'pixabay.com/photos/' ) !== false ) {
+            // We need to fetch the page and extract the actual image URL
+            $response = wp_remote_get( $url );
+            if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
+                $body = wp_remote_retrieve_body( $response );
+                // Look for the high-resolution image URL
+                if ( preg_match( '/<img[^>]*data-fullsize="([^"]+)"[^>]*>/i', $body, $matches ) ) {
+                    return $matches[1];
+                }
+                // Fallback to other image sources
+                if ( preg_match( '/<img[^>]*src="([^"]+)"[^>]*class="[^"]*detail_image[^"]*"/i', $body, $matches ) ) {
+                    return $matches[1];
+                }
+            }
+            // If we can't extract the image, return empty to indicate failure
+            return '';
+        }
+
+        // Handle Unsplash URLs
+        if ( strpos( $url, 'unsplash.com/photos/' ) !== false ) {
+            // We need to fetch the page and extract the actual image URL
+            $response = wp_remote_get( $url );
+            if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
+                $body = wp_remote_retrieve_body( $response );
+                // Look for the high-resolution image URL
+                if ( preg_match( '/<img[^>]*src="([^"]+)"[^>]*data-test="photo-grid-single-col"/i', $body, $matches ) ) {
+                    return $matches[1];
+                }
+                // Fallback to meta property
+                if ( preg_match( '/<meta[^>]*property="og:image"[^>]*content="([^"]+)"[^>]*>/i', $body, $matches ) ) {
+                    return $matches[1];
+                }
+            }
+            // If we can't extract the image, return empty to indicate failure
+            return '';
+        }
+
+        // Handle Pexels URLs
+        if ( strpos( $url, 'pexels.com/photo/' ) !== false ) {
+            // We need to fetch the page and extract the actual image URL
+            $response = wp_remote_get( $url );
+            if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
+                $body = wp_remote_retrieve_body( $response );
+                // Look for the high-resolution image URL
+                if ( preg_match( '/<meta[^>]*property="og:image"[^>]*content="([^"]+)"[^>]*>/i', $body, $matches ) ) {
+                    return $matches[1];
+                }
+                // Fallback to other image sources
+                if ( preg_match( '/<img[^>]*src="([^"]+)"[^>]*class="[^"]*photo-item__img[^"]*"/i', $body, $matches ) ) {
+                    return $matches[1];
+                }
+            }
+            // If we can't extract the image, return empty to indicate failure
+            return '';
+        }
+
+        // Return the original URL if it's not a URL we can fix
         return $url;
     }
 

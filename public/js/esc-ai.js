@@ -727,8 +727,21 @@ ESC.AI = (function($) {
         }
     }
 
-    // Function to fix Wikimedia Commons URLs
+    // Function to check if a URL is a direct image URL
+    function _isDirectImageUrl(url) {
+        // Check if the URL ends with a common image extension
+        const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
+        const lowerUrl = url.toLowerCase();
+        return imageExtensions.some(ext => lowerUrl.endsWith(ext));
+    }
+
+    // Function to fix image URLs
     function _fixWikimediaUrl(url) {
+        // If it's already a direct image URL, return it as is
+        if (_isDirectImageUrl(url)) {
+            return url;
+        }
+
         // Check if this is a Wikimedia Commons URL
         if (url.includes('upload.wikimedia.org')) {
             // Check if it's a thumbnail URL (contains /thumb/ in the path)
@@ -750,7 +763,10 @@ ESC.AI = (function($) {
             }
         }
 
-        // Return the original URL if it's not a Wikimedia Commons URL or can't be fixed
+        // For Pixabay, Unsplash, Pexels, etc., we'll rely on the server-side processing
+        // since we can't easily scrape the pages from JavaScript due to CORS restrictions
+
+        // Return the original URL if it's not a URL we can fix client-side
         return url;
     }
 
