@@ -4,7 +4,7 @@ Tags: seed catalog, garden, vegetables, gemini api, ai, mobile first
 Requires at least: 6.0
 Tested up to: 6.7.2
 Requires PHP: 8.2
-Stable tag: 1.2.36
+Stable tag: 1.2.38
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -189,6 +189,16 @@ Test shortcode for integration testing. Used for development purposes.
 
 == Changelog ==
 
+= 1.2.38 =
+* **Changes**
+* release
+
+= 1.2.37 =
+* **Changes**
+* Fixed enhanced seed catalog view to properly display modern card styling
+* Added cache-busting for enhanced card styles to ensure latest styles are loaded
+* Improved CSS class structure for better styling consistency
+
 = 1.2.36 =
 * **Changes**
 * test
@@ -326,6 +336,9 @@ Test shortcode for integration testing. Used for development purposes.
 
 == Upgrade Notice ==
 
+= 1.2.38 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.37 =
+This update fixes the enhanced seed catalog view to properly display modern card styling.
+
 = 1.2.36 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.35 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.34 =
 This update fixes an undefined constant issue in the model updater class.
 
@@ -349,6 +362,7 @@ This update adds the ability to select different Gemini models, model testing, u
 
 = 1.0.0 =
 Initial release.
+
 
 
 

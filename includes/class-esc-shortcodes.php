@@ -32,6 +32,9 @@ class ESC_Shortcodes {
 
 		// Add a test shortcode for integration testing
 		add_shortcode( 'erins_seed_catalog_test_integration', [ __CLASS__, 'render_test_integration' ] );
+
+		// Add a test shortcode for the enhanced view
+		add_shortcode( 'erins_seed_catalog_test_enhanced_view', [ __CLASS__, 'render_test_enhanced_view' ] );
 	}
 
 	/**
@@ -197,6 +200,14 @@ class ESC_Shortcodes {
 			'category' => '', // Allow filtering by category slug/ID initially
 		], $atts, 'erins_seed_catalog_enhanced_view' );
 
+		// Enqueue public styles first as a dependency
+		wp_enqueue_style(
+			'esc-public-styles',
+			ESC_PLUGIN_URL . 'public/css/esc-public-styles.css',
+			[],
+			ESC_VERSION
+		);
+
 		// Enqueue enhanced card scripts and styles
 		wp_enqueue_script(
 			'esc-enhanced-cards-scripts',
@@ -218,11 +229,12 @@ class ESC_Shortcodes {
 			]
 		);
 
+		// Enqueue enhanced cards styles with cache-busting
 		wp_enqueue_style(
 			'esc-enhanced-cards-styles',
 			ESC_PLUGIN_URL . 'public/css/esc-enhanced-cards.css',
 			['esc-public-styles'],
-			ESC_VERSION
+			ESC_VERSION . '.' . time() // Add cache-busting
 		);
 
 		// Enqueue dashicons if not already loaded
@@ -346,6 +358,50 @@ class ESC_Shortcodes {
 		// Include the test integration template
 		ob_start();
 		include ESC_PLUGIN_DIR . 'public/views/test-integration.php';
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render the [erins_seed_catalog_test_enhanced_view] shortcode.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string HTML output for the test enhanced view page.
+	 */
+	public static function render_test_enhanced_view( $atts = [] ) {
+		// Enqueue enhanced card scripts and styles
+		wp_enqueue_script(
+			'esc-enhanced-cards-scripts',
+			ESC_PLUGIN_URL . 'public/js/esc-enhanced-cards.js',
+			['jquery'],
+			ESC_VERSION,
+			true
+		);
+
+		// Localize script with AJAX data
+		wp_localize_script(
+			'esc-enhanced-cards-scripts',
+			'esc_ajax_object',
+			[
+				'ajax_url' => admin_url('admin-ajax.php'),
+				'nonce' => wp_create_nonce('esc_ajax_nonce'),
+				'loading_text' => __('Loading...', 'erins-seed-catalog'),
+				'error_text' => __('An error occurred.', 'erins-seed-catalog'),
+			]
+		);
+
+		wp_enqueue_style(
+			'esc-enhanced-cards-styles',
+			ESC_PLUGIN_URL . 'public/css/esc-enhanced-cards.css',
+			['esc-public-styles'],
+			ESC_VERSION
+		);
+
+		// Enqueue dashicons if not already loaded
+		wp_enqueue_style('dashicons');
+
+		// Include the test enhanced view template
+		ob_start();
+		include ESC_PLUGIN_DIR . 'public/views/test-enhanced-view.php';
 		return ob_get_clean();
 	}
 }

@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // AJAX will replace the content of #esc-catalog-results
 ?>
 
-<div id="esc-catalog-view-container" class="esc-container esc-enhanced-catalog">
+<div id="esc-catalog-view-container" class="esc-container esc-enhanced-catalog esc-modern-cards">
     <?php // Include search form here if desired, or use separate shortcode ?>
     <?php include( ESC_PLUGIN_DIR . 'public/views/seed-search-form.php' ); ?>
 
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<div id="esc-catalog-results">
 		<?php if ( ! empty( $seeds ) ) : ?>
-			<div class="esc-seed-list">
+			<div class="esc-seed-list esc-enhanced-grid">
 				<?php foreach ( $seeds as $seed ) : ?>
 					<?php include( ESC_PLUGIN_DIR . 'public/views/_enhanced-seed-card.php' ); // Use the enhanced card template ?>
 				<?php endforeach; ?>

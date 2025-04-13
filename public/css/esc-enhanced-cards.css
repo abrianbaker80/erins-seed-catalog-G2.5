@@ -3,7 +3,9 @@
  */
 
 /* Seed List Grid Layout */
-.esc-enhanced-catalog .esc-seed-list {
+.esc-enhanced-catalog .esc-seed-list,
+.esc-enhanced-catalog .esc-seed-list.esc-enhanced-grid,
+.esc-seed-grid.esc-enhanced-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 25px;
@@ -107,6 +109,7 @@
     text-overflow: ellipsis !important;
     display: -webkit-box !important;
     -webkit-line-clamp: 3 !important;
+    line-clamp: 3 !important;
     -webkit-box-orient: vertical !important;
 }
 

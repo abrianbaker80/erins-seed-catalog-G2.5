@@ -15,7 +15,7 @@ if (!empty($seed->date_added)) {
     $is_new = (time() - $added_date) < (7 * 24 * 60 * 60); // 7 days in seconds
 }
 ?>
-<div class="esc-seed-card" data-seed-id="<?php echo esc_attr( $seed->id ); ?>">
+<div class="esc-seed-card esc-enhanced-card" data-seed-id="<?php echo esc_attr( $seed->id ); ?>">
     <?php if ($is_new) : ?>
         <div class="esc-card-badge new"><?php esc_html_e('New', 'erins-seed-catalog'); ?></div>
     <?php endif; ?>
