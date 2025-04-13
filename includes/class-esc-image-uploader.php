@@ -17,7 +17,9 @@ class ESC_Image_Uploader {
         // Register AJAX handlers
         add_action( 'wp_ajax_esc_upload_image', [ __CLASS__, 'handle_image_upload' ] );
         add_action( 'wp_ajax_nopriv_esc_upload_image', [ __CLASS__, 'handle_unauthorized' ] );
-        
+        add_action( 'wp_ajax_esc_download_image', [ __CLASS__, 'handle_image_download' ] );
+        add_action( 'wp_ajax_nopriv_esc_download_image', [ __CLASS__, 'handle_unauthorized' ] );
+
         // Enqueue scripts and styles
         add_action( 'wp_enqueue_scripts', [ __CLASS__, 'enqueue_assets' ] );
         add_action( 'admin_enqueue_scripts', [ __CLASS__, 'enqueue_admin_assets' ] );
@@ -133,7 +135,7 @@ class ESC_Image_Uploader {
 
         // Get WordPress upload directory
         $upload_dir = wp_upload_dir();
-        
+
         // Check if upload directory is writable
         if ( $upload_dir['error'] ) {
             wp_send_json_error( [
@@ -143,7 +145,7 @@ class ESC_Image_Uploader {
 
         // Prepare file data
         $file = $_FILES['image'];
-        
+
         // Check for upload errors
         if ( $file['error'] !== UPLOAD_ERR_OK ) {
             $error_message = self::get_upload_error_message( $file['error'] );
@@ -164,19 +166,130 @@ class ESC_Image_Uploader {
         require_once( ABSPATH . 'wp-admin/includes/image.php' );
         require_once( ABSPATH . 'wp-admin/includes/file.php' );
         require_once( ABSPATH . 'wp-admin/includes/media.php' );
-        
+
         // Upload the file and get attachment ID
         $attachment_id = media_handle_upload( 'image', 0 );
-        
+
         if ( is_wp_error( $attachment_id ) ) {
             wp_send_json_error( [
                 'message' => $attachment_id->get_error_message(),
             ] );
         }
-        
+
         // Get the attachment URL
         $attachment_url = wp_get_attachment_url( $attachment_id );
-        
+
+        // Return success response
+        wp_send_json_success( [
+            'url' => $attachment_url,
+            'id' => $attachment_id,
+        ] );
+    }
+
+    /**
+     * Handle image download from URL via AJAX.
+     */
+    public static function handle_image_download() {
+        // Check nonce
+        if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'esc_ajax_nonce' ) ) {
+            wp_send_json_error( [
+                'message' => __( 'Security check failed.', 'erins-seed-catalog' ),
+            ] );
+        }
+
+        // Check if user can upload files
+        if ( ! current_user_can( 'upload_files' ) ) {
+            wp_send_json_error( [
+                'message' => __( 'You do not have permission to upload files.', 'erins-seed-catalog' ),
+            ] );
+        }
+
+        // Check if URL was provided
+        if ( empty( $_POST['image_url'] ) ) {
+            wp_send_json_error( [
+                'message' => __( 'No image URL was provided.', 'erins-seed-catalog' ),
+            ] );
+        }
+
+        $image_url = esc_url_raw( wp_unslash( $_POST['image_url'] ) );
+
+        // Validate URL
+        if ( ! filter_var( $image_url, FILTER_VALIDATE_URL ) ) {
+            wp_send_json_error( [
+                'message' => __( 'Invalid image URL.', 'erins-seed-catalog' ),
+            ] );
+        }
+
+        // Get WordPress upload directory
+        $upload_dir = wp_upload_dir();
+
+        // Check if upload directory is writable
+        if ( $upload_dir['error'] ) {
+            wp_send_json_error( [
+                'message' => $upload_dir['error'],
+            ] );
+        }
+
+        // Download the image
+        $temp_file = download_url( $image_url );
+
+        // Check for download errors
+        if ( is_wp_error( $temp_file ) ) {
+            wp_send_json_error( [
+                'message' => __( 'Error downloading image: ', 'erins-seed-catalog' ) . $temp_file->get_error_message(),
+            ] );
+        }
+
+        // Get file info
+        $file_info = wp_check_filetype( basename( $image_url ) );
+
+        // If file type couldn't be determined from URL, try to detect from file content
+        if ( empty( $file_info['ext'] ) || empty( $file_info['type'] ) ) {
+            $file_info = wp_check_filetype( $temp_file );
+
+            // If still empty, default to jpg
+            if ( empty( $file_info['ext'] ) || empty( $file_info['type'] ) ) {
+                $file_info = [
+                    'ext' => 'jpg',
+                    'type' => 'image/jpeg',
+                ];
+            }
+        }
+
+        // Prepare file array for media_handle_sideload
+        $file = [
+            'name' => sanitize_file_name( basename( $image_url ) ),
+            'tmp_name' => $temp_file,
+            'error' => 0,
+            'size' => filesize( $temp_file ),
+        ];
+
+        // If filename doesn't have extension, add it
+        if ( ! preg_match( '/\.' . $file_info['ext'] . '$/i', $file['name'] ) ) {
+            $file['name'] .= '.' . $file_info['ext'];
+        }
+
+        // Load required files for media handling
+        require_once( ABSPATH . 'wp-admin/includes/image.php' );
+        require_once( ABSPATH . 'wp-admin/includes/file.php' );
+        require_once( ABSPATH . 'wp-admin/includes/media.php' );
+
+        // Add image to media library
+        $attachment_id = media_handle_sideload( $file, 0 );
+
+        // Remove temporary file
+        @unlink( $temp_file );
+
+        // Check for errors
+        if ( is_wp_error( $attachment_id ) ) {
+            wp_send_json_error( [
+                'message' => __( 'Error adding image to media library: ', 'erins-seed-catalog' ) . $attachment_id->get_error_message(),
+            ] );
+        }
+
+        // Get the attachment URL
+        $attachment_url = wp_get_attachment_url( $attachment_id );
+
         // Return success response
         wp_send_json_success( [
             'url' => $attachment_url,
@@ -223,29 +336,35 @@ class ESC_Image_Uploader {
         if ( empty( $label ) ) {
             $label = __( 'Image', 'erins-seed-catalog' );
         }
-        
+
         ?>
         <div class="esc-image-uploader">
             <label for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_html( $label ); ?></label>
-            
+
             <div class="esc-dropzone <?php echo ! empty( $current_url ) ? 'has-image' : ''; ?>">
                 <input type="file" class="esc-file-input" accept="image/*" style="display: none;">
                 <input type="hidden" id="<?php echo esc_attr( $input_id ); ?>" name="<?php echo esc_attr( $input_name ); ?>" class="esc-url-input" value="<?php echo esc_attr( $current_url ); ?>">
-                
+
                 <div class="esc-dropzone-content">
                     <div class="esc-dropzone-icon dashicons dashicons-upload"></div>
                     <div class="esc-dropzone-text"><?php esc_html_e( 'Drag & drop an image here', 'erins-seed-catalog' ); ?></div>
                     <div class="esc-dropzone-subtext"><?php esc_html_e( 'or click to select a file', 'erins-seed-catalog' ); ?></div>
-                    
+
                     <?php if ( current_user_can( 'upload_files' ) ) : ?>
-                        <button type="button" class="esc-button esc-button-secondary esc-wp-media-btn">
-                            <span class="dashicons dashicons-admin-media"></span>
-                            <?php esc_html_e( 'Media Library', 'erins-seed-catalog' ); ?>
-                        </button>
+                        <div class="esc-button-group">
+                            <button type="button" class="esc-button esc-button-secondary esc-wp-media-btn">
+                                <span class="dashicons dashicons-admin-media"></span>
+                                <?php esc_html_e( 'Media Library', 'erins-seed-catalog' ); ?>
+                            </button>
+                            <button type="button" class="esc-button esc-button-secondary esc-download-image-btn">
+                                <span class="dashicons dashicons-download"></span>
+                                <?php esc_html_e( 'Download Image', 'erins-seed-catalog' ); ?>
+                            </button>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
-            
+
             <div class="esc-image-preview" <?php echo ! empty( $current_url ) ? 'style="display: block;"' : ''; ?>>
                 <img src="<?php echo esc_url( $current_url ); ?>" class="esc-preview-image" alt="<?php esc_attr_e( 'Image preview', 'erins-seed-catalog' ); ?>">
                 <div class="esc-preview-actions">
@@ -255,13 +374,13 @@ class ESC_Image_Uploader {
                     </a>
                 </div>
             </div>
-            
+
             <div class="esc-upload-progress">
                 <div class="esc-progress-bar"></div>
             </div>
-            
+
             <div class="esc-upload-error"></div>
-            
+
             <p class="description"><?php esc_html_e( 'Upload an image of the plant, fruit, or seeds. Recommended size: 800x600 pixels.', 'erins-seed-catalog' ); ?></p>
         </div>
         <?php

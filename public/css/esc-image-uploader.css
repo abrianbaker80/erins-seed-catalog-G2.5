@@ -96,12 +96,58 @@
   transition: width 0.3s ease;
 }
 
-/* Error Messages */
+/* Error and Success Messages */
 .esc-upload-error {
-  color: #e74c3c;
   margin-top: 10px;
   font-size: 13px;
   display: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.esc-error {
+  color: #e74c3c;
+  background-color: #fdecea;
+  border: 1px solid #f8d7da;
+}
+
+.esc-success {
+  color: #2a9d8f;
+  background-color: #e8f8f5;
+  border: 1px solid #d1f2eb;
+}
+
+/* Button Styles */
+.esc-button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.esc-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  border: 1px solid #ccc;
+}
+
+.esc-button-secondary {
+  background-color: #f8f8f8;
+  color: #555;
+}
+
+.esc-button-secondary:hover {
+  background-color: #eee;
+}
+
+.esc-button .dashicons {
+  margin-right: 5px;
 }
 
 /* Responsive Styles */
@@ -110,9 +156,14 @@
     padding: 20px;
     min-height: 120px;
   }
-  
+
   .esc-dropzone-icon {
     font-size: 28px;
+  }
+
+  .esc-button-group {
+    flex-direction: column;
+    width: 100%;
   }
 }
 

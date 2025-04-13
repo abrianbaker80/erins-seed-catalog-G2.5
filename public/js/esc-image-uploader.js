@@ -19,6 +19,7 @@
             const $progressBar = $container.find('.esc-progress-bar');
             const $error = $container.find('.esc-upload-error');
             const $wpMediaBtn = $container.find('.esc-wp-media-btn');
+            const $downloadBtn = $container.find('.esc-download-image-btn');
 
             // Initialize with existing image if URL is present
             if ($urlInput.val()) {
@@ -67,6 +68,13 @@
                 e.preventDefault();
                 e.stopPropagation();
                 openMediaLibrary();
+            });
+
+            // Handle download image button
+            $downloadBtn.on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                downloadImage();
             });
 
             // Handle remove button
@@ -121,11 +129,11 @@
                     },
                     success: function(response) {
                         $progress.hide();
-                        
+
                         if (response.success) {
                             // Set the URL in the input field
                             $urlInput.val(response.data.url);
-                            
+
                             // Show image preview
                             showImagePreview(response.data.url);
                         } else {
@@ -163,10 +171,10 @@
                 window.esc_media_frame.on('select', function() {
                     // Get media attachment details
                     const attachment = window.esc_media_frame.state().get('selection').first().toJSON();
-                    
+
                     // Set the URL in the input field
                     $urlInput.val(attachment.url);
-                    
+
                     // Show image preview
                     showImagePreview(attachment.url);
                 });
@@ -198,6 +206,83 @@
             // Function to hide error message
             function hideError() {
                 $error.hide();
+            }
+
+            // Function to download image from URL
+            function downloadImage() {
+                // Get the URL from the input field
+                const imageUrl = $urlInput.val().trim();
+
+                // Check if URL is provided
+                if (!imageUrl) {
+                    showError('Please enter an image URL to download.');
+                    return;
+                }
+
+                // Validate URL format
+                if (!isValidUrl(imageUrl)) {
+                    showError('Please enter a valid URL.');
+                    return;
+                }
+
+                // Reset error message
+                hideError();
+
+                // Show upload progress
+                $progress.show();
+                $progressBar.css('width', '0%');
+
+                // Create FormData for AJAX request
+                const formData = new FormData();
+                formData.append('action', 'esc_download_image');
+                formData.append('nonce', esc_ajax_object.nonce);
+                formData.append('image_url', imageUrl);
+
+                // Send AJAX request
+                $.ajax({
+                    url: esc_ajax_object.ajax_url,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    xhr: function() {
+                        const xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener('progress', function(e) {
+                            if (e.lengthComputable) {
+                                const percent = (e.loaded / e.total) * 100;
+                                $progressBar.css('width', percent + '%');
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    success: function(response) {
+                        $progress.hide();
+
+                        if (response.success) {
+                            // Set the URL in the input field
+                            $urlInput.val(response.data.url);
+
+                            // Show image preview
+                            showImagePreview(response.data.url);
+                        } else {
+                            showError(response.data.message || 'Error downloading image.');
+                        }
+                    },
+                    error: function() {
+                        $progress.hide();
+                        showError('Error downloading image. Please try again.');
+                    }
+                });
+            }
+
+            // Function to validate URL
+            function isValidUrl(url) {
+                try {
+                    new URL(url);
+                    return true;
+                } catch (e) {
+                    return false;
+                }
             }
         });
     }

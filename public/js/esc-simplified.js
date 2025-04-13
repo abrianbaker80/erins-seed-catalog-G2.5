@@ -1054,13 +1054,22 @@
                 // Special handling for image_url
                 if (key === 'image_url' && value) {
                     console.log('Setting image URL:', value);
+
+                    // First, set the URL in the input field
                     $('#esc_image_url').val(value);
+
                     // Show the image preview
                     $('.esc-image-preview').show();
                     $('.esc-preview-image').attr('src', value);
                     $('.esc-dropzone').addClass('has-image');
                     $('.esc-form-field:has(#esc_image_url)').addClass('esc-ai-populated');
+
+                    // Add to changes list
                     addToChangesList('image', 'Image URL');
+
+                    // Automatically download the image
+                    downloadImageFromUrl(value);
+
                     continue;
                 }
 
@@ -1182,6 +1191,106 @@
 
         // Update AI status badges
         updateAIStatusBadges();
+    }
+
+    // Function to download image from URL and update the form
+    function downloadImageFromUrl(imageUrl) {
+        console.log('Attempting to download image from URL:', imageUrl);
+
+        // Validate URL
+        if (!imageUrl || !isValidUrl(imageUrl)) {
+            console.error('Invalid image URL:', imageUrl);
+            return;
+        }
+
+        // Show progress indicator
+        const $progress = $('.esc-upload-progress');
+        const $progressBar = $('.esc-progress-bar');
+        if ($progress.length && $progressBar.length) {
+            $progress.show();
+            $progressBar.css('width', '0%');
+        }
+
+        // Create FormData for AJAX request
+        const formData = new FormData();
+        formData.append('action', 'esc_download_image');
+        formData.append('nonce', esc_ajax_object.nonce);
+        formData.append('image_url', imageUrl);
+
+        // Send AJAX request to download the image
+        $.ajax({
+            url: esc_ajax_object.ajax_url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            xhr: function() {
+                const xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener('progress', function(e) {
+                    if (e.lengthComputable && $progressBar.length) {
+                        const percent = (e.loaded / e.total) * 100;
+                        $progressBar.css('width', percent + '%');
+                    }
+                }, false);
+                return xhr;
+            },
+            success: function(response) {
+                // Hide progress indicator
+                if ($progress.length) {
+                    $progress.hide();
+                }
+
+                if (response.success) {
+                    console.log('Image downloaded successfully:', response.data.url);
+
+                    // Update the image URL in the form
+                    $('#esc_image_url').val(response.data.url);
+
+                    // Update the image preview
+                    $('.esc-preview-image').attr('src', response.data.url);
+
+                    // Show success message
+                    showImageMessage('Image downloaded and saved to media library', 'success');
+                } else {
+                    console.error('Error downloading image:', response.data?.message);
+                    showImageMessage(response.data?.message || 'Error downloading image', 'error');
+                }
+            },
+            error: function(xhr, status, error) {
+                // Hide progress indicator
+                if ($progress.length) {
+                    $progress.hide();
+                }
+
+                console.error('AJAX error downloading image:', status, error);
+                showImageMessage('Error downloading image. Please try again.', 'error');
+            }
+        });
+    }
+
+    // Function to show image message
+    function showImageMessage(message, type) {
+        const $error = $('.esc-upload-error');
+        if ($error.length) {
+            $error.text(message);
+            $error.removeClass('esc-success esc-error').addClass('esc-' + type);
+            $error.show();
+
+            // Hide the message after 5 seconds
+            setTimeout(function() {
+                $error.fadeOut();
+            }, 5000);
+        }
+    }
+
+    // Function to validate URL
+    function isValidUrl(url) {
+        try {
+            new URL(url);
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
 
     // Add to changes list
