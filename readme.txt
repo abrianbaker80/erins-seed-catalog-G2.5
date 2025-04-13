@@ -4,7 +4,7 @@ Tags: seed catalog, garden, vegetables, gemini api, ai, mobile first
 Requires at least: 6.0
 Tested up to: 6.7.2
 Requires PHP: 8.2
-Stable tag: 1.2.41
+Stable tag: 1.2.43
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -189,6 +189,16 @@ Test shortcode for integration testing. Used for development purposes.
 
 == Changelog ==
 
+= 1.2.43 =
+* **Changes**
+* release
+
+= 1.2.42 =
+* **Changes**
+* Fixed JavaScript error in the add seed form: "ESC namespace is not defined"
+* Properly attached ESC namespace to the window object in esc-core.js
+* Improved JavaScript module loading and initialization
+
 = 1.2.41 =
 * **Changes**
 * release
@@ -346,6 +356,9 @@ Test shortcode for integration testing. Used for development purposes.
 
 == Upgrade Notice ==
 
+= 1.2.43 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.42 =
+This update fixes a JavaScript error in the add seed form and improves JavaScript module loading.
+
 = 1.2.41 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.40 =
 This update fixes a critical issue with the enhanced seed catalog view shortcode not displaying properly.
 
@@ -375,6 +388,7 @@ This update adds the ability to select different Gemini models, model testing, u
 
 = 1.0.0 =
 Initial release.
+
 
 
 

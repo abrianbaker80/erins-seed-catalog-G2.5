@@ -6,7 +6,7 @@
  */
 
 // Create a self-executing anonymous function to encapsulate our code
-const ESC = (function($) {
+window.ESC = (function($) {
     'use strict';
 
     // Private variables
