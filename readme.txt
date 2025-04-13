@@ -191,6 +191,10 @@ Test shortcode for integration testing. Used for development purposes.
 
 = 1.2.20 =
 * **Changes**
+* Fixed plugin update checker by including vendor files in the repository
+
+= 1.2.20 =
+* **Changes**
 * parse issues
 
 = 1.2.19 =
@@ -253,7 +257,7 @@ Test shortcode for integration testing. Used for development purposes.
 
 == Upgrade Notice ==
 
-= 1.2.20 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.19 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.18 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.17 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.16 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.15 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.14 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.16 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.15 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.1.6 =
+= 1.2.20 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.20 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.19 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.18 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.17 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.16 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.15 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.14 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.16 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.2.15 =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n= 1.1.6 =
 This update fixes plugin update detection and adds an improved add seed form with modern UI and AI-powered variety suggestions.
 
 = 1.1.5 =
@@ -264,6 +268,7 @@ This update adds the ability to select different Gemini models, model testing, u
 
 = 1.0.0 =
 Initial release.
+
 
 
 
