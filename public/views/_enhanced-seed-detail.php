@@ -11,9 +11,14 @@ if ( ! isset( $seed ) || ! is_object( $seed ) ) {
 <div class="esc-seed-detail">
     <div class="esc-seed-detail-header">
         <div class="esc-seed-detail-banner">
-            <?php if ( ! empty( $seed->image_url ) ) : ?>
-                <img src="<?php echo esc_url( $seed->image_url ); ?>"
-                     alt="<?php echo esc_attr( $seed->seed_name ); ?><?php echo $seed->variety_name ? ' - ' . esc_attr( $seed->variety_name ) : ''; ?>"
+            <?php
+            // Ensure image URL is properly formatted - don't validate with filter_var
+            $has_image = !empty($seed->image_url);
+            $image_url = $has_image ? esc_url($seed->image_url) : '';
+            ?>
+            <?php if ($has_image) : ?>
+                <img src="<?php echo $image_url; ?>"
+                     alt="<?php echo esc_attr($seed->seed_name); ?><?php echo $seed->variety_name ? ' - ' . esc_attr($seed->variety_name) : ''; ?>"
                      loading="lazy">
             <?php else : ?>
                 <div class="esc-no-image">

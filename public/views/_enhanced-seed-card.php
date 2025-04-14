@@ -27,8 +27,13 @@ if (!empty($seed->date_added)) {
     </div>
 
     <div class="esc-seed-image-container">
-        <?php if ( ! empty( $seed->image_url ) && filter_var( $seed->image_url, FILTER_VALIDATE_URL ) ) : ?>
-            <img src="<?php echo esc_url( $seed->image_url ); ?>" alt="<?php echo esc_attr( $seed->seed_name ); ?><?php echo $seed->variety_name ? ' - ' . esc_attr( $seed->variety_name ) : ''; ?>" class="esc-seed-image" loading="lazy">
+        <?php
+        // Ensure image URL is properly formatted - don't validate with filter_var
+        $has_image = !empty($seed->image_url);
+        $image_url = $has_image ? esc_url($seed->image_url) : '';
+        ?>
+        <?php if ($has_image) : ?>
+            <img src="<?php echo $image_url; ?>" alt="<?php echo esc_attr($seed->seed_name); ?><?php echo $seed->variety_name ? ' - ' . esc_attr($seed->variety_name) : ''; ?>" class="esc-seed-image" loading="lazy">
         <?php else : ?>
             <div class="esc-no-image">
                 <span class="dashicons dashicons-format-image"></span>
