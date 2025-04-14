@@ -34,17 +34,23 @@ if (!empty($seed->date_added)) {
 
         if ($has_image) {
             // Handle WordPress media library URLs
-            if (strpos($seed->image_url, '/wp-content/uploads/') !== false) {
-                // This is a WordPress media library URL - use as is
+            if (strpos($seed->image_url, '/wp-content/uploads/') !== false && strpos($seed->image_url, 'http') !== 0) {
+                // This is a WordPress media library URL without protocol/domain
+                // Add the local network URL
+                $image_url = 'http://192.168.1.128' . $seed->image_url;
+            }
+            // Handle URLs with the IP address already included
+            elseif (strpos($seed->image_url, '192.168.1.128') !== false) {
+                // URL already has the correct IP address
                 $image_url = $seed->image_url;
             }
             // Make sure URL has a protocol
             elseif (strpos($seed->image_url, '//') === 0) {
                 // URL starts with // (protocol-relative)
-                $image_url = 'https:' . $seed->image_url;
+                $image_url = 'http:' . $seed->image_url;
             } elseif (strpos($seed->image_url, 'http') !== 0) {
                 // URL doesn't start with http or https
-                $image_url = 'https://' . ltrim($seed->image_url, '/');
+                $image_url = 'http://' . ltrim($seed->image_url, '/');
             } else {
                 // URL already has a protocol
                 $image_url = $seed->image_url;
