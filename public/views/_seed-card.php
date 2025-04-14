@@ -9,8 +9,44 @@ if ( ! isset( $seed ) || ! is_object( $seed ) ) {
 }
 ?>
 <div class="esc-seed-card" data-seed-id="<?php echo esc_attr( $seed->id ); ?>">
-    <?php if ( ! empty( $seed->image_url ) && filter_var( $seed->image_url, FILTER_VALIDATE_URL ) ) : ?>
-        <img src="<?php echo esc_url( $seed->image_url ); ?>" alt="<?php echo esc_attr( $seed->seed_name ); ?><?php echo $seed->variety_name ? ' - ' . esc_attr( $seed->variety_name ) : ''; ?>" class="esc-seed-image" loading="lazy">
+    <?php
+    // Fix for image URLs - ensure they're properly formatted for display
+    $has_image = !empty($seed->image_url);
+    $image_url = '';
+
+    if ($has_image) {
+        // Handle WordPress media library URLs
+        if (strpos($seed->image_url, '/wp-content/uploads/') !== false) {
+            // This is a WordPress media library URL - use as is
+            $image_url = $seed->image_url;
+        }
+        // Make sure URL has a protocol
+        elseif (strpos($seed->image_url, '//') === 0) {
+            // URL starts with // (protocol-relative)
+            $image_url = 'https:' . $seed->image_url;
+        } elseif (strpos($seed->image_url, 'http') !== 0) {
+            // URL doesn't start with http or https
+            $image_url = 'https://' . ltrim($seed->image_url, '/');
+        } else {
+            // URL already has a protocol
+            $image_url = $seed->image_url;
+        }
+
+        // Ensure URL is properly escaped for output
+        $image_url = esc_url($image_url);
+    }
+
+    // Debug information
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+        echo '<!-- Debug: Seed ID: ' . esc_html($seed->id) . ' | Original URL: ' . esc_html($seed->image_url) . ' | Fixed URL: ' . $image_url . ' -->';
+    }
+    ?>
+    <?php if ($has_image && !empty($image_url)) : ?>
+        <img src="<?php echo $image_url; ?>" alt="<?php echo esc_attr($seed->seed_name); ?><?php echo $seed->variety_name ? ' - ' . esc_attr($seed->variety_name) : ''; ?>" class="esc-seed-image" loading="lazy" onerror="this.parentNode.classList.add('esc-image-error'); console.error('Image failed to load: ' + this.src);">
+    <?php else : ?>
+        <div class="esc-no-image">
+            <span class="dashicons dashicons-format-image"></span>
+        </div>
     <?php endif; ?>
 
     <h3>

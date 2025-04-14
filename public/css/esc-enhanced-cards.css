@@ -68,6 +68,7 @@
 .esc-enhanced-catalog .esc-image-error {
     position: relative !important;
     border: 2px solid #e53e3e !important;
+    background-color: #fff8f8 !important;
 }
 
 .esc-enhanced-catalog .esc-image-error::after {
@@ -81,6 +82,11 @@
     font-size: 12px !important;
     padding: 4px 8px !important;
     text-align: center !important;
+}
+
+/* Image Loaded State */
+.esc-enhanced-catalog .esc-image-loaded {
+    border: 2px solid #48bb78 !important;
 }
 
 .esc-enhanced-catalog .esc-no-image {

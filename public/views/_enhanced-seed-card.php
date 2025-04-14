@@ -33,8 +33,13 @@ if (!empty($seed->date_added)) {
         $image_url = '';
 
         if ($has_image) {
+            // Handle WordPress media library URLs
+            if (strpos($seed->image_url, '/wp-content/uploads/') !== false) {
+                // This is a WordPress media library URL - use as is
+                $image_url = $seed->image_url;
+            }
             // Make sure URL has a protocol
-            if (strpos($seed->image_url, '//') === 0) {
+            elseif (strpos($seed->image_url, '//') === 0) {
                 // URL starts with // (protocol-relative)
                 $image_url = 'https:' . $seed->image_url;
             } elseif (strpos($seed->image_url, 'http') !== 0) {
@@ -55,7 +60,7 @@ if (!empty($seed->date_added)) {
         }
         ?>
         <?php if ($has_image && !empty($image_url)) : ?>
-            <img src="<?php echo $image_url; ?>" alt="<?php echo esc_attr($seed->seed_name); ?><?php echo $seed->variety_name ? ' - ' . esc_attr($seed->variety_name) : ''; ?>" class="esc-seed-image" loading="lazy" onerror="this.parentNode.classList.add('esc-image-error');">
+            <img src="<?php echo $image_url; ?>" alt="<?php echo esc_attr($seed->seed_name); ?><?php echo $seed->variety_name ? ' - ' . esc_attr($seed->variety_name) : ''; ?>" class="esc-seed-image" loading="lazy" onerror="this.parentNode.classList.add('esc-image-error'); console.error('Image failed to load: ' + this.src);">
         <?php else : ?>
             <div class="esc-no-image">
                 <span class="dashicons dashicons-format-image"></span>
