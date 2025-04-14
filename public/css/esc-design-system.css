@@ -331,6 +331,10 @@
   padding: var(--esc-space-4);
   margin-bottom: var(--esc-space-4);
   border-radius: var(--esc-radius-lg);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: var(--esc-shadow-md);
 }
 
 .esc-manual-download-instructions h4 {
@@ -356,6 +360,16 @@
 .esc-manual-download-instructions li {
   margin-bottom: var(--esc-space-3);
   padding-left: var(--esc-space-2);
+  position: relative;
+}
+
+.esc-manual-download-instructions li:nth-child(3),
+.esc-manual-download-instructions li:nth-child(4) {
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: var(--esc-space-2);
+  border-left: 3px solid var(--esc-color-primary-500);
+  border-radius: var(--esc-radius-sm);
+  margin-left: calc(-1 * var(--esc-space-2));
 }
 
 .esc-manual-download-instructions strong {

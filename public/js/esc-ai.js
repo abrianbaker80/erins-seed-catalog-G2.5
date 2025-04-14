@@ -639,11 +639,13 @@ ESC.AI = (function($) {
         $container.removeClass('esc-error esc-success').addClass('esc-manual-download');
 
         let html = '<div class="esc-manual-download-instructions">';
-        html += '<h4>Manual Image Download Required</h4>';
-        html += '<p>The image could not be downloaded automatically. Please follow these steps:</p>';
+        html += '<h4>Image Download Instructions</h4>';
+        html += '<p>Please follow these steps to download and add an image:</p>';
         html += '<ol>';
         html += '<li><strong>Click the "Visit Image Source" button below</strong> to open the website where the image is located</li>';
-        html += '<li><strong>Find and right-click on the plant image</strong> and select "Save Image As..." (or "Save Picture As...")</li>';
+        html += '<li><strong>On the website (e.g., Pexels, Unsplash), find the download button</strong> or right-click on the image and select "Save Image As..."</li>';
+        html += '<li><strong>For Pexels:</strong> Click the "Free Download" button on the right side of the page</li>';
+        html += '<li><strong>For Unsplash:</strong> Click the download arrow icon at the bottom of the image</li>';
         html += '<li><strong>Save the image to your Downloads folder</strong> or another location you can easily find</li>';
         html += '<li><strong>Return to this page</strong> and click the "Upload Image" button below</li>';
         html += '<li><strong>Select the image file</strong> you just downloaded when the file browser opens</li>';
