@@ -338,6 +338,39 @@ class ESC_Image_Uploader {
             }
         }
 
+        // Handle Wikimedia Commons File pages
+        if ( strpos( $url, 'commons.wikimedia.org/wiki/File:' ) !== false ) {
+            // We need to fetch the page and extract the actual image URL
+            $response = wp_remote_get( $url, [
+                'timeout' => 15, // Increase timeout for potentially slow responses
+                'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36', // Use a standard user agent
+            ]);
+
+            if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
+                $body = wp_remote_retrieve_body( $response );
+
+                // Try to find the full-resolution image link
+                if ( preg_match( '/<div class="fullImageLink"[^>]*>\s*<a\s+href="([^"]+)"[^>]*>/i', $body, $matches ) ) {
+                    $image_url = $matches[1];
+                    if ( strpos( $image_url, '//' ) === 0 ) {
+                        $image_url = 'https:' . $image_url;
+                    }
+                    return $image_url;
+                }
+
+                // Fallback to the og:image meta tag
+                if ( preg_match( '/<meta[^>]*property="og:image"[^>]*content="([^"]+)"[^>]*>/i', $body, $matches ) ) {
+                    return $matches[1];
+                }
+            }
+
+            // Log the failure for debugging
+            error_log( 'Failed to extract image from Wikimedia Commons URL: ' . $url );
+
+            // If we can't extract the image, return empty to indicate failure
+            return '';
+        }
+
         // Handle Pixabay URLs
         if ( strpos( $url, 'pixabay.com/photos/' ) !== false ) {
             // We need to fetch the page and extract the actual image URL
@@ -379,18 +412,48 @@ class ESC_Image_Uploader {
         // Handle Pexels URLs
         if ( strpos( $url, 'pexels.com/photo/' ) !== false ) {
             // We need to fetch the page and extract the actual image URL
-            $response = wp_remote_get( $url );
+            $response = wp_remote_get( $url, [
+                'timeout' => 15, // Increase timeout for potentially slow responses
+                'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36', // Use a standard user agent
+            ]);
             if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
                 $body = wp_remote_retrieve_body( $response );
-                // Look for the high-resolution image URL
+
+                // First try to find the high-resolution download URL
+                if ( preg_match( '/"download":"([^"]+)"/i', $body, $matches ) ) {
+                    $download_url = str_replace('\\', '', $matches[1]);
+                    return $download_url;
+                }
+
+                // Then try the og:image meta tag
                 if ( preg_match( '/<meta[^>]*property="og:image"[^>]*content="([^"]+)"[^>]*>/i', $body, $matches ) ) {
                     return $matches[1];
                 }
+
+                // Try to find the main photo element
+                if ( preg_match( '/<img[^>]*data-big-src="([^"]+)"[^>]*>/i', $body, $matches ) ) {
+                    return $matches[1];
+                }
+
                 // Fallback to other image sources
                 if ( preg_match( '/<img[^>]*src="([^"]+)"[^>]*class="[^"]*photo-item__img[^"]*"/i', $body, $matches ) ) {
                     return $matches[1];
                 }
+
+                // Last resort - try to find any large image
+                if ( preg_match_all( '/<img[^>]*src="([^"]+)"[^>]*>/i', $body, $matches ) ) {
+                    foreach ( $matches[1] as $img_url ) {
+                        if ( strpos( $img_url, 'pexels.com' ) !== false &&
+                             (strpos( $img_url, 'w=1200' ) !== false || strpos( $img_url, 'h=1200' ) !== false) ) {
+                            return $img_url;
+                        }
+                    }
+                }
             }
+
+            // Log the failure for debugging
+            error_log( 'Failed to extract image from Pexels URL: ' . $url );
+
             // If we can't extract the image, return empty to indicate failure
             return '';
         }
