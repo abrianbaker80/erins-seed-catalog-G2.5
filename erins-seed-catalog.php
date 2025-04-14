@@ -3,7 +3,7 @@
  * Plugin Name:       Erin's Seed Catalog
  * Plugin URI:        https://github.com/abrianbaker80/erins-seed-catalog-G2.5.git
  * Description:       Catalog and track your vegetable garden seeds with AI-assisted information retrieval via the Gemini API. Mobile-first design.
- * Version:           1.2.62
+ * Version:           1.2.63
  * Requires at least: 6.0
  * Requires PHP:      8.2
  * Author:            Allen Baker
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define Constants
-define('ESC_VERSION', '1.2.62');
+define('ESC_VERSION', '1.2.63');
 define( 'ESC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ESC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'ESC_PLUGIN_FILE', __FILE__ );
@@ -69,6 +69,7 @@ require_once ESC_PLUGIN_DIR . 'includes/class-esc-github-updater.php';
 
 require_once ESC_PLUGIN_DIR . 'includes/class-esc-variety-suggestions.php';
 require_once ESC_PLUGIN_DIR . 'includes/class-esc-image-uploader.php';
+require_once ESC_PLUGIN_DIR . 'includes/class-esc-image-checker.php';
 
 /**
  * Activation Hook: Create database table, register taxonomy, add default terms, flush rewrite rules.
@@ -126,6 +127,7 @@ function esc_init_plugin() {
     ESC_Ajax::init();
     ESC_Functions::init(); // For enqueueing
     ESC_Model_Updater::init(); // For model updates
+    ESC_Image_Checker::init(); // For image checking
 
     // Initialize the GitHub updater
     new ESC_GitHub_Updater(
@@ -158,6 +160,7 @@ function esc_uninstall_plugin() {
     flush_rewrite_rules();
 }
 // register_uninstall_hook( ESC_PLUGIN_FILE, 'esc_uninstall_plugin' ); // Uncomment to enable uninstall cleanup
+
 
 
 
