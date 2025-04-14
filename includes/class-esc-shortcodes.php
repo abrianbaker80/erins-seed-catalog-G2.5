@@ -243,6 +243,17 @@ class ESC_Shortcodes {
 		// Enqueue dashicons if not already loaded
 		wp_enqueue_style('dashicons');
 
+		// Enqueue debug script in development environments
+		if (defined('WP_DEBUG') && WP_DEBUG) {
+			wp_enqueue_script(
+				'esc-debug-script',
+				ESC_PLUGIN_URL . 'public/js/esc-debug.js',
+				['jquery', 'esc-enhanced-cards-scripts'],
+				ESC_VERSION . '.' . time(),
+				true
+			);
+		}
+
 		$paged = get_query_var('paged') ? absint(get_query_var('paged')) : 1;
 		$per_page = absint($atts['per_page']);
 		$initial_category_id = 0;

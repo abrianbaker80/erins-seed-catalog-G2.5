@@ -713,6 +713,8 @@ class ESC_DB {
             case 'bool':
                 return filter_var( $value, FILTER_VALIDATE_BOOLEAN );
             case 'url':
+                // Don't validate URLs with filter_var as it's too strict
+                // Just make sure it's properly sanitized
                 return esc_url_raw( $value );
             case 'date':
                  // Basic validation - check if it looks like a date YYYY-MM-DD

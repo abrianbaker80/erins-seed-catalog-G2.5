@@ -12,14 +12,37 @@ if ( ! isset( $seed ) || ! is_object( $seed ) ) {
     <div class="esc-seed-detail-header">
         <div class="esc-seed-detail-banner">
             <?php
-            // Ensure image URL is properly formatted - don't validate with filter_var
+            // Fix for image URLs - ensure they're properly formatted for display
             $has_image = !empty($seed->image_url);
-            $image_url = $has_image ? esc_url($seed->image_url) : '';
+            $image_url = '';
+
+            if ($has_image) {
+                // Make sure URL has a protocol
+                if (strpos($seed->image_url, '//') === 0) {
+                    // URL starts with // (protocol-relative)
+                    $image_url = 'https:' . $seed->image_url;
+                } elseif (strpos($seed->image_url, 'http') !== 0) {
+                    // URL doesn't start with http or https
+                    $image_url = 'https://' . ltrim($seed->image_url, '/');
+                } else {
+                    // URL already has a protocol
+                    $image_url = $seed->image_url;
+                }
+
+                // Ensure URL is properly escaped for output
+                $image_url = esc_url($image_url);
+            }
+
+            // Debug information
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                echo '<!-- Debug: Seed ID: ' . esc_html($seed->id) . ' | Original URL: ' . esc_html($seed->image_url) . ' | Fixed URL: ' . $image_url . ' -->';
+            }
             ?>
-            <?php if ($has_image) : ?>
+            <?php if ($has_image && !empty($image_url)) : ?>
                 <img src="<?php echo $image_url; ?>"
                      alt="<?php echo esc_attr($seed->seed_name); ?><?php echo $seed->variety_name ? ' - ' . esc_attr($seed->variety_name) : ''; ?>"
-                     loading="lazy">
+                     loading="lazy"
+                     onerror="this.parentNode.classList.add('esc-image-error');">
             <?php else : ?>
                 <div class="esc-no-image">
                     <span class="dashicons dashicons-format-image"></span>
