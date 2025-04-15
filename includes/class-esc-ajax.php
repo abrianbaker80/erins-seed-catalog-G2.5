@@ -162,6 +162,21 @@ class ESC_Ajax {
             $seed_data['image_url'] = wp_unslash($_POST['image_url']);
         }
 
+        // Double-check for image URL in other fields
+        if (!isset($seed_data['image_url'])) {
+            error_log('ESC Add Seed - Still no image_url in seed data, checking other fields');
+            foreach ($_POST as $key => $value) {
+                if ((strpos($key, 'image') !== false || strpos($key, 'url') !== false) && !empty($value)) {
+                    error_log('ESC Add Seed - Found potential image URL in field: ' . $key . ' = ' . $value);
+                    if (filter_var($value, FILTER_VALIDATE_URL) || strpos($value, '/') !== false) {
+                        error_log('ESC Add Seed - Using field ' . $key . ' as image_url');
+                        $seed_data['image_url'] = wp_unslash($value);
+                        break;
+                    }
+                }
+            }
+        }
+
         // Log processed seed data
         error_log('ESC Add Seed - Processed Data: ' . print_r($seed_data, true));
 

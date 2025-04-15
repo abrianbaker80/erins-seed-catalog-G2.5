@@ -149,6 +149,18 @@ class ESC_DB {
             }
         } else {
             error_log('ESC DB - No image_url found in data');
+            // Check if there's any field that might contain the image URL
+            foreach ($data as $key => $value) {
+                if ((strpos($key, 'image') !== false || strpos($key, 'url') !== false) && !empty($value)) {
+                    error_log('ESC DB - Potential image URL field found: ' . $key . ' = ' . $value);
+                    // If we find a field that looks like it contains an image URL, use it
+                    if (!isset($data['image_url'])) {
+                        error_log('ESC DB - Using alternative field for image URL: ' . $key);
+                        $data['image_url'] = $value;
+                        break;
+                    }
+                }
+            }
         }
 
         foreach ($allowed_fields as $field => $type) {
@@ -752,8 +764,25 @@ class ESC_DB {
                 // Just make sure it's properly sanitized
                 if ($value) {
                     error_log('ESC DB - Sanitizing URL field: ' . $value);
+
+                    // First try standard sanitization
                     $sanitized = esc_url_raw( $value );
                     error_log('ESC DB - Sanitized URL result: ' . $sanitized);
+
+                    // If sanitization removed the URL, use a more lenient approach
+                    if (empty($sanitized) || $sanitized !== $value) {
+                        error_log('ESC DB - Standard sanitization changed or removed the URL, using more lenient approach');
+                        // Just do basic sanitization to remove potentially harmful characters
+                        $sanitized = filter_var($value, FILTER_SANITIZE_URL);
+                        error_log('ESC DB - Lenient sanitization result: ' . $sanitized);
+                    }
+
+                    // If the URL doesn't start with http:// or https://, add http://
+                    if (!empty($sanitized) && strpos($sanitized, 'http') !== 0) {
+                        $sanitized = 'http://' . $sanitized;
+                        error_log('ESC DB - Added http:// prefix: ' . $sanitized);
+                    }
+
                     return $sanitized;
                 }
                 return '';

@@ -340,6 +340,38 @@
                 initImageUploader();
             }
         }
+
+        // Add form submit handler to ensure image URL is included
+        $('form').on('submit', function() {
+            const $form = $(this);
+            const $imageUploader = $form.find('.esc-image-uploader');
+
+            if ($imageUploader.length) {
+                const $urlInput = $imageUploader.find('.esc-url-input');
+                const imageUrl = $urlInput.val();
+
+                if (imageUrl) {
+                    console.log('Form submit: Ensuring image URL is included in form data');
+
+                    // Check if there's already an input with name="image_url"
+                    if ($form.find('input[name="image_url"]').length === 0 ||
+                        $form.find('input[name="image_url"]').val() !== imageUrl) {
+
+                        // Remove any existing hidden image_url inputs to avoid duplicates
+                        $form.find('input[type="hidden"][name="image_url"]').remove();
+
+                        // Add a hidden input with the image URL
+                        $('<input>').attr({
+                            type: 'hidden',
+                            name: 'image_url',
+                            value: imageUrl
+                        }).appendTo($form);
+
+                        console.log('Form submit: Added hidden image_url input with value:', imageUrl);
+                    }
+                }
+            }
+        });
     });
 
 })(jQuery);

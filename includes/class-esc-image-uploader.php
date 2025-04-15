@@ -517,7 +517,12 @@ class ESC_Image_Uploader {
                 <?php
                 // Log the input field for debugging
                 error_log('ESC Image Uploader - Rendering input with name: image_url and id: ' . $input_id);
+
+                // Add a second hidden input with the same value to ensure it's included in form data
+                if ( ! empty( $current_url ) ) :
                 ?>
+                <input type="hidden" name="image_url_backup" value="<?php echo esc_attr( $current_url ); ?>">
+                <?php endif; ?>
 
                 <div class="esc-dropzone-content">
                     <div class="esc-dropzone-icon dashicons dashicons-upload"></div>
