@@ -110,9 +110,39 @@ jQuery(document).ready(function($) {
             // Mark as submitting
             window.escIsSubmitting = true;
 
+            // Log all form fields before serialization
+            console.log('Form fields before serialization:');
+            $form.find('input, textarea, select').each(function() {
+                const $field = $(this);
+                const name = $field.attr('name');
+                const value = $field.val();
+                const type = $field.attr('type');
+                if (name) {
+                    console.log(`Field: ${name}, Type: ${type || 'textarea/select'}, Value: ${value}`);
+                }
+            });
+
+            // Check specifically for image_url field
+            const imageUrlField = $form.find('input[name="image_url"]');
+            if (imageUrlField.length) {
+                console.log('Image URL field found:', imageUrlField.val());
+            } else {
+                console.log('Image URL field not found in form');
+            }
+
             // Serialize form data
             var formData = $form.serialize();
             console.log('Form data:', formData);
+
+            // Check if image_url is in the serialized data
+            if (formData.indexOf('image_url=') === -1) {
+                // Try to find the image URL input
+                const $imageUrlInput = $('.esc-url-input');
+                if ($imageUrlInput.length && $imageUrlInput.val()) {
+                    console.log('Adding missing image_url from .esc-url-input:', $imageUrlInput.val());
+                    formData += '&image_url=' + encodeURIComponent($imageUrlInput.val());
+                }
+            }
 
             // Add AJAX action and nonce
             formData += '&action=esc_add_seed&nonce=' + esc_ajax_object.nonce;

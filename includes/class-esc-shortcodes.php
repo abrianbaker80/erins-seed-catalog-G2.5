@@ -270,6 +270,15 @@ class ESC_Shortcodes {
 				ESC_VERSION . '.' . time(),
 				true
 			);
+
+			// Enqueue image URL test script
+			wp_enqueue_script(
+				'esc-image-url-test-script',
+				ESC_PLUGIN_URL . 'public/js/esc-image-url-test.js',
+				['jquery', 'esc-enhanced-cards-scripts'],
+				ESC_VERSION . '.' . time(),
+				true
+			);
 		}
 
 		$paged = get_query_var('paged') ? absint(get_query_var('paged')) : 1;

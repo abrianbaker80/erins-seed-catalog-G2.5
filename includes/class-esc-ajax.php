@@ -110,6 +110,13 @@ class ESC_Ajax {
         unset($debug_data['nonce']); // Remove sensitive data
         error_log('ESC Add Seed - POST Data: ' . print_r($debug_data, true));
 
+        // Specifically log the image URL if present
+        if (isset($_POST['image_url'])) {
+            error_log('ESC Add Seed - Image URL from form: ' . $_POST['image_url']);
+        } else {
+            error_log('ESC Add Seed - No image_url found in POST data');
+        }
+
         // 3. Get and Sanitize Data from $_POST
         $allowed_fields = ESC_DB::get_allowed_fields();
         $seed_data = [];
