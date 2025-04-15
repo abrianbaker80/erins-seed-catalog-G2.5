@@ -133,6 +133,16 @@
                         if (response.success) {
                             // Set the URL in the input field
                             $urlInput.val(response.data.url);
+                            console.log('Image URL set to:', response.data.url);
+
+                            // Ensure the input has the correct name attribute
+                            if ($urlInput.attr('name') !== 'image_url') {
+                                console.log('Fixing image URL input name attribute from:', $urlInput.attr('name'));
+                                $urlInput.attr('name', 'image_url');
+                            }
+
+                            // Trigger change event to ensure form knows the value changed
+                            $urlInput.trigger('change');
 
                             // Show image preview
                             showImagePreview(response.data.url);
@@ -174,6 +184,16 @@
 
                     // Set the URL in the input field
                     $urlInput.val(attachment.url);
+                    console.log('Media Library: Image URL set to:', attachment.url);
+
+                    // Ensure the input has the correct name attribute
+                    if ($urlInput.attr('name') !== 'image_url') {
+                        console.log('Media Library: Fixing image URL input name attribute from:', $urlInput.attr('name'));
+                        $urlInput.attr('name', 'image_url');
+                    }
+
+                    // Trigger change event to ensure form knows the value changed
+                    $urlInput.trigger('change');
 
                     // Show image preview
                     showImagePreview(attachment.url);
@@ -261,6 +281,16 @@
                         if (response.success) {
                             // Set the URL in the input field
                             $urlInput.val(response.data.url);
+                            console.log('Download: Image URL set to:', response.data.url);
+
+                            // Ensure the input has the correct name attribute
+                            if ($urlInput.attr('name') !== 'image_url') {
+                                console.log('Download: Fixing image URL input name attribute from:', $urlInput.attr('name'));
+                                $urlInput.attr('name', 'image_url');
+                            }
+
+                            // Trigger change event to ensure form knows the value changed
+                            $urlInput.trigger('change');
 
                             // Show image preview
                             showImagePreview(response.data.url);

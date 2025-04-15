@@ -113,8 +113,20 @@ class ESC_Ajax {
         // Specifically log the image URL if present
         if (isset($_POST['image_url'])) {
             error_log('ESC Add Seed - Image URL from form: ' . $_POST['image_url']);
+            // Check if the URL is valid
+            if (filter_var($_POST['image_url'], FILTER_VALIDATE_URL)) {
+                error_log('ESC Add Seed - Image URL is valid');
+            } else {
+                error_log('ESC Add Seed - Image URL is not a valid URL: ' . $_POST['image_url']);
+            }
         } else {
             error_log('ESC Add Seed - No image_url found in POST data');
+            // Check if there's any field that might contain the image URL
+            foreach ($_POST as $key => $value) {
+                if (strpos($key, 'image') !== false || strpos($key, 'url') !== false) {
+                    error_log('ESC Add Seed - Potential image URL field found: ' . $key . ' = ' . $value);
+                }
+            }
         }
 
         // 3. Get and Sanitize Data from $_POST

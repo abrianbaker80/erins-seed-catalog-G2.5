@@ -110,14 +110,40 @@ jQuery(document).ready(function($) {
             // Mark as submitting
             window.escIsSubmitting = true;
 
+            // Log all form fields before serialization for debugging
+            console.log('Form fields before serialization:');
+            $form.find('input[type="hidden"], input[type="text"], textarea, select').each(function() {
+                const $field = $(this);
+                const name = $field.attr('name');
+                const value = $field.val();
+                if (name) {
+                    console.log(`Field: ${name}, Value: ${value || 'empty'}`);
+                }
+            });
+
+            // Find the image URL input specifically within the form
+            const $imageUrlInput = $form.find('.esc-image-uploader .esc-url-input');
+            console.log('Image URL input found:', $imageUrlInput.length ? 'Yes' : 'No');
+
+            if ($imageUrlInput.length) {
+                console.log('Image URL value:', $imageUrlInput.val() || 'empty');
+
+                // Ensure the image URL input has the correct name attribute
+                if ($imageUrlInput.attr('name') !== 'image_url') {
+                    console.log('Fixing image URL input name attribute');
+                    $imageUrlInput.attr('name', 'image_url');
+                }
+            }
+
             // Serialize form data
             var formData = $form.serialize();
-            console.log('Form data:', formData);
+            console.log('Form data after serialization:', formData);
 
             // Make sure image URL is included
-            const $imageUrlInput = $('.esc-url-input');
-            if ($imageUrlInput.length && $imageUrlInput.val() && formData.indexOf('image_url=') === -1) {
+            if (formData.indexOf('image_url=') === -1 && $imageUrlInput.length && $imageUrlInput.val()) {
+                console.log('Adding missing image_url manually');
                 formData += '&image_url=' + encodeURIComponent($imageUrlInput.val());
+                console.log('Updated form data:', formData);
             }
 
             // Add AJAX action and nonce

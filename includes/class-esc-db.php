@@ -133,6 +133,13 @@ class ESC_DB {
         // Debug log the incoming data
         error_log('ESC DB - Raw Insert Data: ' . print_r($data, true));
 
+        // Specifically check for image_url
+        if (isset($data['image_url'])) {
+            error_log('ESC DB - Image URL found in data: ' . $data['image_url']);
+        } else {
+            error_log('ESC DB - No image_url found in data');
+        }
+
         foreach ($allowed_fields as $field => $type) {
             if (isset($data[$field])) {
                 $insert_data[$field] = self::sanitize_field($data[$field], $type);
