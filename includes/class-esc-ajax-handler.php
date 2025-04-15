@@ -5,10 +5,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class ESC_Ajax_Handler
- * Handles additional AJAX requests for the plugin.
+ * Class ESC_Image_URL_Test_Handler
+ * Handles AJAX requests for testing image URLs.
  */
-class ESC_Ajax_Handler {
+class ESC_Image_URL_Test_Handler {
 
     /**
      * Initialize AJAX handlers.
@@ -29,10 +29,10 @@ class ESC_Ajax_Handler {
         // Get seeds with images
         global $wpdb;
         $table_name = $wpdb->prefix . 'esc_seeds';
-        
+
         $seeds = $wpdb->get_results(
-            "SELECT id, seed_name, variety_name, image_url FROM {$table_name} 
-             WHERE image_url IS NOT NULL AND image_url != '' 
+            "SELECT id, seed_name, variety_name, image_url FROM {$table_name}
+             WHERE image_url IS NOT NULL AND image_url != ''
              ORDER BY id DESC"
         );
 
@@ -54,4 +54,4 @@ class ESC_Ajax_Handler {
 }
 
 // Initialize the class
-ESC_Ajax_Handler::init();
+ESC_Image_URL_Test_Handler::init();
