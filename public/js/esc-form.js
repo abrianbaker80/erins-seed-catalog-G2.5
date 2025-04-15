@@ -229,6 +229,24 @@ ESC.Form = (function($) {
         // Get form data
         const formData = $form.serialize();
 
+        // Ensure image URL is included in the form data
+        const $imageUrl = $form.find('input[name="image_url"]');
+        if ($imageUrl.length && $imageUrl.val()) {
+            ESC.log('Found image URL in form:', $imageUrl.val());
+
+            // Check if there's a hidden image URL field
+            const $hiddenImageUrl = $form.find('input[name="image_url_hidden"]');
+            if (!$hiddenImageUrl.length) {
+                // Add a hidden field with the image URL
+                ESC.log('Adding hidden image URL field to form');
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'image_url_hidden',
+                    value: $imageUrl.val()
+                }).appendTo($form);
+            }
+        }
+
         // Add AJAX action and nonce
         const data = formData + '&action=esc_add_seed&nonce=' + ESC.getConfig().nonce;
 

@@ -130,14 +130,28 @@ class ESC_Ajax {
             }
         } else {
             error_log('ESC Add Seed - No image_url found in POST data');
-            // Check if there's any field that might contain the image URL
+        }
+
+        // Check for the hidden image URL field
+        if (isset($_POST['image_url_hidden'])) {
+            error_log('ESC Add Seed - Found hidden image URL: ' . $_POST['image_url_hidden']);
+            if (!isset($_POST['image_url']) || empty($_POST['image_url'])) {
+                error_log('ESC Add Seed - Using hidden image URL field');
+                $_POST['image_url'] = $_POST['image_url_hidden'];
+            }
+        }
+
+        // Check if there's any field that might contain the image URL
+        if (!isset($_POST['image_url']) || empty($_POST['image_url'])) {
+            error_log('ESC Add Seed - Still no image_url, checking other fields');
             foreach ($_POST as $key => $value) {
                 if (strpos($key, 'image') !== false || strpos($key, 'url') !== false) {
                     error_log('ESC Add Seed - Potential image URL field found: ' . $key . ' = ' . $value);
                     // If we find a field that looks like it contains an image URL, use it
-                    if (!isset($_POST['image_url']) && !empty($value) && filter_var($value, FILTER_VALIDATE_URL)) {
+                    if (!empty($value) && filter_var($value, FILTER_VALIDATE_URL)) {
                         error_log('ESC Add Seed - Using alternative field for image URL: ' . $key);
                         $_POST['image_url'] = $value;
+                        break;
                     }
                 }
             }

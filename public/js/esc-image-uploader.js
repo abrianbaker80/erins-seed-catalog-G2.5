@@ -144,6 +144,22 @@
                             // Trigger change event to ensure form knows the value changed
                             $urlInput.trigger('change');
 
+                            // Add a hidden input field to the form with the image URL
+                            const $form = $urlInput.closest('form');
+                            if ($form.length) {
+                                // Remove any existing hidden image_url inputs to avoid duplicates
+                                $form.find('input[type="hidden"][name="image_url_hidden"]').remove();
+
+                                // Add a hidden input with the image URL
+                                $('<input>').attr({
+                                    type: 'hidden',
+                                    name: 'image_url_hidden',
+                                    value: response.data.url
+                                }).appendTo($form);
+
+                                console.log('Added hidden image_url_hidden input with value:', response.data.url);
+                            }
+
                             // Show image preview
                             showImagePreview(response.data.url);
                         } else {
@@ -194,6 +210,22 @@
 
                     // Trigger change event to ensure form knows the value changed
                     $urlInput.trigger('change');
+
+                    // Add a hidden input field to the form with the image URL
+                    const $form = $urlInput.closest('form');
+                    if ($form.length) {
+                        // Remove any existing hidden image_url inputs to avoid duplicates
+                        $form.find('input[type="hidden"][name="image_url_hidden"]').remove();
+
+                        // Add a hidden input with the image URL
+                        $('<input>').attr({
+                            type: 'hidden',
+                            name: 'image_url_hidden',
+                            value: attachment.url
+                        }).appendTo($form);
+
+                        console.log('Media Library: Added hidden image_url_hidden input with value:', attachment.url);
+                    }
 
                     // Show image preview
                     showImagePreview(attachment.url);
@@ -292,6 +324,22 @@
                             // Trigger change event to ensure form knows the value changed
                             $urlInput.trigger('change');
 
+                            // Add a hidden input field to the form with the image URL
+                            const $form = $urlInput.closest('form');
+                            if ($form.length) {
+                                // Remove any existing hidden image_url inputs to avoid duplicates
+                                $form.find('input[type="hidden"][name="image_url_hidden"]').remove();
+
+                                // Add a hidden input with the image URL
+                                $('<input>').attr({
+                                    type: 'hidden',
+                                    name: 'image_url_hidden',
+                                    value: response.data.url
+                                }).appendTo($form);
+
+                                console.log('Download: Added hidden image_url_hidden input with value:', response.data.url);
+                            }
+
                             // Show image preview
                             showImagePreview(response.data.url);
                         } else {
@@ -340,38 +388,6 @@
                 initImageUploader();
             }
         }
-
-        // Add form submit handler to ensure image URL is included
-        $('form').on('submit', function() {
-            const $form = $(this);
-            const $imageUploader = $form.find('.esc-image-uploader');
-
-            if ($imageUploader.length) {
-                const $urlInput = $imageUploader.find('.esc-url-input');
-                const imageUrl = $urlInput.val();
-
-                if (imageUrl) {
-                    console.log('Form submit: Ensuring image URL is included in form data');
-
-                    // Check if there's already an input with name="image_url"
-                    if ($form.find('input[name="image_url"]').length === 0 ||
-                        $form.find('input[name="image_url"]').val() !== imageUrl) {
-
-                        // Remove any existing hidden image_url inputs to avoid duplicates
-                        $form.find('input[type="hidden"][name="image_url"]').remove();
-
-                        // Add a hidden input with the image URL
-                        $('<input>').attr({
-                            type: 'hidden',
-                            name: 'image_url',
-                            value: imageUrl
-                        }).appendTo($form);
-
-                        console.log('Form submit: Added hidden image_url input with value:', imageUrl);
-                    }
-                }
-            }
-        });
     });
 
 })(jQuery);

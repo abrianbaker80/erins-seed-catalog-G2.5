@@ -271,25 +271,49 @@ class ESC_Image_Fixer {
      * @return string The fixed URL.
      */
     public static function fix_image_url( $url ) {
-        // If it's a WordPress media library URL but missing the site URL, add the local network URL
+        // Log the original URL for debugging
+        error_log('ESC Image Fixer - Original URL: ' . $url);
+
+        // If it's a WordPress media library URL but missing the site URL
         if ( strpos( $url, '/wp-content/uploads/' ) === 0 ) {
-            return 'http://192.168.1.128' . $url;
+            // Use the WordPress site URL instead of hardcoded IP
+            $site_url = get_site_url();
+            $fixed_url = $site_url . $url;
+            error_log('ESC Image Fixer - Added site URL to relative path: ' . $fixed_url);
+            return $fixed_url;
         }
 
-        // If it's a WordPress media library URL with a different domain, replace it with the local network URL
-        if ( strpos( $url, '/wp-content/uploads/' ) !== false && strpos( $url, '192.168.1.128' ) === false ) {
+        // If it's a WordPress media library URL with a different domain
+        if ( strpos( $url, '/wp-content/uploads/' ) !== false ) {
+            // Extract the path and use the WordPress site URL
             $path = substr( $url, strpos( $url, '/wp-content/uploads/' ) );
-            return 'http://192.168.1.128' . $path;
+            $site_url = get_site_url();
+            $fixed_url = $site_url . $path;
+            error_log('ESC Image Fixer - Replaced domain with site URL: ' . $fixed_url);
+            return $fixed_url;
+        }
+
+        // If it's a URL with test.thereclaimedhanger.com domain, replace with site URL
+        if ( strpos( $url, 'test.thereclaimedhanger.com' ) !== false ) {
+            $site_url = get_site_url();
+            $path = parse_url($url, PHP_URL_PATH);
+            $fixed_url = $site_url . $path;
+            error_log('ESC Image Fixer - Replaced test.thereclaimedhanger.com with site URL: ' . $fixed_url);
+            return $fixed_url;
         }
 
         // If it's a protocol-relative URL, add http:
         if ( strpos( $url, '//' ) === 0 ) {
-            return 'http:' . $url;
+            $fixed_url = 'http:' . $url;
+            error_log('ESC Image Fixer - Added protocol to protocol-relative URL: ' . $fixed_url);
+            return $fixed_url;
         }
 
         // If it doesn't have a protocol, add http://
         if ( strpos( $url, 'http' ) !== 0 ) {
-            return 'http://' . ltrim( $url, '/' );
+            $fixed_url = 'http://' . ltrim( $url, '/' );
+            error_log('ESC Image Fixer - Added protocol to URL: ' . $fixed_url);
+            return $fixed_url;
         }
 
         return $url;
