@@ -133,6 +133,18 @@ jQuery(document).ready(function($) {
                     console.log('Fixing image URL input name attribute');
                     $imageUrlInput.attr('name', 'image_url');
                 }
+
+                // Make sure the image URL is included in the form data
+                if ($imageUrlInput.val()) {
+                    console.log('Ensuring image URL is included in form data');
+                    // Create a clone of the input with the correct name to ensure it's included
+                    const $cloneInput = $('<input>', {
+                        type: 'hidden',
+                        name: 'image_url',
+                        value: $imageUrlInput.val()
+                    });
+                    $form.append($cloneInput);
+                }
             }
 
             // Serialize form data
@@ -144,6 +156,13 @@ jQuery(document).ready(function($) {
                 console.log('Adding missing image_url manually');
                 formData += '&image_url=' + encodeURIComponent($imageUrlInput.val());
                 console.log('Updated form data:', formData);
+            }
+
+            // Double-check that image_url is in the form data
+            if (formData.indexOf('image_url=') === -1 && $imageUrlInput.length && $imageUrlInput.val()) {
+                console.log('WARNING: Image URL still not in form data after manual addition!');
+            } else if ($imageUrlInput.length && $imageUrlInput.val()) {
+                console.log('SUCCESS: Image URL is included in form data');
             }
 
             // Add AJAX action and nonce

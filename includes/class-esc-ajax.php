@@ -118,6 +118,15 @@ class ESC_Ajax {
                 error_log('ESC Add Seed - Image URL is valid');
             } else {
                 error_log('ESC Add Seed - Image URL is not a valid URL: ' . $_POST['image_url']);
+                // If it's not a valid URL but not empty, try to fix it
+                if (!empty($_POST['image_url'])) {
+                    error_log('ESC Add Seed - Attempting to fix invalid image URL');
+                    // Try to prepend http:// if missing
+                    if (strpos($_POST['image_url'], 'http') !== 0) {
+                        $_POST['image_url'] = 'http://' . $_POST['image_url'];
+                        error_log('ESC Add Seed - Fixed image URL: ' . $_POST['image_url']);
+                    }
+                }
             }
         } else {
             error_log('ESC Add Seed - No image_url found in POST data');
@@ -125,6 +134,11 @@ class ESC_Ajax {
             foreach ($_POST as $key => $value) {
                 if (strpos($key, 'image') !== false || strpos($key, 'url') !== false) {
                     error_log('ESC Add Seed - Potential image URL field found: ' . $key . ' = ' . $value);
+                    // If we find a field that looks like it contains an image URL, use it
+                    if (!isset($_POST['image_url']) && !empty($value) && filter_var($value, FILTER_VALIDATE_URL)) {
+                        error_log('ESC Add Seed - Using alternative field for image URL: ' . $key);
+                        $_POST['image_url'] = $value;
+                    }
                 }
             }
         }
@@ -135,7 +149,17 @@ class ESC_Ajax {
         foreach ($allowed_fields as $field => $type) {
             if (isset($_POST[$field])) {
                 $seed_data[$field] = wp_unslash($_POST[$field]);
+                // Log when we find the image_url field
+                if ($field === 'image_url') {
+                    error_log('ESC Add Seed - Found image_url in allowed fields, value: ' . $_POST[$field]);
+                }
             }
+        }
+
+        // Specifically ensure image_url is included if it exists in POST
+        if (isset($_POST['image_url']) && !isset($seed_data['image_url'])) {
+            error_log('ESC Add Seed - Adding image_url to seed data manually');
+            $seed_data['image_url'] = wp_unslash($_POST['image_url']);
         }
 
         // Log processed seed data

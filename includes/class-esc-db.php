@@ -136,14 +136,42 @@ class ESC_DB {
         // Specifically check for image_url
         if (isset($data['image_url'])) {
             error_log('ESC DB - Image URL found in data: ' . $data['image_url']);
+            // Validate the URL format
+            if (filter_var($data['image_url'], FILTER_VALIDATE_URL)) {
+                error_log('ESC DB - Image URL is valid');
+            } else {
+                error_log('ESC DB - Image URL is not a valid URL: ' . $data['image_url']);
+                // Try to fix the URL if it's not valid
+                if (!empty($data['image_url']) && strpos($data['image_url'], 'http') !== 0) {
+                    $data['image_url'] = 'http://' . $data['image_url'];
+                    error_log('ESC DB - Fixed image URL: ' . $data['image_url']);
+                }
+            }
         } else {
             error_log('ESC DB - No image_url found in data');
         }
 
         foreach ($allowed_fields as $field => $type) {
             if (isset($data[$field])) {
+                // Log before sanitization for image_url
+                if ($field === 'image_url') {
+                    error_log('ESC DB - Processing image_url before sanitization: ' . $data[$field]);
+                }
+
                 $insert_data[$field] = self::sanitize_field($data[$field], $type);
                 $formats[] = self::get_format_placeholder($type);
+
+                // Log after sanitization for image_url
+                if ($field === 'image_url') {
+                    error_log('ESC DB - Processing image_url after sanitization: ' . $insert_data[$field]);
+                    // If sanitization removed the URL, try to fix it
+                    if (empty($insert_data[$field]) && !empty($data[$field])) {
+                        error_log('ESC DB - Sanitization removed image URL, attempting to fix');
+                        // Try a different sanitization approach
+                        $insert_data[$field] = filter_var($data[$field], FILTER_SANITIZE_URL);
+                        error_log('ESC DB - Fixed image URL with alternative sanitization: ' . $insert_data[$field]);
+                    }
+                }
             }
         }
 
@@ -722,7 +750,13 @@ class ESC_DB {
             case 'url':
                 // Don't validate URLs with filter_var as it's too strict
                 // Just make sure it's properly sanitized
-                return esc_url_raw( $value );
+                if ($value) {
+                    error_log('ESC DB - Sanitizing URL field: ' . $value);
+                    $sanitized = esc_url_raw( $value );
+                    error_log('ESC DB - Sanitized URL result: ' . $sanitized);
+                    return $sanitized;
+                }
+                return '';
             case 'date':
                  // Basic validation - check if it looks like a date YYYY-MM-DD
                 if ( preg_match( "/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $value ) ) {
