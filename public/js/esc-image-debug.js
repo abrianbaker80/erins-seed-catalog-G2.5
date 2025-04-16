@@ -35,11 +35,12 @@
                         if (src.indexOf('/wp-content/uploads/') !== -1) {
                             console.log('This is a WordPress media library image');
 
-                            // Check if it has the local network IP
-                            if (src.indexOf('192.168.1.128') !== -1) {
-                                console.log('Image URL includes local network IP');
+                            // Check if it has the site URL
+                            const siteUrl = typeof esc_ajax_object !== 'undefined' ? esc_ajax_object.site_url : '';
+                            if (siteUrl && src.indexOf(siteUrl) !== -1) {
+                                console.log('Image URL includes site URL');
                             } else {
-                                console.log('Image URL is missing local network IP');
+                                console.log('Image URL is missing site URL');
                             }
                         } else {
                             console.log('This is an external image');

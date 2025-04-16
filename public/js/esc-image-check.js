@@ -63,16 +63,17 @@
 
                     // Check if it's a WordPress media library image
                     const isWpMedia = imageUrl.indexOf('/wp-content/uploads/') !== -1;
-                    const hasLocalIp = imageUrl.indexOf('192.168.1.128') !== -1;
+                    const siteUrl = typeof esc_ajax_object !== 'undefined' ? esc_ajax_object.site_url : '';
+                    const hasSiteUrl = siteUrl && imageUrl.indexOf(siteUrl) !== -1;
 
                     if (isWpMedia) {
                         wpMediaImages++;
 
-                        // Add info about local IP
-                        if (hasLocalIp) {
-                            $listItem.append('<br><small style="color: blue;">Has local network IP</small>');
+                        // Add info about site URL
+                        if (hasSiteUrl) {
+                            $listItem.append('<br><small style="color: blue;">Has site URL</small>');
                         } else {
-                            $listItem.append('<br><small style="color: orange;">Missing local network IP</small>');
+                            $listItem.append('<br><small style="color: orange;">Missing site URL</small>');
                         }
                     } else {
                         externalImages++;

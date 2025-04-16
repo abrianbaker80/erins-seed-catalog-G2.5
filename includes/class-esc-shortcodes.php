@@ -366,6 +366,7 @@ class ESC_Shortcodes {
 			'catalog_url' => home_url('/seed-catalog/'),
 			'add_another_text' => __('Add Another Seed', 'erins-seed-catalog'),
 			'view_catalog_text' => __('View Catalog', 'erins-seed-catalog'),
+			'site_url' => get_site_url(),
 			'debug' => true // Enable debug mode for troubleshooting
 		];
 
@@ -443,6 +444,7 @@ class ESC_Shortcodes {
 				'nonce' => wp_create_nonce('esc_ajax_nonce'),
 				'loading_text' => __('Loading...', 'erins-seed-catalog'),
 				'error_text' => __('An error occurred.', 'erins-seed-catalog'),
+				'site_url' => get_site_url(),
 			]
 		);
 
@@ -501,6 +503,7 @@ class ESC_Shortcodes {
 				'nonce' => wp_create_nonce('esc_ajax_nonce'),
 				'loading_text' => __('Loading...', 'erins-seed-catalog'),
 				'error_text' => __('An error occurred.', 'erins-seed-catalog'),
+				'site_url' => get_site_url(),
 			]
 		);
 
@@ -589,6 +592,7 @@ class ESC_Shortcodes {
 			'nonce' => wp_create_nonce('esc_ajax_nonce'),
 			'loading_text' => __('Loading...', 'erins-seed-catalog'),
 			'error_text' => __('An error occurred.', 'erins-seed-catalog'),
+			'site_url' => get_site_url(),
 			'debug' => true
 		];
 
