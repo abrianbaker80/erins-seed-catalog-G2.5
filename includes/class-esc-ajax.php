@@ -141,6 +141,15 @@ class ESC_Ajax {
             }
         }
 
+        // Check for backup image URL field
+        if (isset($_POST['image_url_backup'])) {
+            error_log('ESC Add Seed - Found backup image URL: ' . $_POST['image_url_backup']);
+            if (!isset($_POST['image_url']) || empty($_POST['image_url'])) {
+                error_log('ESC Add Seed - Using backup image URL field');
+                $_POST['image_url'] = $_POST['image_url_backup'];
+            }
+        }
+
         // Check if there's any field that might contain the image URL
         if (!isset($_POST['image_url']) || empty($_POST['image_url'])) {
             error_log('ESC Add Seed - Still no image_url, checking other fields');
@@ -193,6 +202,13 @@ class ESC_Ajax {
 
         // Log processed seed data
         error_log('ESC Add Seed - Processed Data: ' . print_r($seed_data, true));
+
+        // Debug log the image URL specifically
+        if (isset($seed_data['image_url'])) {
+            error_log('ESC Add Seed - Image URL in seed data: ' . $seed_data['image_url']);
+        } else {
+            error_log('ESC Add Seed - No image_url in seed data');
+        }
 
         // Handle Categories
         $category_term_ids = [];

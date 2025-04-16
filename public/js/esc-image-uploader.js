@@ -135,30 +135,11 @@
                             $urlInput.val(response.data.url);
                             console.log('Image URL set to:', response.data.url);
 
-                            // Ensure the input has the correct name attribute
-                            if ($urlInput.attr('name') !== 'image_url') {
-                                console.log('Fixing image URL input name attribute from:', $urlInput.attr('name'));
-                                $urlInput.attr('name', 'image_url');
-                            }
+                            // Log the input name for debugging
+                            console.log('Current input name attribute:', $urlInput.attr('name'));
 
                             // Trigger change event to ensure form knows the value changed
                             $urlInput.trigger('change');
-
-                            // Add a hidden input field to the form with the image URL
-                            const $form = $urlInput.closest('form');
-                            if ($form.length) {
-                                // Remove any existing hidden image_url inputs to avoid duplicates
-                                $form.find('input[type="hidden"][name="image_url_hidden"]').remove();
-
-                                // Add a hidden input with the image URL
-                                $('<input>').attr({
-                                    type: 'hidden',
-                                    name: 'image_url_hidden',
-                                    value: response.data.url
-                                }).appendTo($form);
-
-                                console.log('Added hidden image_url_hidden input with value:', response.data.url);
-                            }
 
                             // Show image preview
                             showImagePreview(response.data.url);
@@ -202,30 +183,11 @@
                     $urlInput.val(attachment.url);
                     console.log('Media Library: Image URL set to:', attachment.url);
 
-                    // Ensure the input has the correct name attribute
-                    if ($urlInput.attr('name') !== 'image_url') {
-                        console.log('Media Library: Fixing image URL input name attribute from:', $urlInput.attr('name'));
-                        $urlInput.attr('name', 'image_url');
-                    }
+                    // Log the input name for debugging
+                    console.log('Media Library: Current input name attribute:', $urlInput.attr('name'));
 
                     // Trigger change event to ensure form knows the value changed
                     $urlInput.trigger('change');
-
-                    // Add a hidden input field to the form with the image URL
-                    const $form = $urlInput.closest('form');
-                    if ($form.length) {
-                        // Remove any existing hidden image_url inputs to avoid duplicates
-                        $form.find('input[type="hidden"][name="image_url_hidden"]').remove();
-
-                        // Add a hidden input with the image URL
-                        $('<input>').attr({
-                            type: 'hidden',
-                            name: 'image_url_hidden',
-                            value: attachment.url
-                        }).appendTo($form);
-
-                        console.log('Media Library: Added hidden image_url_hidden input with value:', attachment.url);
-                    }
 
                     // Show image preview
                     showImagePreview(attachment.url);
@@ -315,30 +277,11 @@
                             $urlInput.val(response.data.url);
                             console.log('Download: Image URL set to:', response.data.url);
 
-                            // Ensure the input has the correct name attribute
-                            if ($urlInput.attr('name') !== 'image_url') {
-                                console.log('Download: Fixing image URL input name attribute from:', $urlInput.attr('name'));
-                                $urlInput.attr('name', 'image_url');
-                            }
+                            // Log the input name for debugging
+                            console.log('Download: Current input name attribute:', $urlInput.attr('name'));
 
                             // Trigger change event to ensure form knows the value changed
                             $urlInput.trigger('change');
-
-                            // Add a hidden input field to the form with the image URL
-                            const $form = $urlInput.closest('form');
-                            if ($form.length) {
-                                // Remove any existing hidden image_url inputs to avoid duplicates
-                                $form.find('input[type="hidden"][name="image_url_hidden"]').remove();
-
-                                // Add a hidden input with the image URL
-                                $('<input>').attr({
-                                    type: 'hidden',
-                                    name: 'image_url_hidden',
-                                    value: response.data.url
-                                }).appendTo($form);
-
-                                console.log('Download: Added hidden image_url_hidden input with value:', response.data.url);
-                            }
 
                             // Show image preview
                             showImagePreview(response.data.url);

@@ -182,19 +182,6 @@ class ESC_DB {
                         // Try a different sanitization approach
                         $insert_data[$field] = filter_var($data[$field], FILTER_SANITIZE_URL);
                         error_log('ESC DB - Fixed image URL with alternative sanitization: ' . $insert_data[$field]);
-
-                        // If still empty, use the original value as a last resort
-                        if (empty($insert_data[$field])) {
-                            error_log('ESC DB - Alternative sanitization also failed, using original value');
-                            $insert_data[$field] = $data[$field];
-                        }
-                    }
-
-                    // Ensure URL has a protocol
-                    if (!empty($insert_data[$field]) && strpos($insert_data[$field], 'http') !== 0) {
-                        error_log('ESC DB - Adding protocol to image URL');
-                        $insert_data[$field] = 'http://' . ltrim($insert_data[$field], '/');
-                        error_log('ESC DB - Final image URL: ' . $insert_data[$field]);
                     }
                 }
             }
@@ -217,6 +204,13 @@ class ESC_DB {
         // Debug log the SQL before execution
         $query = $wpdb->prepare("INSERT INTO $table_name (" . implode(',', array_keys($insert_data)) . ") VALUES (" . implode(',', $formats) . ")", array_values($insert_data));
         error_log('ESC DB - Insert Query: ' . $query);
+
+        // Debug log the image URL specifically
+        if (isset($insert_data['image_url'])) {
+            error_log('ESC DB - Image URL in insert data: ' . $insert_data['image_url']);
+        } else {
+            error_log('ESC DB - No image_url in insert data');
+        }
 
         // Try to insert the data
         $inserted = $wpdb->insert($table_name, $insert_data, $formats);

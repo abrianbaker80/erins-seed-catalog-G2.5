@@ -513,15 +513,15 @@ class ESC_Image_Uploader {
 
             <div class="esc-dropzone <?php echo ! empty( $current_url ) ? 'has-image' : ''; ?>">
                 <input type="file" class="esc-file-input" accept="image/*" style="display: none;">
-                <input type="hidden" id="<?php echo esc_attr( $input_id ); ?>" name="image_url" class="esc-url-input" value="<?php echo esc_attr( $current_url ); ?>">
+                <input type="hidden" id="<?php echo esc_attr( $input_id ); ?>" name="<?php echo esc_attr( $input_name ); ?>" class="esc-url-input" value="<?php echo esc_attr( $current_url ); ?>">
                 <?php
                 // Log the input field for debugging
-                error_log('ESC Image Uploader - Rendering input with name: image_url and id: ' . $input_id);
+                error_log('ESC Image Uploader - Rendering input with name: ' . $input_name . ' and id: ' . $input_id);
 
                 // Add a second hidden input with the same value to ensure it's included in form data
                 if ( ! empty( $current_url ) ) :
                 ?>
-                <input type="hidden" name="image_url_backup" value="<?php echo esc_attr( $current_url ); ?>">
+                <input type="hidden" name="<?php echo esc_attr( $input_name ); ?>_backup" value="<?php echo esc_attr( $current_url ); ?>">
                 <?php endif; ?>
 
                 <div class="esc-dropzone-content">
