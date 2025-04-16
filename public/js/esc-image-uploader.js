@@ -138,6 +138,18 @@
                             // Log the input name for debugging
                             console.log('Current input name attribute:', $urlInput.attr('name'));
 
+                            // Store the image URL in a hidden field with the same name for form submission
+                            const inputName = $urlInput.attr('name');
+                            if ($('input[name="' + inputName + '_hidden"]').length === 0) {
+                                $('<input>').attr({
+                                    type: 'hidden',
+                                    name: inputName + '_hidden',
+                                    value: response.data.url
+                                }).appendTo('form');
+                            } else {
+                                $('input[name="' + inputName + '_hidden"]').val(response.data.url);
+                            }
+
                             // Trigger change event to ensure form knows the value changed
                             $urlInput.trigger('change');
 
@@ -185,6 +197,18 @@
 
                     // Log the input name for debugging
                     console.log('Media Library: Current input name attribute:', $urlInput.attr('name'));
+
+                    // Store the image URL in a hidden field with the same name for form submission
+                    const inputName = $urlInput.attr('name');
+                    if ($('input[name="' + inputName + '_hidden"]').length === 0) {
+                        $('<input>').attr({
+                            type: 'hidden',
+                            name: inputName + '_hidden',
+                            value: attachment.url
+                        }).appendTo('form');
+                    } else {
+                        $('input[name="' + inputName + '_hidden"]').val(attachment.url);
+                    }
 
                     // Trigger change event to ensure form knows the value changed
                     $urlInput.trigger('change');
@@ -279,6 +303,18 @@
 
                             // Log the input name for debugging
                             console.log('Download: Current input name attribute:', $urlInput.attr('name'));
+
+                            // Store the image URL in a hidden field with the same name for form submission
+                            const inputName = $urlInput.attr('name');
+                            if ($('input[name="' + inputName + '_hidden"]').length === 0) {
+                                $('<input>').attr({
+                                    type: 'hidden',
+                                    name: inputName + '_hidden',
+                                    value: response.data.url
+                                }).appendTo('form');
+                            } else {
+                                $('input[name="' + inputName + '_hidden"]').val(response.data.url);
+                            }
 
                             // Trigger change event to ensure form knows the value changed
                             $urlInput.trigger('change');
