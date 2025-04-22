@@ -150,6 +150,15 @@ class ESC_Ajax {
             }
         }
 
+        // Check for preview image URL field
+        if (isset($_POST['image_url_preview'])) {
+            error_log('ESC Add Seed - Found preview image URL: ' . $_POST['image_url_preview']);
+            if (!isset($_POST['image_url']) || empty($_POST['image_url'])) {
+                error_log('ESC Add Seed - Using preview image URL field');
+                $_POST['image_url'] = $_POST['image_url_preview'];
+            }
+        }
+
         // Check if there's any field that might contain the image URL
         if (!isset($_POST['image_url']) || empty($_POST['image_url'])) {
             error_log('ESC Add Seed - Still no image_url, checking other fields');

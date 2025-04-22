@@ -60,16 +60,6 @@ class ESC_Admin {
 			[ __CLASS__, 'render_manage_catalog_page' ] // Function
 		);
 
-        // Add Test Image URLs Submenu Page
-        add_submenu_page(
-            'erins-seed-catalog',                     // Parent Slug
-            __( 'Test Image URLs', 'erins-seed-catalog' ), // Page Title
-            __( 'Test Image URLs', 'erins-seed-catalog' ), // Menu Title
-            'manage_options',                         // Capability (adjust if needed)
-            'esc-test-image-urls',                    // Menu Slug
-            [ __CLASS__, 'render_test_image_urls_page' ] // Function
-        );
-
         // Note: The taxonomy management page is added automatically by WP if show_in_menu=true
 	}
 
@@ -577,36 +567,6 @@ class ESC_Admin {
         include ESC_PLUGIN_DIR . 'admin/views/usage-stats-page.php';
     }
 
-    /**
-     * Render the Test Image URLs page content.
-     */
-    public static function render_test_image_urls_page() {
-        if ( ! current_user_can( 'manage_options' ) ) {
-            wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'erins-seed-catalog' ) );
-        }
-
-        // Enqueue the image URL test script
-        wp_enqueue_script(
-            'esc-image-url-test',
-            ESC_PLUGIN_URL . 'public/js/esc-image-url-test.js',
-            [ 'jquery' ],
-            ESC_VERSION,
-            true
-        );
-
-        // Localize the script with AJAX data
-        wp_localize_script(
-            'esc-image-url-test',
-            'esc_ajax_object',
-            [
-                'ajax_url' => admin_url( 'admin-ajax.php' ),
-                'nonce'    => wp_create_nonce( 'esc_ajax_nonce' ),
-                'site_url' => get_site_url(),
-            ]
-        );
-
-        // Include the test image URLs page template
-        include ESC_PLUGIN_DIR . 'admin/views/test-image-urls-page.php';
-    }
+    // UI Test page function removed
 
 }

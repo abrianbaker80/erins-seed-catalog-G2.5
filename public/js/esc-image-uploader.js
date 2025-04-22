@@ -135,19 +135,10 @@
                             $urlInput.val(response.data.url);
                             console.log('Image URL set to:', response.data.url);
 
-                            // Log the input name for debugging
-                            console.log('Current input name attribute:', $urlInput.attr('name'));
-
-                            // Store the image URL in a hidden field with the same name for form submission
-                            const inputName = $urlInput.attr('name');
-                            if ($('input[name="' + inputName + '_hidden"]').length === 0) {
-                                $('<input>').attr({
-                                    type: 'hidden',
-                                    name: inputName + '_hidden',
-                                    value: response.data.url
-                                }).appendTo('form');
-                            } else {
-                                $('input[name="' + inputName + '_hidden"]').val(response.data.url);
+                            // Ensure the input has the correct name attribute
+                            if ($urlInput.attr('name') !== 'image_url') {
+                                console.log('Fixing image URL input name attribute from:', $urlInput.attr('name'));
+                                $urlInput.attr('name', 'image_url');
                             }
 
                             // Trigger change event to ensure form knows the value changed
@@ -155,6 +146,17 @@
 
                             // Show image preview
                             showImagePreview(response.data.url);
+
+                            // Add a hidden field with the image URL for form submission
+                            if ($('input[name="image_url_preview"]').length === 0) {
+                                $('<input>').attr({
+                                    type: 'hidden',
+                                    name: 'image_url_preview',
+                                    value: response.data.url
+                                }).appendTo('form');
+                            } else {
+                                $('input[name="image_url_preview"]').val(response.data.url);
+                            }
                         } else {
                             showError(response.data.message || 'Error uploading image.');
                         }
@@ -195,19 +197,10 @@
                     $urlInput.val(attachment.url);
                     console.log('Media Library: Image URL set to:', attachment.url);
 
-                    // Log the input name for debugging
-                    console.log('Media Library: Current input name attribute:', $urlInput.attr('name'));
-
-                    // Store the image URL in a hidden field with the same name for form submission
-                    const inputName = $urlInput.attr('name');
-                    if ($('input[name="' + inputName + '_hidden"]').length === 0) {
-                        $('<input>').attr({
-                            type: 'hidden',
-                            name: inputName + '_hidden',
-                            value: attachment.url
-                        }).appendTo('form');
-                    } else {
-                        $('input[name="' + inputName + '_hidden"]').val(attachment.url);
+                    // Ensure the input has the correct name attribute
+                    if ($urlInput.attr('name') !== 'image_url') {
+                        console.log('Media Library: Fixing image URL input name attribute from:', $urlInput.attr('name'));
+                        $urlInput.attr('name', 'image_url');
                     }
 
                     // Trigger change event to ensure form knows the value changed
@@ -215,6 +208,17 @@
 
                     // Show image preview
                     showImagePreview(attachment.url);
+
+                    // Add a hidden field with the image URL for form submission
+                    if ($('input[name="image_url_preview"]').length === 0) {
+                        $('<input>').attr({
+                            type: 'hidden',
+                            name: 'image_url_preview',
+                            value: attachment.url
+                        }).appendTo('form');
+                    } else {
+                        $('input[name="image_url_preview"]').val(attachment.url);
+                    }
                 });
 
                 // Open the media frame
@@ -301,19 +305,10 @@
                             $urlInput.val(response.data.url);
                             console.log('Download: Image URL set to:', response.data.url);
 
-                            // Log the input name for debugging
-                            console.log('Download: Current input name attribute:', $urlInput.attr('name'));
-
-                            // Store the image URL in a hidden field with the same name for form submission
-                            const inputName = $urlInput.attr('name');
-                            if ($('input[name="' + inputName + '_hidden"]').length === 0) {
-                                $('<input>').attr({
-                                    type: 'hidden',
-                                    name: inputName + '_hidden',
-                                    value: response.data.url
-                                }).appendTo('form');
-                            } else {
-                                $('input[name="' + inputName + '_hidden"]').val(response.data.url);
+                            // Ensure the input has the correct name attribute
+                            if ($urlInput.attr('name') !== 'image_url') {
+                                console.log('Download: Fixing image URL input name attribute from:', $urlInput.attr('name'));
+                                $urlInput.attr('name', 'image_url');
                             }
 
                             // Trigger change event to ensure form knows the value changed
@@ -321,6 +316,17 @@
 
                             // Show image preview
                             showImagePreview(response.data.url);
+
+                            // Add a hidden field with the image URL for form submission
+                            if ($('input[name="image_url_preview"]').length === 0) {
+                                $('<input>').attr({
+                                    type: 'hidden',
+                                    name: 'image_url_preview',
+                                    value: response.data.url
+                                }).appendTo('form');
+                            } else {
+                                $('input[name="image_url_preview"]').val(response.data.url);
+                            }
                         } else {
                             showError(response.data.message || 'Error downloading image.');
                         }

@@ -247,6 +247,19 @@ ESC.Form = (function($) {
             }
         }
 
+        // Check for image URL in other fields
+        const $imagePreview = $form.find('.esc-preview-image');
+        if ($imagePreview.length && $imagePreview.attr('src') && $imagePreview.attr('src').indexOf('/wp-content/uploads/') !== -1) {
+            ESC.log('Found image URL in preview:', $imagePreview.attr('src'));
+
+            // Add a hidden field with the image URL from preview
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'image_url_preview',
+                value: $imagePreview.attr('src')
+            }).appendTo($form);
+        }
+
         // Add AJAX action and nonce
         const data = formData + '&action=esc_add_seed&nonce=' + ESC.getConfig().nonce;
 
