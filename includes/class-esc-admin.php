@@ -585,40 +585,28 @@ class ESC_Admin {
             wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'erins-seed-catalog' ) );
         }
 
-        include_once ESC_PLUGIN_DIR . 'admin/views/test-image-urls-page.php';
-    }
-
-    /**
-     * Handle the AJAX request for testing image URLs.
-     */
-    public static function handle_test_image_urls() {
-        // Verify nonce
-        check_ajax_referer( 'esc_ajax_nonce', 'nonce' );
-
-        // Get seeds with images
-        global $wpdb;
-        $table_name = $wpdb->prefix . 'esc_seeds';
-
-        $seeds = $wpdb->get_results(
-            "SELECT id, seed_name, variety_name, image_url FROM {$table_name}
-             WHERE image_url IS NOT NULL AND image_url != ''
-             ORDER BY id DESC"
+        // Enqueue the image URL test script
+        wp_enqueue_script(
+            'esc-image-url-test',
+            ESC_PLUGIN_URL . 'public/js/esc-image-url-test.js',
+            [ 'jquery' ],
+            ESC_VERSION,
+            true
         );
 
-        // Format the results
-        $formatted_seeds = [];
-        foreach ( $seeds as $seed ) {
-            $formatted_seeds[] = [
-                'id' => $seed->id,
-                'name' => $seed->seed_name . ( ! empty( $seed->variety_name ) ? ' - ' . $seed->variety_name : '' ),
-                'image_url' => $seed->image_url,
-            ];
-        }
+        // Localize the script with AJAX data
+        wp_localize_script(
+            'esc-image-url-test',
+            'esc_ajax_object',
+            [
+                'ajax_url' => admin_url( 'admin-ajax.php' ),
+                'nonce'    => wp_create_nonce( 'esc_ajax_nonce' ),
+                'site_url' => get_site_url(),
+            ]
+        );
 
-        // Send the response
-        wp_send_json_success( [
-            'seeds' => $formatted_seeds,
-        ] );
+        // Include the test image URLs page template
+        include ESC_PLUGIN_DIR . 'admin/views/test-image-urls-page.php';
     }
 
 }
