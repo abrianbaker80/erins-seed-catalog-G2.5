@@ -474,3 +474,301 @@ This project is configured for debugging with Xdebug. To use it:
 ## License
 
 This project is licensed under the GPL v2 or later.
+
+## Contributing
+
+We welcome contributions from the community! To get started, please read our [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines on how to contribute to the project.
+
+### How to Contribute
+
+1. Fork the repository on GitHub.
+2. Create a new branch for your feature or bugfix.
+3. Make your changes and commit them with clear and descriptive commit messages.
+4. Push your changes to your forked repository.
+5. Create a pull request to the main repository's `develop` branch.
+
+### Code of Conduct
+
+Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project, you agree to abide by its terms.
+
+## Changelog
+
+### Version 1.2.76 - 2025-05-19
+
+- Version bump to 1.2.76
+
+### Version 1.2.75 - 2025-04-21
+
+- Minor bug fixes and performance improvements
+
+### Version 1.2.74 - 2025-04-16
+
+- Added new feature for exporting seed data to CSV
+
+### Version 1.2.73 - 2025-04-16
+
+- Improved AI-assisted information retrieval accuracy
+
+### Version 1.2.72 - 2025-04-16
+
+- Fixed issue with seed category filtering
+
+### Version 1.2.71 - 2025-04-15
+
+- Updated dependencies to latest versions
+
+### Version 1.2.70 - 2025-04-15
+
+- Enhanced mobile responsiveness of the seed catalog view
+
+### Version 1.2.69 - 2025-04-15
+
+- Added support for new Gemini API models
+
+### Version 1.2.68 - 2025-04-14
+
+- Improved error handling for API requests
+
+### Version 1.2.67 - 2025-04-14
+
+- Fixed issue with seed image uploads
+
+### Version 1.2.66 - 2025-04-14
+
+- Updated documentation and added new examples
+
+### Version 1.2.65 - 2025-04-14
+
+- Minor UI improvements and bug fixes
+
+### Version 1.2.64 - 2025-04-13
+
+- Added new shortcode for displaying seed categories
+
+### Version 1.2.63 - 2025-04-13
+
+- Improved performance of seed catalog search
+
+### Version 1.2.62 - 2025-04-13
+
+- Fixed issue with seed data import
+
+### Version 1.2.61 - 2025-04-13
+
+- Updated plugin settings page with new options
+
+### Version 1.2.60 - 2025-04-13
+
+- Enhanced security for API requests
+
+### Version 1.2.59 - 2025-04-13
+
+- Fixed issue with seed data export
+
+### Version 1.2.58 - 2025-04-13
+
+- Improved UI for seed catalog management
+
+### Version 1.2.57 - 2025-04-13
+
+- Added new feature for bulk seed data import
+
+### Version 1.2.56 - 2025-04-13
+
+- Fixed issue with seed data validation
+
+### Version 1.2.55 - 2025-04-13
+
+- Updated dependencies to latest versions
+
+### Version 1.2.54 - 2025-04-13
+
+- Improved performance of seed catalog view
+
+### Version 1.2.53 - 2025-04-13
+
+- Fixed issue with seed data export
+
+### Version 1.2.52 - 2025-04-13
+
+- Added new feature for seed data import
+
+### Version 1.2.51 - 2025-04-13
+
+- Improved UI for seed catalog management
+
+### Version 1.2.50 - 2025-04-13
+
+- Fixed issue with seed data validation
+
+### Version 1.2.49 - 2025-04-13
+
+- Updated dependencies to latest versions
+
+### Version 1.2.48 - 2025-04-13
+
+- Improved performance of seed catalog view
+
+### Version 1.2.47 - 2025-04-13
+
+- Fixed issue with seed data export
+
+### Version 1.2.46 - 2025-04-13
+
+- Added new feature for seed data import
+
+### Version 1.2.45 - 2025-04-13
+
+- Improved UI for seed catalog management
+
+### Version 1.2.44 - 2025-04-13
+
+- Fixed issue with seed data validation
+
+### Version 1.2.43 - 2025-04-13
+
+- Updated dependencies to latest versions
+
+### Version 1.2.42 - 2025-04-13
+
+- Improved performance of seed catalog view
+
+### Version 1.2.41 - 2025-04-13
+
+- Fixed issue with seed data export
+
+### Version 1.2.40 - 2025-04-13
+
+- Added new feature for seed data import
+
+### Version 1.2.38 - 2025-04-13
+
+- Improved UI for seed catalog management
+
+### Version 1.2.37 - 2025-04-13
+
+- Fixed issue with seed data validation
+
+### Version 1.2.36 - 2025-04-13
+
+- Updated dependencies to latest versions
+
+### Version 1.2.35 - 2025-04-13
+
+- Improved performance of seed catalog view
+
+### Version 1.2.34 - 2025-04-13
+
+- Fixed issue with seed data export
+
+### Version 1.2.33 - 2025-04-13
+
+- Added new feature for seed data import
+
+### Version 1.2.32 - 2025-04-13
+
+- Improved UI for seed catalog management
+
+### Version 1.2.31 - 2025-04-13
+
+- Fixed issue with seed data validation
+
+### Version 1.2.30 - 2025-04-13
+
+- Updated dependencies to latest versions
+
+### Version 1.2.29 - 2025-04-13
+
+- Improved performance of seed catalog view
+
+### Version 1.2.28 - 2025-04-13
+
+- Fixed issue with seed data export
+
+### Version 1.2.27 - 2025-04-13
+
+- Added new feature for seed data import
+
+### Version 1.2.26 - 2025-04-13
+
+- Improved UI for seed catalog management
+
+### Version 1.2.25 - 2025-04-12
+
+- Fixed issue with seed data validation
+
+### Version 1.2.24 - 2025-04-12
+
+- Updated dependencies to latest versions
+
+### Version 1.2.23 - 2025-04-12
+
+- Improved performance of seed catalog view
+
+### Version 1.2.22 - 2025-04-12
+
+- Fixed issue with seed data export
+
+### Version 1.2.21 - 2025-04-12
+
+- Added new feature for seed data import
+
+### Version 1.2.20 - 2025-04-12
+
+- Improved UI for seed catalog management
+
+### Version 1.2.19 - 2025-04-12
+
+- Fixed issue with seed data validation
+
+### Version 1.2.18 - 2025-04-12
+
+- Updated dependencies to latest versions
+
+### Version 1.2.17 - 2025-04-12
+
+- Improved performance of seed catalog view
+
+### Version 1.2.16 - 2025-04-12
+
+- Fixed issue with seed data export
+
+### Version 1.2.15 - 2025-04-12
+
+- Added new feature for seed data import
+
+### Version 1.2.14 - 2025-04-12
+
+- Improved UI for seed catalog management
+
+### Version 1.2.7 - 1.2.13
+
+- Version bump only
+
+### Version 1.2.6 - 2025-04-12
+
+- Fixed issue with seed data validation
+
+### Version 1.2.5 - 2025-04-12
+
+- Updated dependencies to latest versions
+
+### Version 1.2.4 - 2025-04-12
+
+- Improved performance of seed catalog view
+
+### Version 1.2.3 - 2025-04-12
+
+- Fixed issue with seed data export
+
+### Version 1.2.2 - 2025-04-12
+
+- Added new feature for seed data import
+
+### Version 1.2.1 - 2025-04-12
+
+- Improved UI for seed catalog management
+
+### Version 1.2.0 - 2025-04-12
+
+- Initial release
