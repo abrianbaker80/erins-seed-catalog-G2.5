@@ -22,7 +22,6 @@ class ESC_Shortcodes {
 	private static function get_file_version($file_path) {
 		return ESC_VERSION . '.' . (file_exists($file_path) ? filemtime($file_path) : '1');
 	}
-
 	/**
 	 * Initialize shortcodes.
 	 */
@@ -40,12 +39,14 @@ class ESC_Shortcodes {
 
 		// Add a test shortcode for the enhanced AI results page
 		add_shortcode( 'erins_seed_catalog_test_ai_results', [ __CLASS__, 'render_test_ai_results' ] );
-
 		// Add a shortcode for the refactored form
 		add_shortcode( 'erins_seed_catalog_add_form_refactored', [ __CLASS__, 'render_add_form_refactored' ] );
 
 		// Add a test shortcode for integration testing
 		add_shortcode( 'erins_seed_catalog_test_integration', [ __CLASS__, 'render_test_integration' ] );
+		
+		// Add a debug shortcode to help troubleshoot issues
+		add_shortcode( 'erins_seed_catalog_debug', [ __CLASS__, 'render_debug_info' ] );
 
 		// Add a test shortcode for the enhanced view
 		add_shortcode( 'erins_seed_catalog_test_enhanced_view', [ __CLASS__, 'render_test_enhanced_view' ] );
@@ -55,6 +56,9 @@ class ESC_Shortcodes {
 
 		// Add a test shortcode for the refactored form
 		add_shortcode( 'erins_seed_catalog_test_refactored', [ __CLASS__, 'render_test_refactored' ] );
+
+		// Add a shortcode for debugging
+		add_shortcode( 'erins_seed_catalog_debug', [ __CLASS__, 'render_debug_info' ] );
 	}
 
 	/**
@@ -210,8 +214,7 @@ class ESC_Shortcodes {
 	/**
 	 * Render the [erins_seed_catalog_enhanced_view] shortcode.
 	 *
-	 * @param array $atts Shortcode attributes.
-	 * @return string HTML output for the enhanced catalog view.
+	 * @param array $atts Shortcode attributes.	 * @return string HTML output for the enhanced catalog view.
 	 */	public static function render_enhanced_catalog_view( $atts = [] ) {
 		// Attributes could define initial state e.g. default category, items per page
 		$atts = shortcode_atts( [
@@ -255,6 +258,16 @@ class ESC_Shortcodes {
 			['esc-public-styles'],
 			self::get_file_version($css_path)
 		);
+		
+		// Enqueue enhanced cards 2024 styles
+		$css_2024_path = ESC_PLUGIN_DIR . 'public/css/esc-enhanced-cards-2024.css';
+		if (file_exists($css_2024_path)) {
+			wp_enqueue_style(
+				'esc-enhanced-cards-2024-styles',
+				ESC_PLUGIN_URL . 'public/css/esc-enhanced-cards-2024.css',			['esc-enhanced-cards-styles'],
+			self::get_file_version($css_2024_path) 
+		);
+		}
 
 		// Enqueue dashicons if not already loaded
 		wp_enqueue_style('dashicons');
@@ -771,6 +784,94 @@ class ESC_Shortcodes {
 		// Include the test refactored form template
 		ob_start();
 		include ESC_PLUGIN_DIR . 'public/views/test-refactored-form.php';
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render the [erins_seed_catalog_debug] shortcode - for troubleshooting
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string Debug information
+	 */
+	public static function render_debug_info( $atts = [] ) {
+		global $wpdb;
+		
+		// Output buffer for the debug info
+		ob_start();
+		
+		echo '<div class="esc-debug-info" style="background: #f8f8f8; border: 1px solid #ddd; padding: 20px; margin: 20px 0; font-family: monospace;">';
+		echo '<h2>Erin\'s Seed Catalog Debug Info</h2>';
+		
+		// Check if required files exist
+		echo '<h3>Required Files</h3>';
+		$files_to_check = [
+			'enhanced-seed-catalog-display.php' => ESC_PLUGIN_DIR . 'public/views/enhanced-seed-catalog-display.php',
+			'seed-search-form.php' => ESC_PLUGIN_DIR . 'public/views/seed-search-form.php',
+			'_enhanced-seed-card.php' => ESC_PLUGIN_DIR . 'public/views/_enhanced-seed-card.php',
+			'esc-enhanced-cards.css' => ESC_PLUGIN_DIR . 'public/css/esc-enhanced-cards.css',
+			'esc-enhanced-cards-2024.css' => ESC_PLUGIN_DIR . 'public/css/esc-enhanced-cards-2024.css'
+		];
+		
+		echo '<ul>';
+		foreach ($files_to_check as $name => $path) {
+			$exists = file_exists($path);
+			echo '<li>' . esc_html($name) . ': ' . ($exists ? '✅ Exists' : '❌ Missing') . '</li>';
+		}
+		echo '</ul>';
+		
+		// Check database
+		echo '<h3>Database Check</h3>';
+		$table_name = $wpdb->prefix . 'esc_seeds';
+		$table_exists = $wpdb->get_var("SHOW TABLES LIKE '$table_name'") === $table_name;
+		echo '<p>Seeds Table: ' . ($table_exists ? '✅ Exists' : '❌ Missing') . '</p>';
+		
+		if ($table_exists) {
+			$seed_count = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
+			echo '<p>Total Seeds: ' . intval($seed_count) . '</p>';
+			
+			// Get a sample seed
+			$sample_seed = $wpdb->get_row("SELECT * FROM $table_name LIMIT 1");
+			if ($sample_seed) {
+				echo '<p>Sample Seed: ID=' . esc_html($sample_seed->id) . ', Name=' . esc_html($sample_seed->seed_name) . '</p>';
+			} else {
+				echo '<p>No seeds found in database</p>';
+			}
+		}
+		
+		// Check if shortcodes are registered properly
+		echo '<h3>Shortcode Registration</h3>';
+		echo '<p>This function is running, which means the class is loaded correctly.</p>';
+		
+		// Try getting seeds directly
+		echo '<h3>Direct Database Query Test</h3>';
+		try {
+			$seeds = ESC_DB::get_seeds(['limit' => 3]);
+			echo '<p>ESC_DB::get_seeds returned: ' . count($seeds) . ' seeds</p>';
+			if (!empty($seeds)) {
+				echo '<ul>';
+				foreach ($seeds as $seed) {
+					echo '<li>ID: ' . esc_html($seed->id) . ', Name: ' . esc_html($seed->seed_name) . '</li>';
+				}
+				echo '</ul>';
+			}
+		} catch (Exception $e) {
+			echo '<p>Error: ' . esc_html($e->getMessage()) . '</p>';
+		}
+		
+		// Verify CSS Loading
+		echo '<h3>CSS Files</h3>';
+		global $wp_styles;
+		echo '<p>Currently Enqueued Styles:</p>';
+		echo '<ul>';
+		foreach ($wp_styles->registered as $handle => $style) {
+			if (strpos($handle, 'esc') !== false) {
+				echo '<li>' . esc_html($handle) . ' - ' . esc_html($style->src) . '</li>';
+			}
+		}
+		echo '</ul>';
+		
+		echo '</div>';
+		
 		return ob_get_clean();
 	}
 }
