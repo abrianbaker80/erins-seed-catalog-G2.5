@@ -537,14 +537,35 @@ function Update-Files {
 
         # Also update the upgrade notice if it exists
         if ($readmeContent -match "== Upgrade Notice ==[\r\n]+") {
-            # Add upgrade notice entry
-            $readmeContent = $readmeContent -replace "(== Upgrade Notice ==[\r\n]+)", "`$1= $newVersion =\nUpdate to the latest version for best experience.\n\n"
+            # Create a simple upgrade notice
+            $upgradeNotice = "= $newVersion =\nThis update includes the latest improvements and bug fixes. See the changelog for details.\n\n"
+
+            # Insert the new upgrade notice after the "== Upgrade Notice ==" heading
+            $readmeContent = $readmeContent -replace "(== Upgrade Notice ==[\r\n]+)", "`$1$upgradeNotice"
         }
-        
+
         Set-Content -Path "readme.txt" -Value $readmeContent
     }
+
+    # Always update README.md with changelog
+    # We're using the pre-generated changelog
+    $shouldUpdateReadme = $true
+    if ($shouldUpdateReadme) {
+        # Use the pre-generated changelog
+        Write-Host "Updating README.md with pre-generated changelog..." -ForegroundColor Cyan
+        Update-ReadmeChangelog -newVersion $newVersion -changelog $changelog
+    }
 }
-# , not just the version bump
+
+# Main execution
+$currentVersion = Get-Version
+Write-Host "Current version: $currentVersion" -ForegroundColor Cyan
+
+$newVersion = Update-Version -version $currentVersion -type $VersionType
+Write-Host "New version: $newVersion" -ForegroundColor Green
+
+# Generate the changelog first, before updating any files
+# This ensures we capture the actual changes, not just the version bump
 Write-Host "Generating changelog before updating files..." -ForegroundColor Cyan
 $changelog = Get-ChangesSinceLastTag -newVersion $newVersion -releaseDescription $ReleaseDescription
 
