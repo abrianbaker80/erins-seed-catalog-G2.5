@@ -27,7 +27,8 @@
 
 /* Search input wrapper */
 .esc-enhanced-catalog #esc-search-form .esc-search-input-wrapper {
-    flex-grow: 1;
+    flex-grow: 3; /* Increased from 1 to 3 to match the input flex-grow */
+    flex-basis: 65%; /* Added to ensure it takes up more initial space */
     position: relative;
 }
 
@@ -37,8 +38,8 @@
 }
 
 .esc-enhanced-catalog #esc-search-form input[type="search"] {
-    flex-grow: 1;
-    min-width: 200px;
+    flex-grow: 3; /* Increased from 1 to 3 to allocate more space */
+    min-width: 300px; /* Increased from 200px to 300px */
     padding: 12px 15px;
     padding-right: 40px; /* Make room for the clear button */
     font-size: 16px;
@@ -57,7 +58,9 @@
 }
 
 .esc-enhanced-catalog #esc-search-form select {
-    min-width: 180px;
+    min-width: 140px; /* Reduced from 180px to 140px */
+    max-width: 160px; /* Added max-width to prevent it from getting too large */
+    flex: 1; /* Allow it to take remaining space, but less than the search input */
     padding: 12px 15px;
     font-size: 16px;
     border: 1px solid #ddd;
@@ -226,10 +229,17 @@
         flex-basis: 100%;
     }
     
-    .esc-enhanced-catalog #esc-search-form input[type="search"],
+    .esc-enhanced-catalog #esc-search-form input[type="search"] {
+        font-size: 15px;
+        padding: 10px 12px;
+        min-width: 100%; /* Ensure full width on mobile */
+    }
+    
     .esc-enhanced-catalog #esc-search-form select {
         font-size: 15px;
         padding: 10px 12px;
+        min-width: 100%; /* Full width on mobile */
+        max-width: none; /* Remove max-width constraint on mobile */
     }
     
     .esc-enhanced-catalog #esc-search-form button {
