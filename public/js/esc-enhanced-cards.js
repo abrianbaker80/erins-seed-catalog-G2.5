@@ -172,18 +172,125 @@
             loadSeeds(1);
         });
 
-        // Handle category filter change
+        // Handle category filter change - only auto-submit if there's already a search term
         $searchForm.find('#esc-filter-category').on('change', function() {
-            loadSeeds(1);
+            if ($searchForm.find('#esc-search-input').val() || $(this).val()) {
+                loadSeeds(1);
+            }
+        });
+
+        // Handle search input - add clear button when text is entered
+        const $searchInput = $searchForm.find('#esc-search-input');
+        const $searchWrapper = $searchForm.find('.esc-search-input-wrapper');
+        const $clearButton = $('<button>', {
+            type: 'button',
+            class: 'esc-clear-input',
+            'aria-label': 'Clear search',
+            html: '&times;',
+        }).hide();
+        
+        // Insert clear button inside the wrapper
+        $searchWrapper.append($clearButton);
+        
+        // Show/hide clear button based on input content
+        $searchInput.on('input', function() {
+            $clearButton.toggle($(this).val().length > 0);
+        });
+        
+        // Clear input when clear button clicked
+        $clearButton.on('click', function() {
+            $searchInput.val('').focus();
+            $(this).hide();
+        });
+        
+        // Initialize clear button state on page load
+        $clearButton.toggle($searchInput.val().length > 0);
+
+        // Enhance search form accessibility with keyboard shortcuts
+        $searchForm.on('keydown', function(e) {
+            // Submit form on Enter when focus is in the form
+            if (e.key === 'Enter' && !$(e.target).is('textarea')) {
+                if (!$(e.target).is('button[type="submit"]')) {
+                    e.preventDefault();
+                    $searchForm.find('button[type="submit"]').trigger('click');
+                }
+            }
+            
+            // Focus next element on Tab
+            if (e.key === 'Tab') {
+                // Allow natural tab order
+            }
         });
 
         // Handle pagination clicks
         $resultsContainer.on('click', '.esc-pagination a', function(e) {
             e.preventDefault();
             const href = $(this).attr('href');
-            const page = href.match(/\?paged=(\d+)/) || href.match(/page\/(\d+)/);
+            const page = href.match(/[?&]paged=(\d+)/) || href.match(/page\/(\d+)/);
             if (page && page[1]) {
                 loadSeeds(parseInt(page[1], 10));
+                
+                // Scroll to top of results
+                $('html, body').animate({
+                    scrollTop: $resultsContainer.offset().top - 100
+                }, 300);
+            }
+        });
+        
+        // Handle reset search from search summary
+        $resultsContainer.on('click', '.esc-reset-search', function(e) {
+            $searchForm.find('#esc-search-input').val('');
+            $searchForm.find('#esc-filter-category').val('');
+            $clearButton.hide();
+            loadSeeds(1);
+        });
+
+        // Handle reset button click
+        $searchForm.find('.esc-reset-button').on('click', function(e) {
+            e.preventDefault(); // Prevent form submission 
+            $searchForm.find('#esc-search-input').val('');
+            $searchForm.find('#esc-filter-category').val('');
+            $clearButton.hide();
+            
+            // Only reload if we had a previous search or filter
+            const currentUrl = new URL(window.location);
+            if (currentUrl.searchParams.has('s_seed') || 
+                currentUrl.searchParams.has('seed_category') || 
+                currentUrl.searchParams.has('paged')) {
+                loadSeeds(1);
+            }
+        });
+
+        // Handle browser back/forward button
+        $(window).on('popstate', function(e) {
+            if (e.originalEvent.state) {
+                const state = e.originalEvent.state;
+                
+                // Update form fields to match URL state
+                if (state.search !== undefined) {
+                    $searchForm.find('#esc-search-input').val(state.search);
+                    $clearButton.toggle(state.search.length > 0);
+                }
+                
+                if (state.category !== undefined) {
+                    $searchForm.find('#esc-filter-category').val(state.category);
+                }
+                
+                // Only reload if not showing a seed modal (handled by other popstate listener)
+                const seedModal = $('#esc-seed-detail-modal');
+                if (!seedModal.hasClass('show')) {
+                    loadSeeds(state.page || 1);
+                }
+            }
+        });
+        
+        // Add keyboard accessibility for search input
+        $searchInput.on('keydown', function(e) {
+            // If Escape key is pressed and input has value, clear it
+            if (e.key === 'Escape' && $(this).val()) {
+                e.preventDefault(); // Prevent closing modal/other behaviors
+                $(this).val('');
+                $clearButton.hide();
             }
         });
     }
@@ -193,10 +300,16 @@
         const $resultsContainer = $('#esc-catalog-results');
         const $searchForm = $('#esc-search-form');
 
-        $resultsContainer.html('<div class="esc-loading">' + (esc_ajax_object.loading_text || 'Loading...') + '</div>');
+        // Show loading state
+        $resultsContainer.addClass('esc-loading-state');
+        $resultsContainer.html('<div class="esc-loading"><div class="esc-loading-spinner"></div><p>' + (esc_ajax_object.loading_text || 'Loading...') + '</p></div>');
+        
+        // Disable search button during load
+        const $searchButton = $searchForm.find('button[type="submit"]');
+        const originalButtonText = $searchButton.text();
+        $searchButton.prop('disabled', true).addClass('esc-button-loading').text('Searching...');
 
-        let ajaxData = {
-            action: 'esc_filter_seeds',
+        let ajaxData = {            action: 'esc_filter_seeds',
             nonce: esc_ajax_object.nonce,
             paged: page,
             enhanced: true,
@@ -215,24 +328,109 @@
             data: ajaxData,
             dataType: 'json',
             success: function(response) {
+                $resultsContainer.removeClass('esc-loading-state');
+                
                 if (response.success) {
                     $resultsContainer.html(response.data.html);
+                          // Add search result summary at the top if a search was performed
+                if (ajaxData.search || ajaxData.category) {
+                    const summaryHtml = createSearchSummary(
+                        response.data.total_found, 
+                        ajaxData.search, 
+                        ajaxData.category,
+                        response.data.category_name || ''
+                    );
+                    $resultsContainer.find('.esc-seed-list').before(summaryHtml);
+                }
+                    
+                    // Update browser URL for better history management
+                    if (window.history && window.history.pushState) {
+                        const url = new URL(window.location);
+                        if (ajaxData.search) url.searchParams.set('s_seed', ajaxData.search);
+                        else url.searchParams.delete('s_seed');
+                        
+                        if (ajaxData.category) url.searchParams.set('seed_category', ajaxData.category);
+                        else url.searchParams.delete('seed_category');
+                        
+                        if (page > 1) url.searchParams.set('paged', page);
+                        else url.searchParams.delete('paged');
+                        
+                        window.history.pushState({search: ajaxData.search, category: ajaxData.category, page: page}, '', url);
+                    }
                 } else {
-                    $resultsContainer.html('<p class="esc-no-results error">' + (response.data.message || 'Error loading seeds.') + '</p>');
+                    $resultsContainer.html('<div class="esc-error"><p>' + (response.data.message || 'Error loading seeds.') + '</p></div>');
                     console.error("Filter Seeds Error:", response.data);
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                $resultsContainer.html('<p class="esc-no-results error">' + (esc_ajax_object.error_text || 'An error occurred.') + '</p>');
+                $resultsContainer.removeClass('esc-loading-state');
+                $resultsContainer.html('<div class="esc-error"><p>' + (esc_ajax_object.error_text || 'An error occurred.') + '</p></div>');
                 console.error("AJAX Error:", textStatus, errorThrown);
+            },
+            complete: function() {
+                // Re-enable search button and restore text
+                $searchButton.prop('disabled', false).removeClass('esc-button-loading').text(originalButtonText);
             }
         });
+    }
+
+    // Helper function to create search summary text
+    function createSearchSummary(totalFound, searchTerm, categoryId, categoryName) {
+        let summaryText = '';
+        
+        if (totalFound === 0) {
+            summaryText = 'No seeds found';
+            if (searchTerm) summaryText += ' matching "' + searchTerm + '"';
+        } else {
+            summaryText = 'Found ' + totalFound + ' seed' + (totalFound !== 1 ? 's' : '');
+            if (searchTerm) summaryText += ' matching "' + searchTerm + '"';
+        }
+        
+        if (categoryId) {
+            // Use the category name from the response if available, otherwise try to get it from the select element
+            let catName = categoryName;
+            if (!catName) {
+                catName = $('#esc-filter-category option[value="' + categoryId + '"]').text();
+            }
+            
+            if (catName) {
+                summaryText += ' in category "' + catName + '"';
+            }
+        }
+        
+        return '<div class="esc-search-summary">' + summaryText + 
+               '<button type="button" class="esc-reset-search">Clear search</button></div>';
     }
 
     // Initialize when document is ready
     $(document).ready(function() {
         console.log('Enhanced cards script initialized');
         initEnhancedCards();
+
+        // Check for search parameters in URL and initialize search if needed
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchParam = urlParams.get('s_seed');
+        const categoryParam = urlParams.get('seed_category');
+        const pagedParam = urlParams.get('paged');
+        
+        const $searchForm = $('#esc-search-form');
+        if ($searchForm.length && (searchParam || categoryParam)) {
+            // Set form values from URL parameters
+            if (searchParam) {
+                $searchForm.find('#esc-search-input').val(searchParam);
+            }
+            
+            if (categoryParam) {
+                $searchForm.find('#esc-filter-category').val(categoryParam);
+            }
+            
+            // If we have search parameters but haven't loaded results yet, trigger a search
+            if ((searchParam || categoryParam) && !$('#esc-catalog-results').data('searched')) {
+                console.log('URL has search parameters, triggering search');
+                loadSeeds(pagedParam ? parseInt(pagedParam, 10) : 1);
+                $('#esc-catalog-results').data('searched', true);
+            }
+        }
 
         // Add a test click handler to verify event binding
         console.log('Adding test click handler to seed cards');

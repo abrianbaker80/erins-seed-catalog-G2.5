@@ -329,14 +329,15 @@ class ESC_Ajax {
         } else {
             echo '<p class="esc-no-results">' . esc_html__( 'No seeds found matching your criteria.', 'erins-seed-catalog' ) . '</p>';
         }
-        $html = ob_get_clean();
-
-        // 6. Send JSON response
+        $html = ob_get_clean();        // 6. Send JSON response with enhanced data
         wp_send_json_success([
             'html' => $html,
             'total_found' => $total_seeds,
             'current_page' => $paged,
-            'total_pages' => $total_pages
+            'total_pages' => $total_pages,
+            'search_term' => $search_term,
+            'category_id' => $category_id,
+            'category_name' => $category_id > 0 ? get_term_field('name', $category_id, ESC_Taxonomy::TAXONOMY_NAME) : ''
         ]);
 
         wp_die();

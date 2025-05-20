@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<h2><?php esc_html_e( 'Seed Catalog', 'erins-seed-catalog' ); ?></h2>
 
-	<div id="esc-catalog-results">
+	<div id="esc-catalog-results" aria-live="polite" aria-atomic="true"
 		<?php if ( ! empty( $seeds ) ) : ?>
 			<div class="esc-seed-list esc-enhanced-grid">
 				<?php foreach ( $seeds as $seed ) : ?>
