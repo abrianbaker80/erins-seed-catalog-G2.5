@@ -239,6 +239,36 @@
         $('.esc-seed-card').on('click', function() {
             console.log('Direct click handler fired for card: ' + $(this).data('seed-id'));
         });
+
+        // Add keyboard navigation support
+        $('.esc-seed-card').attr('tabindex', '0');
+        $(document).on('keydown', '.esc-seed-card', function(e) {
+            // Open card on Enter or Space
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const seedId = $(this).data('seed-id');
+                if (seedId) {
+                    console.log('Opening seed detail via keyboard for ID: ' + seedId);
+                    openSeedDetail(seedId);
+                }
+            }
+        });
+
+        // Enhance image loading experience
+        $('.esc-seed-image').on('load', function() {
+            $(this).addClass('esc-loaded');
+            $(this).closest('.esc-seed-image-container').addClass('esc-image-loaded');
+        }).on('error', function() {
+            $(this).closest('.esc-seed-image-container').addClass('esc-image-error');
+            console.error('Image failed to load: ' + $(this).attr('src'));
+        });
+        
+        // Initialize images that are already loaded
+        $('.esc-seed-image').each(function() {
+            if (this.complete) {
+                $(this).trigger('load');
+            }
+        });
     });
 
 })(jQuery);

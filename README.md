@@ -4,15 +4,15 @@ A WordPress plugin designed to help gardeners catalog and track their vegetable 
 
 ## Version History
 
+## Version 1.2.79 - 2025-05-19 23:18:06
+
+### Changes
+- short code fix
+
+
 ## Version 1.2.78 - 2025-05-19 21:01:07
 
-### Documentation
-- Updated documentation in README.md
-- Updated documentation in readme.txt
-
-### Other Changes
-- Modified erins-seed-catalog.php
-
+#
 
 ## Version 1.2.76 - 2025-05-19 20:04:29
 

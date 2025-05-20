@@ -377,10 +377,21 @@ Erin\'s Seed Catalog Plugin', 'erins-seed-catalog'),
         // Google AI API endpoint for listing models
         $api_url = add_query_arg('key', $api_key, 'https://generativelanguage.googleapis.com/v1beta/models');
 
-        // Make the API request
-        $response = wp_remote_get($api_url, [
+        // Add custom user agent and additional debugging for 403 errors
+        $args = [
             'timeout' => 15, // Increase timeout for potentially slow API
-        ]);
+            'headers' => [
+                'User-Agent' => 'WordPress/' . get_bloginfo('version') . '; Erins-Seed-Catalog; ' . get_bloginfo('url'),
+                'Referer' => site_url(),
+                'X-Requested-With' => 'XMLHttpRequest'
+            ]
+        ];
+        
+        // Log the request attempt for debugging
+        error_log('Attempting to fetch Gemini models from: ' . preg_replace('/key=([^&]+)/', 'key=REDACTED', $api_url));
+
+        // Make the API request
+        $response = wp_remote_get($api_url, $args);
 
         // Check if the request was successful
         if (is_wp_error($response)) {
@@ -394,10 +405,49 @@ Erin\'s Seed Catalog Plugin', 'erins-seed-catalog'),
         // Check the response code
         $response_code = wp_remote_retrieve_response_code($response);
         if ($response_code !== 200) {
-            // Log the error
-            error_log('Error fetching Gemini models. Response code: ' . $response_code);
+            // Log the error with more detail
+            $body = wp_remote_retrieve_body($response);
+            $error_body = json_decode($body, true);
+            $error_message = 'API returned status code: ' . $response_code;
+            
+            if (!empty($error_body) && isset($error_body['error'])) {
+                $error_details = $error_body['error'];
+                if (isset($error_details['message'])) {
+                    $error_message .= ' - ' . $error_details['message'];
+                }
+                if (isset($error_details['status'])) {
+                    $error_message .= ' (Status: ' . $error_details['status'] . ')';
+                }
+                
+                // Check for specific error conditions
+                if (strpos($error_details['message'] ?? '', 'API key not valid') !== false) {
+                    $error_message = 'Invalid API key. Please verify your Gemini API key.';
+                } else if (strpos($error_details['message'] ?? '', 'API key expired') !== false) {
+                    $error_message = 'Your Gemini API key has expired. Please generate a new key.';
+                } else if ($response_code == 403) {
+                    // More detailed 403 error handling
+                    $error_message = 'Access denied (403). This could be due to:';
+                    $error_message .= "\n- Your API key may have insufficient permissions";
+                    $error_message .= "\n- IP restrictions on your API key";
+                    $error_message .= "\n- You may need to enable the Gemini API in your Google Cloud project";
+                    $error_message .= "\n- Your API key usage quota may have been exceeded";
+                    
+                    // Check for quota issues in the message
+                    if (isset($error_details['message']) && 
+                        (strpos($error_details['message'], 'quota') !== false || 
+                         strpos($error_details['message'], 'limit') !== false)) {
+                        $error_message = 'API quota exceeded. You may have reached your usage limits for the Gemini API.';
+                    }
+                }
+            }
+            
+            // Log the full response for debugging
+            error_log('Error fetching Gemini models: ' . $error_message);
+            error_log('Full response headers: ' . print_r(wp_remote_retrieve_headers($response), true));
+            error_log('Full response body: ' . substr($body, 0, 500));
+            
             $updated_models['_update_status'] = 'error';
-            $updated_models['_update_error'] = 'API returned status code: ' . $response_code;
+            $updated_models['_update_error'] = $error_message;
             return $updated_models;
         }
 

@@ -11,6 +11,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 class ESC_Shortcodes {
 
 	/**
+	 * Get file version for cache busting.
+	 * 
+	 * This helper method uses filemtime() for more efficient cache busting
+	 * than using time() which creates a new version on every page load.
+	 * 
+	 * @param string $file_path The path to the file.
+	 * @return string The version string.
+	 */
+	private static function get_file_version($file_path) {
+		return ESC_VERSION . '.' . (file_exists($file_path) ? filemtime($file_path) : '1');
+	}
+
+	/**
 	 * Initialize shortcodes.
 	 */
 	public static function init() {
@@ -20,6 +33,7 @@ class ESC_Shortcodes {
 		add_shortcode( 'erins_seed_catalog_categories', [ __CLASS__, 'render_category_list' ] );
 		add_shortcode( 'erins_seed_catalog_export', [ __CLASS__, 'render_export_form' ] );
 		add_shortcode( 'erins_seed_catalog_enhanced_view', [ __CLASS__, 'render_enhanced_catalog_view' ] );
+		add_shortcode( 'erins_seed_catalog_improved_view', [ __CLASS__, 'render_improved_catalog_view' ] );
 
 		// Add a test shortcode to verify modern form is working
 		add_shortcode( 'erins_seed_catalog_add_form_modern', [ __CLASS__, 'render_add_form_modern' ] );
@@ -198,8 +212,7 @@ class ESC_Shortcodes {
 	 *
 	 * @param array $atts Shortcode attributes.
 	 * @return string HTML output for the enhanced catalog view.
-	 */
-	public static function render_enhanced_catalog_view( $atts = [] ) {
+	 */	public static function render_enhanced_catalog_view( $atts = [] ) {
 		// Attributes could define initial state e.g. default category, items per page
 		$atts = shortcode_atts( [
 			'per_page' => 12,
@@ -234,52 +247,55 @@ class ESC_Shortcodes {
 				'error_text' => __('An error occurred.', 'erins-seed-catalog'),
 			]
 		);
-
-		// Enqueue enhanced cards styles with cache-busting
+		// Enqueue enhanced cards styles with better cache-busting
+		$css_path = ESC_PLUGIN_DIR . 'public/css/esc-enhanced-cards.css';
 		wp_enqueue_style(
 			'esc-enhanced-cards-styles',
 			ESC_PLUGIN_URL . 'public/css/esc-enhanced-cards.css',
 			['esc-public-styles'],
-			ESC_VERSION . '.' . time() // Add cache-busting
+			self::get_file_version($css_path)
 		);
 
 		// Enqueue dashicons if not already loaded
 		wp_enqueue_style('dashicons');
-
-		// Enqueue debug scripts in development environments
+		// Enqueue debug scripts in development environments with better cache-busting
 		if (defined('WP_DEBUG') && WP_DEBUG) {
+			$debug_js_path = ESC_PLUGIN_DIR . 'public/js/esc-debug.js';
 			wp_enqueue_script(
 				'esc-debug-script',
 				ESC_PLUGIN_URL . 'public/js/esc-debug.js',
 				['jquery', 'esc-enhanced-cards-scripts'],
-				ESC_VERSION . '.' . time(),
+				self::get_file_version($debug_js_path),
 				true
 			);
 
 			// Enqueue image debug script
+			$image_debug_js_path = ESC_PLUGIN_DIR . 'public/js/esc-image-debug.js';
 			wp_enqueue_script(
 				'esc-image-debug-script',
 				ESC_PLUGIN_URL . 'public/js/esc-image-debug.js',
 				['jquery', 'esc-enhanced-cards-scripts'],
-				ESC_VERSION . '.' . time(),
+				self::get_file_version($image_debug_js_path),
 				true
 			);
 
 			// Enqueue image check script
+			$image_check_js_path = ESC_PLUGIN_DIR . 'public/js/esc-image-check.js';
 			wp_enqueue_script(
 				'esc-image-check-script',
 				ESC_PLUGIN_URL . 'public/js/esc-image-check.js',
 				['jquery', 'esc-enhanced-cards-scripts'],
-				ESC_VERSION . '.' . time(),
+				self::get_file_version($image_check_js_path),
 				true
 			);
 
 			// Enqueue image URL test script
+			$image_url_test_js_path = ESC_PLUGIN_DIR . 'public/js/esc-image-url-test.js';
 			wp_enqueue_script(
 				'esc-image-url-test-script',
 				ESC_PLUGIN_URL . 'public/js/esc-image-url-test.js',
 				['jquery', 'esc-enhanced-cards-scripts'],
-				ESC_VERSION . '.' . time(),
+				self::get_file_version($image_url_test_js_path),
 				true
 			);
 		}
@@ -312,21 +328,164 @@ class ESC_Shortcodes {
 	}
 
 	/**
+	 * Render enhanced catalog view with improved styling
+	 *
+	 * This function is a variation of render_enhanced_catalog_view that uses the improved CSS.
+	 * It should be used with the shortcode [erins_seed_catalog_improved_view]
+	 *
+	 * @param array $atts Shortcode attributes
+	 * @return string HTML output of seed catalog
+	 */
+	public static function render_improved_catalog_view( $atts = [] ) {
+		// IMPROVED_VIEW_START - Unique identifier for easier code maintenance
+		// Attributes could define initial state e.g. default category, items per page
+		$atts = shortcode_atts( [
+			'per_page' => 12,
+			'category' => '', // Allow filtering by category slug/ID initially
+		], $atts, 'erins_seed_catalog_improved_view' );
+
+		// Enqueue public styles first as a dependency
+		wp_enqueue_style(
+			'esc-public-styles',
+			ESC_PLUGIN_URL . 'public/css/esc-public-styles.css',
+			[],
+			ESC_VERSION
+		);
+
+		// Enqueue enhanced card scripts and styles
+		wp_enqueue_script(
+			'esc-enhanced-cards-scripts',
+			ESC_PLUGIN_URL . 'public/js/esc-enhanced-cards.js',
+			['jquery'],
+			ESC_VERSION,
+			true
+		);
+
+		// Localize script with AJAX data
+		wp_localize_script(
+			'esc-enhanced-cards-scripts',
+			'esc_ajax_object',
+			[
+				'ajax_url' => admin_url('admin-ajax.php'),
+				'nonce' => wp_create_nonce('esc_ajax_nonce'),
+				'loading_text' => __('Loading...', 'erins-seed-catalog'),
+				'error_text' => __('An error occurred.', 'erins-seed-catalog'),
+			]
+		);
+
+		// Enqueue improved enhanced cards styles with better cache-busting
+		$css_file_path = ESC_PLUGIN_DIR . 'public/css/esc-enhanced-cards-2024.css';
+		wp_enqueue_style(
+			'esc-enhanced-cards-styles-2024',
+			ESC_PLUGIN_URL . 'public/css/esc-enhanced-cards-2024.css',
+			['esc-public-styles'],
+			self::get_file_version($css_file_path)
+		);
+
+		// Enqueue dashicons if not already loaded
+		wp_enqueue_style('dashicons');
+
+		// Enqueue debug scripts in development environments with improved versioning
+		if (defined('WP_DEBUG') && WP_DEBUG) {
+			$debug_js_path = ESC_PLUGIN_DIR . 'public/js/esc-debug.js';
+			wp_enqueue_script(
+				'esc-debug-script',
+				ESC_PLUGIN_URL . 'public/js/esc-debug.js',
+				['jquery', 'esc-enhanced-cards-scripts'],
+				self::get_file_version($debug_js_path),
+				true
+			);
+
+			$image_debug_js_path = ESC_PLUGIN_DIR . 'public/js/esc-image-debug.js';
+			wp_enqueue_script(
+				'esc-image-debug-script',
+				ESC_PLUGIN_URL . 'public/js/esc-image-debug.js',
+				['jquery', 'esc-enhanced-cards-scripts'],
+				self::get_file_version($image_debug_js_path),
+				true
+			);
+
+			$image_check_js_path = ESC_PLUGIN_DIR . 'public/js/esc-image-check.js';
+			wp_enqueue_script(
+				'esc-image-check-script',
+				ESC_PLUGIN_URL . 'public/js/esc-image-check.js',
+				['jquery', 'esc-enhanced-cards-scripts'],
+				self::get_file_version($image_check_js_path),
+				true
+			);
+
+			$image_url_test_js_path = ESC_PLUGIN_DIR . 'public/js/esc-image-url-test.js';
+			wp_enqueue_script(
+				'esc-image-url-test-script',
+				ESC_PLUGIN_URL . 'public/js/esc-image-url-test.js',
+				['jquery', 'esc-enhanced-cards-scripts'],
+				self::get_file_version($image_url_test_js_path),
+				true
+			);
+		}
+
+		$paged = get_query_var('paged') ? absint(get_query_var('paged')) : 1;
+		$per_page = absint($atts['per_page']);
+		$initial_category_id = 0;
+
+		// Handle shortcode attribute category if provided
+		if (!empty($atts['category'])) {
+			// Support both category slug and ID
+			if (is_numeric($atts['category'])) {
+				$initial_category_id = intval($atts['category']);
+			} else {
+				// Using the consistent taxonomy name from the Taxonomy class
+				$term = get_term_by('slug', sanitize_text_field($atts['category']), ESC_Taxonomy::TAXONOMY_NAME);
+				if ($term && !is_wp_error($term)) {
+					$initial_category_id = $term->term_id;
+				}
+			}
+		}
+
+		// Get seed data for initial render with pagination
+		// Using the correct class name case: ESC_DB (uppercase DB)
+		$args = [
+			'limit'    => $per_page,
+			'offset'   => ($paged - 1) * $per_page,
+			'category' => $initial_category_id, // Pass term_id
+		];
+		$seeds = ESC_DB::get_seeds($args);
+		$total_seeds = ESC_DB::count_seeds(['category' => $initial_category_id]);
+		$total_pages = ceil($total_seeds / $per_page);
+
+		// Start output buffer
+		ob_start();
+
+		// Include the enhanced catalog display view for the initial render
+		include ESC_PLUGIN_DIR . 'public/views/enhanced-seed-catalog-display.php';
+
+		return ob_get_clean();
+		// IMPROVED_VIEW_END - Unique identifier for easier code maintenance
+	}
+
+	/**
 	 * Render the [erins_seed_catalog_test_ai_results] shortcode.
 	 *
 	 * @param array $atts Shortcode attributes.
 	 * @return string HTML output for the test AI results page.
-	 */
-	public static function render_test_ai_results( $atts = [] ) {
-		// Enqueue refactored CSS first
-		wp_enqueue_style('esc-refactored', ESC_PLUGIN_URL . 'public/css/esc-refactored.css', [], ESC_VERSION . '.' . time());
+	 */	public static function render_test_ai_results( $atts = [] ) {
+		// Enqueue refactored CSS first with proper cache busting
+		$refactored_css_path = ESC_PLUGIN_DIR . 'public/css/esc-refactored.css';
+		wp_enqueue_style('esc-refactored', ESC_PLUGIN_URL . 'public/css/esc-refactored.css', [], 
+			self::get_file_version($refactored_css_path));
 
 		// Then load modern form CSS for backward compatibility
-		wp_enqueue_style('esc-modern-form', ESC_PLUGIN_URL . 'public/css/esc-modern-form.css', ['esc-refactored'], ESC_VERSION . '.' . time());
+		$modern_form_css_path = ESC_PLUGIN_DIR . 'public/css/esc-modern-form.css';
+		wp_enqueue_style('esc-modern-form', ESC_PLUGIN_URL . 'public/css/esc-modern-form.css', ['esc-refactored'], 
+			self::get_file_version($modern_form_css_path));
 
 		// Enqueue enhanced AI results CSS and JS
-		wp_enqueue_style('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/css/esc-ai-results-enhanced.css', ['esc-refactored', 'esc-modern-form'], ESC_VERSION . '.' . time());
-		wp_enqueue_script('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/js/esc-ai-results-enhanced.js', ['jquery'], ESC_VERSION . '.' . time(), true);
+		$ai_results_css_path = ESC_PLUGIN_DIR . 'public/css/esc-ai-results-enhanced.css';
+		$ai_results_js_path = ESC_PLUGIN_DIR . 'public/js/esc-ai-results-enhanced.js';
+		wp_enqueue_style('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/css/esc-ai-results-enhanced.css', 
+			['esc-refactored', 'esc-modern-form'], self::get_file_version($ai_results_css_path));
+		wp_enqueue_script('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/js/esc-ai-results-enhanced.js', 
+			['jquery'], self::get_file_version($ai_results_js_path), true);
 
 		ob_start();
 		include ESC_PLUGIN_DIR . 'public/views/test-ai-results.php';
@@ -406,8 +565,7 @@ class ESC_Shortcodes {
 	 *
 	 * @param array $atts Shortcode attributes.
 	 * @return string HTML output for the integration test page.
-	 */
-	public static function render_test_integration( $atts = [] ) {
+	 */	public static function render_test_integration( $atts = [] ) {
 		// Enqueue all necessary styles and scripts
 		wp_enqueue_style('esc-refactored', ESC_PLUGIN_URL . 'public/css/esc-refactored.css', [], ESC_VERSION);
 		wp_enqueue_style('esc-modern-form', ESC_PLUGIN_URL . 'public/css/esc-modern-form.css', [], ESC_VERSION);
@@ -506,13 +664,13 @@ class ESC_Shortcodes {
 				'site_url' => get_site_url(),
 			]
 		);
-
-		// Enqueue enhanced cards styles with cache-busting
+		// Enqueue enhanced cards styles with better cache-busting
+		$css_path = ESC_PLUGIN_DIR . 'public/css/esc-enhanced-cards.css';
 		wp_enqueue_style(
 			'esc-enhanced-cards-styles',
 			ESC_PLUGIN_URL . 'public/css/esc-enhanced-cards.css',
 			['esc-public-styles'],
-			ESC_VERSION . '.' . time() // Add cache-busting
+			self::get_file_version($css_path)
 		);
 
 		// Enqueue dashicons if not already loaded
