@@ -1,0 +1,920 @@
+/**
+ * Enhanced Seed Card Styles - 2024 Edition
+ * Advanced improvements for better visual appeal, accessibility, and user experience
+ */
+
+/* Seed List Grid Layout with improved spacing and responsive design */
+.esc-enhanced-catalog .esc-seed-list,
+.esc-enhanced-catalog .esc-seed-list.esc-enhanced-grid,
+.esc-seed-grid.esc-enhanced-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 35px;
+    margin-top: 35px;
+    width: 100%;
+    animation: esc-fade-in 0.7s cubic-bezier(0.26, 0.54, 0.32, 1);
+    padding: 8px 5px; /* Give cards more breathing room */
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Better fade-in animation */
+@keyframes esc-fade-in {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Enhanced Seed Card with improved visuals */
+.esc-enhanced-catalog .esc-seed-card {
+    position: relative;
+    border: none !important;
+    border-radius: 18px !important; /* Even more rounded corners */
+    padding: 0 !important;
+    margin: 0 !important;
+    background-color: #fff !important;
+    box-shadow: rgba(50, 50, 93, 0.1) 0px 13px 27px -5px, rgba(0, 0, 0, 0.15) 0px 8px 16px -8px !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    transition: all 0.4s cubic-bezier(0.15, 1, 0.3, 1) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-bottom: 4px solid transparent !important;
+    transform-origin: center bottom !important; /* Better transform behavior */
+    will-change: transform, box-shadow !important; /* Performance optimization */
+}
+
+/* Enhanced hover effect for more visual impact */
+.esc-enhanced-catalog .esc-seed-card:hover {
+    transform: translateY(-10px) scale(1.02) !important;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.2) 0px 18px 36px -18px !important;
+    border-bottom-color: #3182ce !important;
+}
+
+/* Improved focus state for better accessibility */
+.esc-enhanced-catalog .esc-seed-card:focus-visible {
+    outline: 3px solid #90cdf4 !important;
+    outline-offset: 3px !important;
+    box-shadow: rgba(66, 153, 225, 0.5) 0px 0px 0px 3px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px !important;
+}
+
+.esc-enhanced-catalog .esc-seed-card:active {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08), 0 5px 10px rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+/* Improved Card Image Container */
+.esc-enhanced-catalog .esc-seed-image-container {
+    position: relative !important;
+    width: 100% !important;
+    height: 0 !important; /* Use padding-bottom for responsive aspect ratio */
+    padding-bottom: 65% !important; /* Maintain 16:10 aspect ratio */
+    overflow: hidden !important;
+    background: linear-gradient(135deg, #f8fafc, #edf2f7) !important;
+    margin: 0 !important;
+}
+
+/* Image loading effect */
+.esc-enhanced-catalog .esc-seed-image-container::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(110deg, rgba(248, 248, 248, 0) 0%, rgba(248, 248, 248, 0.6) 50%, rgba(248, 248, 248, 0) 100%) !important;
+    animation: esc-shimmer 1.5s infinite !important;
+    z-index: 1 !important;
+    opacity: 0.7 !important;
+}
+
+@keyframes esc-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.esc-enhanced-catalog .esc-seed-image-container img.esc-loaded::before {
+    display: none !important; /* Hide shimmer once loaded */
+}
+
+.esc-enhanced-catalog .esc-seed-image {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.5s ease !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    display: block !important;
+    z-index: 2 !important;
+}
+
+.esc-enhanced-catalog .esc-seed-card:hover .esc-seed-image {
+    transform: scale(1.08) !important;
+    filter: brightness(1.05) contrast(1.05) saturate(1.05) !important; /* Enhanced image on hover */
+}
+
+/* Better No Image Placeholder and Error States */
+.esc-enhanced-catalog .esc-image-error {
+    position: relative !important;
+    border: 2px solid #fc8181 !important;
+    background-color: #fff5f5 !important;
+}
+
+.esc-enhanced-catalog .esc-image-error::after {
+    content: '⚠️ Image Error' !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    background-color: rgba(229, 62, 62, 0.85) !important;
+    color: white !important;
+    font-size: 13px !important;
+    padding: 6px 10px !important;
+    text-align: center !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px !important;
+}
+
+/* Image Loaded State */
+.esc-enhanced-catalog .esc-image-loaded {
+    border: 2px solid #68d391 !important;
+}
+
+.esc-enhanced-catalog .esc-no-image {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: #f0f4f8 !important;
+    background-image: linear-gradient(135deg, #f0f4f8, #e2e8f0) !important;
+    color: #a0aec0 !important;
+    font-size: 40px !important;
+}
+
+.esc-enhanced-catalog .esc-no-image .dashicons {
+    opacity: 0.7 !important;
+    filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.1)) !important;
+    transition: transform 0.3s ease, opacity 0.3s ease !important;
+}
+
+.esc-enhanced-catalog .esc-seed-card:hover .esc-no-image .dashicons {
+    transform: scale(1.1) !important;
+    opacity: 0.8 !important;
+}
+
+/* Improved Card Content */
+.esc-enhanced-catalog .esc-card-content {
+    padding: 25px !important;
+    flex-grow: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background-color: #fff !important;
+    margin: 0 !important;
+    width: 100% !important;
+    position: relative !important;
+    border-top: 1px solid rgba(237, 242, 247, 0.8) !important;
+    z-index: 3 !important;
+}
+
+/* Better Card Header with improved typography */
+.esc-enhanced-catalog .esc-seed-card h3 {
+    margin: 0 0 16px 0 !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #1a202c !important;
+    line-height: 1.4 !important;
+    padding: 0 !important;
+    text-align: left !important;
+    border: none !important;
+    background: none !important;
+    transition: color 0.3s ease !important;
+    letter-spacing: -0.3px !important;
+    display: flex !important;
+    align-items: baseline !important;
+    flex-wrap: wrap !important;
+}
+
+/* Interactive title effect */
+.esc-enhanced-catalog .esc-seed-card:hover h3 {
+    color: #2b6cb0 !important;
+    transform: translateX(2px) !important;
+}
+
+/* Improved card description */
+.esc-enhanced-catalog .esc-card-description {
+    margin: 0 0 20px 0 !important;
+    font-size: 15px !important;
+    color: #4a5568 !important;
+    line-height: 1.7 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important;
+    line-clamp: 3 !important;
+    -webkit-box-orient: vertical !important;
+    position: relative !important;
+    padding-bottom: 2px !important;
+    letter-spacing: 0.1px !important;
+    font-weight: 400 !important;
+}
+
+/* Show full description when hovering over the truncated text */
+.esc-enhanced-catalog .esc-card-description:hover {
+    -webkit-line-clamp: initial !important;
+    line-clamp: initial !important;
+    max-height: 200px !important;
+    overflow-y: auto !important;
+    z-index: 10 !important;
+}
+
+/* Enhanced variety name */
+.esc-enhanced-catalog .esc-seed-card .esc-variety-name {
+    color: #4a5568 !important;
+    font-weight: 500 !important;
+    font-style: italic !important;
+    display: inline-block !important;
+    margin-left: 8px !important;
+    opacity: 0.9 !important;
+    font-size: 0.9em !important;
+    position: relative !important;
+    top: -1px !important;
+}
+
+/* Improved Card Fields with better layout */
+.esc-enhanced-catalog .esc-seed-card .esc-field {
+    margin-bottom: 13px !important;
+    font-size: 15px !important;
+    display: flex !important;
+    align-items: baseline !important;
+    width: 100% !important;
+    padding: 0 !important;
+    border: none !important;
+    background: none !important;
+    position: relative !important;
+    transition: transform 0.2s ease !important;
+}
+
+/* Interactive field hover effect */
+.esc-enhanced-catalog .esc-seed-card .esc-field:hover {
+    transform: translateX(2px) !important;
+    background-color: rgba(247, 250, 252, 0.8) !important;
+    border-radius: 4px !important;
+}
+
+.esc-enhanced-catalog .esc-seed-card .esc-field:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* Improved field label */
+.esc-enhanced-catalog .esc-seed-card .esc-field-label {
+    color: #4a5568 !important;
+    font-weight: 600 !important;
+    min-width: 85px !important;
+    margin-right: 12px !important;
+    text-align: left !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+}
+
+/* Field label separator */
+.esc-enhanced-catalog .esc-seed-card .esc-field-label::after {
+    content: ":" !important;
+    position: absolute !important;
+    right: 2px !important;
+    color: #a0aec0 !important;
+}
+
+/* Improved field value */
+.esc-enhanced-catalog .esc-seed-card .esc-field-value {
+    color: #2d3748 !important;
+    flex: 1 !important;
+    text-align: left !important;
+    font-weight: 500 !important;
+    line-height: 1.5 !important;
+}
+
+/* Enhanced Categories with better styling */
+.esc-enhanced-catalog .esc-seed-card .esc-categories {
+    margin-top: auto !important;
+    padding-top: 18px !important;
+    border-top: 1px solid #edf2f7 !important;    font-size: 13px !important;
+    color: #718096 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+    position: relative !important;
+}
+
+/* Enhanced category tags with better visual presentation */
+.esc-enhanced-catalog .esc-seed-card .esc-category-tag {
+    display: inline-block !important;
+    padding: 5px 12px !important;
+    background-color: #ebf8ff !important;
+    color: #3182ce !important;
+    border-radius: 20px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+    margin: 2px !important;
+    border: none !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+    letter-spacing: 0.01em !important;
+    position: relative !important;
+}
+
+/* Improved hover state for category tags */
+.esc-enhanced-catalog .esc-seed-card .esc-category-tag:hover {
+    background-color: #bee3f8 !important;
+    color: #2b6cb0 !important;
+    text-decoration: none !important;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.08) !important;
+    transform: translateY(-2px) scale(1.05) !important;
+}
+
+/* Improved Card Actions */
+.esc-enhanced-catalog .esc-card-actions {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    display: flex !important;
+    gap: 8px !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease, transform 0.3s ease !important;
+    z-index: 10 !important;
+    transform: translateY(-5px) !important;
+}
+
+.esc-enhanced-catalog .esc-seed-card:hover .esc-card-actions {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+.esc-enhanced-catalog .esc-card-action-btn {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 50% !important;
+    background-color: rgba(255, 255, 255, 0.92) !important;
+    color: #4a5568 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15) !important;
+    transition: all 0.2s ease !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    backdrop-filter: blur(3px) !important;
+}
+
+.esc-enhanced-catalog .esc-card-action-btn:hover {
+    background-color: #fff !important;
+    color: #3182ce !important;
+    transform: scale(1.1) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+.esc-enhanced-catalog .esc-card-action-btn:active {
+    transform: scale(0.95) !important;
+}
+
+/* Better Card Badges */
+.esc-enhanced-catalog .esc-card-badge {
+    position: absolute !important;
+    top: 12px !important;
+    left: 12px !important;
+    padding: 5px 13px !important;
+    border-radius: 20px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: white !important;
+    background-color: #4299e1 !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+    z-index: 10 !important;
+    border: none !important;
+    margin: 0 !important;
+    letter-spacing: 0.3px !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15) !important;
+}
+
+.esc-enhanced-catalog .esc-card-badge.new {
+    background-color: #48bb78 !important;
+}
+
+.esc-enhanced-catalog .esc-card-badge.featured {
+    background-color: #ed8936 !important;
+}
+
+/* Improved Modal Styles */
+/* Improved Modal with Better UX */
+.esc-enhanced-catalog .esc-modal,
+.esc-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    z-index: 9999 !important;
+    overflow-y: auto !important;
+    padding: 25px !important;
+    box-sizing: border-box !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    opacity: 0 !important;
+    transition: opacity 0.4s ease !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Improved Modal Content with Better Animation */
+.esc-enhanced-catalog .esc-modal-content,
+.esc-modal-content {
+    position: relative !important;
+    background: #fff !important;
+    margin: 30px auto !important;
+    padding: 0 !important;
+    max-width: 1100px !important; /* Slightly wider for better content display */
+    width: 95% !important;
+    border-radius: 20px !important;
+    box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px !important;
+    transform: translateY(40px) scale(0.95) !important;
+    opacity: 0 !important;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease !important;
+    overflow: hidden !important;
+    will-change: transform, opacity !important;
+}
+
+/* Modal Show State */
+.esc-enhanced-catalog .esc-modal.show,
+.esc-modal.show {
+    display: flex !important; /* Use flex for better centering */
+    opacity: 1 !important;
+}
+
+/* Content Animation When Modal is Shown */
+.esc-enhanced-catalog .esc-modal.show .esc-modal-content,
+.esc-modal.show .esc-modal-content {
+    transform: translateY(0) scale(1) !important;
+    opacity: 1 !important;
+}
+
+/* Improved Close Button */
+.esc-enhanced-catalog .esc-modal-close,
+.esc-modal-close {
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    font-size: 20px !important;
+    cursor: pointer !important;
+    width: 46px !important;
+    height: 46px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #4a5568 !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    z-index: 100 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Enhanced Close Button Hover State */
+.esc-enhanced-catalog .esc-modal-close:hover,
+.esc-modal-close:hover {
+    background: #fff !important;
+    color: #e53e3e !important;
+    transform: rotate(90deg) scale(1.1) !important;
+    box-shadow: 0 6px 16px rgba(229, 62, 62, 0.25) !important;
+}
+
+/* Improved Focus State for Accessibility */
+.esc-enhanced-catalog .esc-modal-close:focus-visible,
+.esc-modal-close:focus-visible {
+    outline: 3px solid rgba(66, 153, 225, 0.6) !important;
+    outline-offset: 2px !important;
+}
+
+/* Enhanced Seed Detail Styles with Better Visual Presentation */
+.esc-seed-detail {
+    color: #2d3748 !important;
+    background-color: #fff !important;
+}
+
+/* Improved Detail Header */
+.esc-seed-detail-header {
+    position: relative !important;
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+    display: block !important;
+}
+
+/* Enhanced Banner with Better Image Handling */
+.esc-seed-detail-banner {
+    position: relative !important;
+    width: 100% !important;
+    height: 360px !important; /* Even taller banner for more visual impact */
+    background: linear-gradient(120deg, #edf2f7, #e2e8f0) !important;
+    overflow: hidden !important;
+}
+
+/* Image Animation on Load */
+.esc-seed-detail-banner img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.7s ease !important;
+    animation: esc-fade-in 0.8s ease-out !important;
+}
+
+/* Subtle Image Zoom on Modal Show */
+.esc-modal.show .esc-seed-detail-banner img {
+    transform: scale(1.03) !important;
+    filter: brightness(1.05) !important;
+}
+
+/* Enhanced Overlay with Better Text Visibility */
+.esc-seed-detail-overlay {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 40px 35px 30px !important;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0) 100%) !important;
+    color: #fff !important;
+    animation: esc-slide-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@keyframes esc-slide-up {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+/* Enhanced Title Typography */
+.esc-seed-detail-overlay h2 {
+    margin: 0 0 8px 0 !important;
+    font-size: 36px !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    line-height: 1.2 !important;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4) !important;
+    letter-spacing: -0.02em !important;
+}
+
+.esc-modal.show .esc-seed-detail-banner img {
+    animation: esc-subtle-zoom 25s infinite alternate ease-in-out;
+}
+
+@keyframes esc-subtle-zoom {
+    from { transform: scale(1); }
+    to { transform: scale(1.05); }
+}
+
+.esc-seed-detail-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 40px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.4) 60%, transparent);
+    color: white;
+}
+
+.esc-seed-detail-overlay h2 {
+    margin: 0 0 8px 0;
+    font-size: 34px;
+    font-weight: 700;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+}
+
+.esc-seed-detail-overlay .esc-variety-name {
+    font-weight: 400;
+    opacity: 0.95;
+    font-style: italic;
+}
+
+.esc-seed-detail-brand {
+    font-size: 16px;
+    opacity: 0.9;
+    margin-top: 5px;
+    font-weight: 500;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.esc-seed-detail-content {
+    padding: 40px;
+}
+
+.esc-seed-detail-description {
+    margin-bottom: 35px;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #4a5568;
+    padding: 26px;
+    background-color: #f8fafc;
+    border-radius: 12px;
+    border-left: 4px solid #4299e1;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.esc-seed-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.esc-seed-detail-section {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 26px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #edf2f7;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.esc-seed-detail-section:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transform: translateY(-3px);
+}
+
+.esc-seed-detail-section h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #2d3748;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #edf2f7;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+}
+
+.esc-seed-detail-field {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.esc-seed-detail-field:last-child {
+    margin-bottom: 0;
+}
+
+.esc-seed-detail-label {
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.esc-seed-detail-value {
+    color: #2d3748;
+    font-size: 15px;
+    line-height: 1.5;
+    background-color: #f8fafc;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border-left: 2px solid #e2e8f0;
+}
+
+/* Better Category Tags in Detail View */
+.esc-seed-detail-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.esc-seed-detail-category {
+    padding: 8px 16px;
+    background-color: #ebf8ff;
+    color: #3182ce;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.esc-seed-detail-category:hover {
+    background-color: #bee3f8;
+    color: #2c5282;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+}
+
+/* Improved Loading State */
+.esc-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    color: #4a5568;
+    font-size: 16px;
+    font-weight: 500;
+    flex-direction: column;
+}
+
+.esc-loading:before {
+    content: '';
+    width: 40px;
+    height: 40px;
+    border: 3px solid #e2e8f0;
+    border-top-color: #4299e1;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    animation: esc-spin 1s linear infinite;
+}
+
+@keyframes esc-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Better focus states for accessibility */
+.esc-seed-card:focus-visible,
+.esc-card-action-btn:focus-visible,
+.esc-category-tag:focus-visible,
+.esc-seed-detail-category:focus-visible,
+.esc-modal-close:focus-visible {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5), 0 6px 16px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Keyboard navigation support */
+.esc-seed-card.esc-keyboard-focus {
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5), 0 6px 16px rgba(0, 0, 0, 0.08) !important;
+    transform: translateY(-3px) !important;
+}
+
+/* Error state */
+.esc-error {
+    padding: 30px;
+    text-align: center;
+    color: #e53e3e;
+    background-color: #fff5f5;
+    border-radius: 10px;
+    margin: 25px 0;
+    font-weight: 500;
+    border-left: 4px solid #fc8181;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive Styles - Improved for more devices */
+@media (max-width: 1280px) {
+    .esc-enhanced-catalog .esc-seed-list,
+    .esc-enhanced-catalog .esc-seed-list.esc-enhanced-grid,
+    .esc-seed-grid.esc-enhanced-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+    }
+}
+
+@media (max-width: 992px) {
+    .esc-enhanced-catalog .esc-seed-list {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
+        gap: 25px !important;
+    }
+
+    .esc-seed-detail-banner {
+        height: 280px;
+    }
+
+    .esc-seed-detail-overlay {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .esc-enhanced-catalog .esc-seed-list {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+        gap: 20px !important;
+    }
+
+    .esc-enhanced-catalog .esc-seed-image-container {
+        height: 180px !important;
+    }
+
+    .esc-enhanced-catalog .esc-card-content {
+        padding: 20px !important;
+    }
+
+    .esc-enhanced-catalog .esc-seed-card h3 {
+        font-size: 16px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .esc-seed-detail-banner {
+        height: 200px;
+    }
+
+    .esc-seed-detail-overlay {
+        padding: 22px;
+    }
+
+    .esc-seed-detail-overlay h2 {
+        font-size: 26px;
+    }
+
+    .esc-seed-detail-content {
+        padding: 25px;
+    }
+
+    .esc-seed-detail-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    /* Make cards easier to tap on mobile */
+    .esc-enhanced-catalog .esc-card-action-btn {
+        width: 44px !important;
+        height: 44px !important;
+    }
+    
+    /* Show mobile action buttons at all times */
+    .esc-enhanced-catalog .esc-card-actions {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .esc-enhanced-catalog .esc-seed-list {
+        grid-template-columns: 1fr !important; /* Single column layout for very small screens */
+        gap: 18px !important;
+    }
+    
+    .esc-enhanced-catalog .esc-seed-image-container {
+        height: 200px !important; /* Maintain good photo size */
+    }
+
+    .esc-seed-detail-section {
+        padding: 20px;
+    }
+}
+
+/* Better Print Styles */
+@media print {
+    .esc-seed-card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+
+    .esc-card-actions,
+    .esc-modal-close {
+        display: none !important;
+    }
+
+    .esc-seed-detail-grid {
+        display: block !important;
+    }
+
+    .esc-seed-detail-section {
+        page-break-inside: avoid !important;
+        margin-bottom: 20px !important;
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+
+    .esc-seed-detail-banner {
+        height: 200px !important;
+    }
+
+    .esc-enhanced-catalog {
+        width: 100% !important;
+    }
+
+    .esc-seed-image {
+        max-height: 150px !important;
+    }
+    
+    .esc-enhanced-catalog .esc-seed-list {
+        display: block !important;
+    }
+    
+    .esc-seed-card {
+        margin-bottom: 20px !important;
+        page-break-inside: avoid !important;
+    }
+}
