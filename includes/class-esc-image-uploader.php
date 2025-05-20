@@ -69,14 +69,12 @@ class ESC_Image_Uploader {
                 }
             }
         }
-    }
-
-    /**
+    }    /**
      * Enqueue admin assets.
      */
     public static function enqueue_admin_assets( $hook ) {
         // Only on our plugin's admin pages
-        if ( strpos( $hook, 'esc-seed-catalog' ) !== false ) {
+        if ( strpos( $hook, 'esc-seed-catalog' ) !== false || strpos( $hook, 'esc-manage-catalog' ) !== false ) {
             // Enqueue the CSS
             wp_enqueue_style(
                 'esc-image-uploader',
@@ -92,6 +90,16 @@ class ESC_Image_Uploader {
                 [ 'jquery' ],
                 ESC_VERSION,
                 true
+            );
+            
+            // Add AJAX object with URL and nonce
+            wp_localize_script(
+                'esc-image-uploader',
+                'esc_ajax_object',
+                [
+                    'ajax_url' => admin_url( 'admin-ajax.php' ),
+                    'nonce' => wp_create_nonce( 'esc_ajax_nonce' )
+                ]
             );
 
             // Enqueue WordPress media
