@@ -4,11 +4,14 @@
  */
 
 /* Improved Search Form Styling */
-.esc-enhanced-catalog #esc-search-container {
+.esc-enhanced-catalog #esc-search-container,
+#esc-search-container {
     margin-bottom: 30px;
 }
 
-.esc-enhanced-catalog #esc-search-form {
+/* Target both enhanced and standard search forms */
+.esc-enhanced-catalog #esc-search-form,
+form:has(input[type="search"]) {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
@@ -25,19 +28,22 @@
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Search input wrapper */
-.esc-enhanced-catalog #esc-search-form .esc-search-input-wrapper {
+/* Search input wrapper - target both specific and general selectors */
+.esc-enhanced-catalog #esc-search-form .esc-search-input-wrapper,
+div:has(input[type="search"]) {
     flex-grow: 3; /* Increased from 1 to 3 to match the input flex-grow */
     flex-basis: 65%; /* Added to ensure it takes up more initial space */
     position: relative;
 }
 
 /* Update input to take 100% of wrapper */
-.esc-enhanced-catalog #esc-search-form .esc-search-input-wrapper input[type="search"] {
+.esc-enhanced-catalog #esc-search-form .esc-search-input-wrapper input[type="search"],
+input[type="search"] {
     width: 100%;
 }
 
-.esc-enhanced-catalog #esc-search-form input[type="search"] {
+.esc-enhanced-catalog #esc-search-form input[type="search"],
+input[type="search"] {
     flex-grow: 3; /* Increased from 1 to 3 to allocate more space */
     min-width: 300px; /* Increased from 200px to 300px */
     padding: 12px 15px;
@@ -57,7 +63,9 @@
     box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15), inset 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.esc-enhanced-catalog #esc-search-form select {
+/* Style all select elements in the plugin */
+.esc-enhanced-catalog #esc-search-form select,
+select {
     min-width: 140px; /* Reduced from 180px to 140px */
     max-width: 160px; /* Added max-width to prevent it from getting too large */
     flex: 1; /* Allow it to take remaining space, but less than the search input */
@@ -220,22 +228,27 @@
 
 /* Improved mobile search experience */
 @media (max-width: 576px) {
-    .esc-enhanced-catalog #esc-search-form {
+    .esc-enhanced-catalog #esc-search-form,
+    form:has(input[type="search"]) {
         padding: 15px;
         gap: 10px;
     }
     
-    .esc-enhanced-catalog #esc-search-form .esc-search-input-wrapper {
+    .esc-enhanced-catalog #esc-search-form .esc-search-input-wrapper,
+    div:has(input[type="search"]),
+    input[type="search"] {
         flex-basis: 100%;
     }
     
-    .esc-enhanced-catalog #esc-search-form input[type="search"] {
+    .esc-enhanced-catalog #esc-search-form input[type="search"],
+    input[type="search"] {
         font-size: 15px;
         padding: 10px 12px;
         min-width: 100%; /* Ensure full width on mobile */
     }
     
-    .esc-enhanced-catalog #esc-search-form select {
+    .esc-enhanced-catalog #esc-search-form select,
+    select {
         font-size: 15px;
         padding: 10px 12px;
         min-width: 100%; /* Full width on mobile */
@@ -1273,4 +1286,53 @@
     color: #c53030;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     margin-bottom: 20px;
+}
+
+/* High-specificity overrides for the search form elements */
+/* These styles will apply regardless of other CSS rules */
+html body .esc-seed-catalog input[type="search"],
+html body input[type="search"],
+html body input[placeholder*="Search"] {
+    min-width: 300px !important;
+    flex: 3 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+html body .esc-seed-catalog select,
+html body select,
+html body select[name*="category"] {
+    min-width: 140px !important;
+    max-width: 160px !important;
+    flex: 1 !important;
+    width: auto !important;
+    box-sizing: border-box !important;
+}
+
+/* Target the exact layout shown in screenshot */
+html body .esc-seed-catalog form,
+html body form:has(input[placeholder*="Search"]) {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+/* Apply to all forms in the plugin scope */
+#seed-catalog,
+.seed-catalog,
+#esc-catalog,
+.esc-catalog,
+.esc-enhanced-catalog {
+    input[type="search"] {
+        min-width: 300px !important;
+        flex: 3 !important;
+    }
+    
+    select {
+        min-width: 140px !important;
+        max-width: 160px !important;
+        flex: 1 !important;
+    }
 }
