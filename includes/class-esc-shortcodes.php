@@ -59,6 +59,9 @@ class ESC_Shortcodes {
 
 		// Add a shortcode for debugging
 		add_shortcode( 'erins_seed_catalog_debug', [ __CLASS__, 'render_debug_info' ] );
+
+		// Add a shortcode for modal debugging
+		add_shortcode( 'erins_seed_catalog_modal_debug', [ __CLASS__, 'render_modal_debug' ] );
 	}
 
 	/**
@@ -549,6 +552,7 @@ class ESC_Shortcodes {
 		wp_enqueue_script('esc-form', ESC_PLUGIN_URL . 'public/js/esc-form.js', ['esc-core', 'esc-ui'], ESC_VERSION, true);
 		wp_enqueue_script('esc-ai', ESC_PLUGIN_URL . 'public/js/esc-ai.js', ['esc-core', 'esc-form'], ESC_VERSION, true);
 		wp_enqueue_script('esc-variety', ESC_PLUGIN_URL . 'public/js/esc-variety.js', ['esc-core', 'esc-form'], ESC_VERSION, true);
+		wp_enqueue_script('esc-image-uploader', ESC_PLUGIN_URL . 'public/js/esc-image-uploader.js', ['jquery'], ESC_VERSION, true);
 
 		// AJAX data already localized above
 
@@ -873,5 +877,121 @@ class ESC_Shortcodes {
 		echo '</div>';
 		
 		return ob_get_clean();
+	}	/**
+	 * Render a modal debug tool
+	 * 
+	 * [erins_seed_catalog_modal_debug]
+	 * 
+	 * @return string Rendered HTML
+	 */
+	public static function render_modal_debug() {
+		// Only allow in admin or for users who can manage options
+		if (!is_admin() && !current_user_can('manage_options')) {
+			return '';
+		}
+		
+		wp_enqueue_script('esc-public-scripts');
+		wp_enqueue_style('dashicons');
+		
+		$output = '<div class="esc-modal-debug-container" style="margin: 20px 0; padding: 15px; background: #f0f4f8; border-left: 4px solid #4a90e2;">';
+		$output .= '<h3>Seed Catalog Modal Debugging</h3>';
+		$output .= '<p>Use these tools to debug modal display issues:</p>';
+		$output .= '<button id="esc-enable-modal-debug" class="button">Enable Modal Debug Mode</button> ';
+		$output .= '<button id="esc-disable-modal-debug" class="button">Disable Modal Debug Mode</button> ';
+		$output .= '<button id="esc-test-modal" class="button">Test Modal Display</button>';
+		$output .= '<p id="esc-debug-status">Debug status: <span>Inactive</span></p>';
+		$output .= '</div>';
+		
+		$output .= '<script>
+jQuery(document).ready(function() {
+    // Use jQuery directly instead of $ alias to avoid PHP parser confusion
+    // Check current debug status
+    var debugStatus = localStorage.getItem("escModalDebug") === "true";
+    jQuery("#esc-debug-status span").text(debugStatus ? "Active" : "Inactive");
+    
+    // Enable debug mode
+    jQuery("#esc-enable-modal-debug").on("click", function() {
+        localStorage.setItem("escModalDebug", "true");
+        window.escDebugMode = true;
+        jQuery("#esc-debug-status span").text("Active");
+        alert("Modal debug mode enabled! Refresh the page to see debug information when viewing modals.");
+    });
+    
+    // Disable debug mode
+    jQuery("#esc-disable-modal-debug").on("click", function() {
+        localStorage.setItem("escModalDebug", "false");
+        window.escDebugMode = false;
+        jQuery("#esc-debug-status span").text("Inactive");
+        alert("Modal debug mode disabled!");
+    });
+    
+    // Test modal
+    jQuery("#esc-test-modal").on("click", function() {
+        // Create a test modal if it doesn\'t exist
+        if (!jQuery("#esc-test-modal-container").length) {
+            jQuery("body").append(
+                "<div id=\'esc-test-modal-container\' class=\'esc-modal\'>" +
+                "<div class=\'esc-modal-content\'>" +
+                "<div class=\'esc-modal-close\'>" +
+                "<span class=\'dashicons dashicons-no-alt\'></span>" +
+                "</div>" +
+                "<div class=\'esc-seed-detail\'>" +
+                "<div class=\'esc-seed-detail-header\'>" +
+                "<div class=\'esc-seed-detail-banner\'>" +
+                "<img src=\'https://picsum.photos/800/400\' alt=\'Test Image\'>" +
+                "</div>" +
+                "<div class=\'esc-seed-detail-overlay\'>" +
+                "<h2>Test Modal Title</h2>" +
+                "</div>" +
+                "</div>" +
+                "<div class=\'esc-seed-detail-content\'>" +
+                "<div class=\'esc-seed-detail-description\'>" +
+                "This is a test modal to check styling and scrolling behavior." +
+                "</div>" +
+                "<div class=\'esc-seed-detail-grid\'>" +
+                "<div class=\'esc-seed-detail-section\'>" +
+                "<h3>Section 1</h3>" +
+                "<div class=\'esc-seed-detail-field\'>" +
+                "<div class=\'esc-seed-detail-label\'>Test Field</div>" +
+                "<div class=\'esc-seed-detail-value\'>Test Value</div>" +
+                "</div>" +
+                "</div>" +
+                "</div>" +
+                "</div>" +
+                "</div>" +
+                "</div>" +
+                "</div>"
+            );
+        }
+        
+        // Show the test modal
+        var testModal = jQuery("#esc-test-modal-container");
+        testModal.css("display", "block").addClass("show");
+        jQuery("body").css("overflow", "hidden");
+        
+        // Set up close button
+        jQuery("#esc-test-modal-container .esc-modal-close").on("click", function() {
+            testModal.removeClass("show").css("display", "none");
+            jQuery("body").css("overflow", "");
+        });
+        
+        // Close when clicking outside
+        testModal.on("click", function(e) {
+            if (jQuery(e.target).is("#esc-test-modal-container")) {
+                testModal.removeClass("show").css("display", "none");
+                jQuery("body").css("overflow", "");
+            }
+        });
+    });
+    
+    // Initialize debug mode if enabled
+    if (debugStatus) {
+        window.escDebugMode = true;
+        console.log("[ESC Debug] Modal debug mode active on page load");
+    }
+});
+</script>';
+		
+		return $output;
 	}
 }

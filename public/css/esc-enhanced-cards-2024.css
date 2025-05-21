@@ -718,7 +718,7 @@ select {
     -webkit-backdrop-filter: blur(8px) !important;
     opacity: 0 !important;
     transition: opacity 0.4s ease !important;
-    align-items: center !important;
+    align-items: flex-start !important; /* Changed from center to flex-start */
     justify-content: center !important;
 }
 
@@ -727,10 +727,11 @@ select {
 .esc-modal-content {
     position: relative !important;
     background: #fff !important;
-    margin: 30px auto !important;
+    margin: 50px auto 30px !important; /* Added more top margin */
     padding: 0 !important;
-    max-width: 1100px !important; /* Slightly wider for better content display */
+    max-width: 1100px !important;
     width: 95% !important;
+    max-height: 90vh !important; /* Added max-height */
     border-radius: 20px !important;
     box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px !important;
     transform: translateY(40px) scale(0.95) !important;
@@ -743,8 +744,9 @@ select {
 /* Modal Show State */
 .esc-enhanced-catalog .esc-modal.show,
 .esc-modal.show {
-    display: flex !important; /* Use flex for better centering */
+    display: block !important; /* Changed from flex to block for better scrolling */
     opacity: 1 !important;
+    overflow-y: auto !important; /* Ensure modal is scrollable */
 }
 
 /* Content Animation When Modal is Shown */
@@ -752,52 +754,23 @@ select {
 .esc-modal.show .esc-modal-content {
     transform: translateY(0) scale(1) !important;
     opacity: 1 !important;
+    overflow-y: auto !important; /* Make content scrollable */
 }
 
-/* Improved Close Button */
-.esc-enhanced-catalog .esc-modal-close,
-.esc-modal-close {
-    position: absolute !important;
-    top: 20px !important;
-    right: 20px !important;
-    font-size: 20px !important;
-    cursor: pointer !important;
-    width: 46px !important;
-    height: 46px !important;
-    border-radius: 50% !important;
-    background: rgba(255, 255, 255, 0.95) !important;
-    color: #4a5568 !important;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    z-index: 100 !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    border: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-/* Enhanced Close Button Hover State */
-.esc-enhanced-catalog .esc-modal-close:hover,
-.esc-modal-close:hover {
-    background: #fff !important;
-    color: #e53e3e !important;
-    transform: rotate(90deg) scale(1.1) !important;
-    box-shadow: 0 6px 16px rgba(229, 62, 62, 0.25) !important;
-}
-
-/* Improved Focus State for Accessibility */
-.esc-enhanced-catalog .esc-modal-close:focus-visible,
-.esc-modal-close:focus-visible {
-    outline: 3px solid rgba(66, 153, 225, 0.6) !important;
-    outline-offset: 2px !important;
+/* Added scrollable content container */
+#esc-seed-detail-content {
+    max-height: calc(90vh - 50px) !important; /* Make content area scrollable */
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
 }
 
 /* Enhanced Seed Detail Styles with Better Visual Presentation */
 .esc-seed-detail {
     color: #2d3748 !important;
     background-color: #fff !important;
+    position: relative !important; /* Ensure proper positioning */
+    display: flex !important;
+    flex-direction: column !important;
 }
 
 /* Improved Detail Header */
@@ -806,13 +779,21 @@ select {
     padding: 0 !important;
     margin-bottom: 0 !important;
     display: block !important;
+    flex: 0 0 auto !important; /* Prevent header from growing */
+}
+
+.esc-seed-detail-content {
+    padding: 30px !important; /* Reduced from 40px */
+    flex: 1 1 auto !important; /* Allow content to grow and shrink */
+    overflow-y: auto !important; /* Make content area scrollable */
+    -webkit-overflow-scrolling: touch !important;
 }
 
 /* Enhanced Banner with Better Image Handling */
 .esc-seed-detail-banner {
     position: relative !important;
     width: 100% !important;
-    height: 360px !important; /* Even taller banner for more visual impact */
+    height: 280px !important; /* Reduced from 360px to 280px to take less vertical space */
     background: linear-gradient(120deg, #edf2f7, #e2e8f0) !important;
     overflow: hidden !important;
 }
@@ -1334,5 +1315,55 @@ html body form:has(input[placeholder*="Search"]) {
         min-width: 140px !important;
         max-width: 160px !important;
         flex: 1 !important;
+    }
+}
+
+/* Mobile-specific modal improvements */
+@media (max-width: 768px) {
+    /* Adjust modal padding on mobile */
+    .esc-enhanced-catalog .esc-modal,
+    .esc-modal {
+        padding: 10px !important;
+    }
+    
+    /* Adjust modal content margins on mobile */
+    .esc-enhanced-catalog .esc-modal-content,
+    .esc-modal-content {
+        margin: 30px auto 20px !important;
+        width: 98% !important;
+        max-height: 95vh !important;
+    }
+    
+    /* Reduce banner height further on mobile */
+    .esc-seed-detail-banner {
+        height: 200px !important;
+    }
+    
+    /* Adjust content padding on mobile */
+    .esc-seed-detail-content {
+        padding: 25px !important;
+    }
+    
+    /* Make grid single-column on mobile */
+    .esc-seed-detail-grid {
+        display: grid;
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+
+    /* Adjust font sizes on mobile */
+    .esc-seed-detail-overlay h2 {
+        font-size: 28px !important;
+    }
+
+    /* Adjust description padding on mobile */
+    .esc-seed-detail-description {
+        padding: 20px !important;
+        margin-bottom: 25px !important;
+    }
+
+    /* Ensure modal scroll works properly on mobile */
+    #esc-seed-detail-content {
+        max-height: calc(95vh - 30px) !important;
     }
 }

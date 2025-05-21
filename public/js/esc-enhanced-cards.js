@@ -87,7 +87,10 @@
 
             // Make sure modal is visible with proper styling
             $modal.css('display', 'block').addClass('show');
-
+            
+            // Scroll modal to top
+            $modal.scrollTop(0);
+            
             // Prevent body scrolling when modal is open
             $body.css('overflow', 'hidden');
 
@@ -105,6 +108,11 @@
                 success: function(response) {
                     if (response.success) {
                         $modalContent.html(response.data.html);
+                        
+                        // Ensure modal scrolls to top after content is loaded
+                        setTimeout(function() {
+                            $modal.scrollTop(0);
+                        }, 100);
 
                         // Add to browser history so back button works
                         if (window.history && window.history.pushState) {
@@ -158,6 +166,40 @@
         const seedIdParam = urlParams.get('seed_id');
         if (seedIdParam) {
             openSeedDetail(seedIdParam);
+        }
+
+        // Debug helpers (only active if debug mode is enabled)
+        const debugMode = (window.escDebugMode === true) || false;
+        
+        function debugLog(...args) {
+            if (debugMode) {
+                console.log('[ESC Debug]', ...args);
+            }
+        }
+        
+        // Initialize debug mode if needed
+        function initDebugMode() {
+            if (!debugMode) return;
+            
+            debugLog('Debug mode enabled for enhanced seed cards');
+            
+            // Add debug overlay to the modal
+            const $modal = $('#esc-seed-detail-modal');
+            if ($modal.length) {
+                $modal.append('<div class="esc-debug-overlay" style="position:fixed; top:5px; left:5px; background:rgba(0,0,0,0.7); color:white; padding:5px 10px; font-size:12px; z-index:10000; border-radius:4px;">Debug Mode</div>');
+                
+                // Log modal events
+                $modal.on('click', function(e) {
+                    debugLog('Modal clicked at', e.clientX, e.clientY);
+                    debugLog('Modal scroll position', $modal.scrollTop());
+                    debugLog('Window size', window.innerWidth, window.innerHeight);
+                });
+            }
+        }
+        
+        // Call debug init if enabled
+        if (debugMode) {
+            initDebugMode();
         }
     }
 
