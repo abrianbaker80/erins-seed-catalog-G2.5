@@ -71,9 +71,7 @@
             if (e.key === 'Escape' && $modal.hasClass('show')) {
                 closeModal();
             }
-        });
-
-        // Function to open seed detail modal
+        });        // Function to open seed detail modal with enhanced 3D animation
         function openSeedDetail(seedId) {
             console.log('Opening seed detail modal for ID: ' + seedId);
 
@@ -85,8 +83,14 @@
             // Show loading state in modal
             $modalContent.html('<div class="esc-loading">' + (esc_ajax_object.loading_text || 'Loading...') + '</div>');
 
-            // Make sure modal is visible with proper styling
+            // Add animation classes
+            $body.addClass('esc-modal-open');
+            
+            // Make sure modal is visible with proper styling and animation class
             $modal.css('display', 'block').addClass('show');
+            
+            // Apply blur effect to background content
+            $('.esc-seed-list, .esc-seed-grid').addClass('esc-blurred');
             
             // Scroll modal to top
             $modal.scrollTop(0);
@@ -128,21 +132,33 @@
                     $modalContent.html('<div class="esc-error">' + (esc_ajax_object.error_text || 'An error occurred.') + '</div>');
                 }
             });
-        }
-
-        // Function to close the modal
+        }        // Function to close the modal with animation
         function closeModal() {
             console.log('Closing modal');
 
             // Get fresh references to modal elements
             const $modal = $('#esc-seed-detail-modal');
             const $body = $('body');
+            const $modalContent = $('#esc-seed-detail-content');
 
-            // Hide modal with proper styling
-            $modal.removeClass('show').css('display', 'none');
-
-            // Restore body scrolling
-            $body.css('overflow', '');
+            // Add closing animation
+            $modalContent.addClass('esc-closing');
+            
+            // Start a closing animation then hide the modal
+            setTimeout(function() {
+                // Hide modal with proper styling
+                $modal.removeClass('show').css('display', 'none');
+                $modalContent.removeClass('esc-closing');
+                
+                // Remove blur effect from background content
+                $('.esc-seed-list, .esc-seed-grid').removeClass('esc-blurred');
+                
+                // Remove modal open class from body
+                $body.removeClass('esc-modal-open');
+                
+                // Restore body scrolling
+                $body.css('overflow', '');
+            }, 300);
 
             // Remove seed_id from URL
             if (window.history && window.history.pushState) {

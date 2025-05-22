@@ -388,14 +388,14 @@ class ESC_Shortcodes {
 				'error_text' => __('An error occurred.', 'erins-seed-catalog'),
 			]
 		);
-
 		// Enqueue improved enhanced cards styles with better cache-busting
 		$css_file_path = ESC_PLUGIN_DIR . 'public/css/esc-enhanced-cards-2024.css';
 		wp_enqueue_style(
 			'esc-enhanced-cards-styles-2024',
 			ESC_PLUGIN_URL . 'public/css/esc-enhanced-cards-2024.css',
 			['esc-public-styles'],
-			self::get_file_version($css_file_path)
+			// Force cache bust to ensure new 3D effects are applied
+			self::get_file_version($css_file_path) . '.' . time()
 		);
 
 		// Enqueue dashicons if not already loaded

@@ -697,8 +697,8 @@ select {
     background-color: #ed8936 !important;
 }
 
-/* Improved Modal Styles */
-/* Improved Modal with Better UX */
+/* Improved Modal Styles with 3D Effect */
+/* Improved Modal with Better 3D UX */
 .esc-enhanced-catalog .esc-modal,
 .esc-modal {
     display: none;
@@ -709,39 +709,48 @@ select {
     bottom: 0 !important;
     width: 100% !important;
     height: 100% !important;
-    background: rgba(0, 0, 0, 0.8) !important;
+    background: rgba(255, 255, 255, 0.4) !important; /* Changed from dark to light transparent background */
     z-index: 9999 !important;
     overflow-y: auto !important;
     padding: 25px !important;
     box-sizing: border-box !important;
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
+    backdrop-filter: blur(10px) !important; /* Increased blur effect */
+    -webkit-backdrop-filter: blur(10px) !important;
     opacity: 0 !important;
-    transition: opacity 0.4s ease !important;
-    align-items: flex-start !important; /* Changed from center to flex-start */
+    transition: opacity 0.5s ease !important;
+    align-items: flex-start !important;
     justify-content: center !important;
+    perspective: 1200px !important; /* Enable 3D space for child elements */
 }
 
-/* Improved Modal Content with Better Animation */
+/* Improved Modal Content with 3D Animation */
 .esc-enhanced-catalog .esc-modal-content,
 .esc-modal-content {
     position: relative !important;
     background: #fff !important;
-    margin: 50px auto 30px !important; /* Added more top margin */
+    margin: 80px auto 40px !important; /* Increased top margin for better positioning */
     padding: 0 !important;
     max-width: 1100px !important;
     width: 95% !important;
-    max-height: 90vh !important; /* Added max-height */
-    border-radius: 20px !important;
-    box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px !important;
-    transform: translateY(40px) scale(0.95) !important;
+    max-height: 85vh !important;
+    border-radius: 24px !important; /* More rounded corners */
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.15), 
+        0 15px 30px rgba(0, 0, 0, 0.1), 
+        0 5px 15px rgba(0, 0, 0, 0.05) !important; /* Enhanced 3D shadow */
+    transform: translateY(60px) scale(0.9) rotateX(5deg) !important; /* 3D starting position */
     opacity: 0 !important;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease !important;
+    transition: 
+        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
+        opacity 0.5s ease, 
+        box-shadow 0.5s ease !important;
     overflow: hidden !important;
     will-change: transform, opacity !important;
+    transform-origin: center center !important;
+    backface-visibility: hidden !important; /* Prevent flickering during animation */
 }
 
-/* Modal Show State */
+/* Modal Show State with background blur effect for catalog items */
 .esc-enhanced-catalog .esc-modal.show,
 .esc-modal.show {
     display: block !important; /* Changed from flex to block for better scrolling */
@@ -752,9 +761,21 @@ select {
 /* Content Animation When Modal is Shown */
 .esc-enhanced-catalog .esc-modal.show .esc-modal-content,
 .esc-modal.show .esc-modal-content {
-    transform: translateY(0) scale(1) !important;
+    transform: translateY(0) scale(1) rotateX(0) !important; /* Final 3D position */
     opacity: 1 !important;
+    box-shadow: 
+        0 40px 80px rgba(0, 0, 0, 0.2), 
+        0 20px 40px rgba(0, 0, 0, 0.12), 
+        0 10px 20px rgba(0, 0, 0, 0.08) !important; /* Enhanced shadow when fully visible */
     overflow-y: auto !important; /* Make content scrollable */
+}
+
+/* Background blur for seed cards when modal is open */
+.esc-modal.show ~ .esc-enhanced-catalog .esc-seed-list,
+.esc-modal.show ~ .esc-seed-grid {
+    filter: blur(6px) !important;
+    transform: scale(0.98) !important;
+    transition: filter 0.8s ease, transform 0.8s ease !important;
 }
 
 /* Added scrollable content container */
@@ -771,6 +792,28 @@ select {
     position: relative !important; /* Ensure proper positioning */
     display: flex !important;
     flex-direction: column !important;
+}
+
+/* Enhanced Seed Detail Header Animation */
+.esc-modal.show .esc-seed-detail-header {
+    animation: esc-slide-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes esc-slide-in {
+    0% { transform: translateY(-20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+/* Enhanced Seed Detail Content Animation */
+.esc-modal.show .esc-seed-detail-content {
+    animation: esc-fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards !important;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+@keyframes esc-fade-up {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
 /* Improved Detail Header */
@@ -807,10 +850,18 @@ select {
     animation: esc-fade-in 0.8s ease-out !important;
 }
 
-/* Subtle Image Zoom on Modal Show */
+/* Enhanced Banner Image Animation */
 .esc-modal.show .esc-seed-detail-banner img {
+    animation: esc-subtle-scale 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    transform-origin: center center !important;
+    opacity: 0.9;
     transform: scale(1.03) !important;
     filter: brightness(1.05) !important;
+}
+
+@keyframes esc-subtle-scale {
+    0% { transform: scale(1.1); opacity: 0.9; filter: blur(5px) brightness(1.03); }
+    100% { transform: scale(1.03); opacity: 1; filter: blur(0) brightness(1.05); }
 }
 
 /* Enhanced Overlay with Better Text Visibility */
@@ -934,6 +985,33 @@ select {
     margin-bottom: 15px;
     display: flex;
     flex-direction: column;
+    opacity: 0;
+    transform: translateY(15px);
+}
+
+.esc-modal.show .esc-seed-detail-field:nth-child(1) {
+    animation: esc-field-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards !important;
+}
+
+.esc-modal.show .esc-seed-detail-field:nth-child(2) {
+    animation: esc-field-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards !important;
+}
+
+.esc-modal.show .esc-seed-detail-field:nth-child(3) {
+    animation: esc-field-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards !important;
+}
+
+.esc-modal.show .esc-seed-detail-field:nth-child(4) {
+    animation: esc-field-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards !important;
+}
+
+.esc-modal.show .esc-seed-detail-field:nth-child(n+5) {
+    animation: esc-field-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.7s forwards !important;
+}
+
+@keyframes esc-field-in {
+    0% { opacity: 0; transform: translateY(15px); }
+    100% { opacity: 1; transform: translateY(0); }
 }
 
 .esc-seed-detail-field:last-child {
@@ -1134,6 +1212,48 @@ select {
     }
 }
 
+/* Additional Modal Animation Effects */
+
+/* Background blur for seed cards when modal is open */
+.esc-blurred {
+    filter: blur(6px) !important;
+    transform: scale(0.98) !important;
+    transition: filter 0.8s ease, transform 0.8s ease !important;
+}
+
+/* Modal closing animation */
+#esc-seed-detail-content.esc-closing {
+    animation: esc-fade-out 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes esc-fade-out {
+    0% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(20px); }
+}
+
+/* Modal open body state */
+body.esc-modal-open {
+    overflow: hidden !important;
+    height: 100% !important;
+}
+
+/* Animated shadow effect for seed detail sections */
+.esc-seed-detail-section {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease !important;
+    animation: esc-shadow-pulse 3s infinite alternate ease-in-out !important;
+}
+
+@keyframes esc-shadow-pulse {
+    0% { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05) !important; }
+    100% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important; }
+}
+
+/* Additional 3D effect for seed detail sections on hover */
+.esc-seed-detail-section:hover {
+    transform: translateY(-5px) scale(1.02) !important;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
 /* Better Print Styles */
 @media print {
     .esc-seed-card {
@@ -1324,6 +1444,10 @@ html body form:has(input[placeholder*="Search"]) {
     .esc-enhanced-catalog .esc-modal,
     .esc-modal {
         padding: 10px !important;
+        perspective: 800px !important; /* Reduced 3D perspective on mobile */
+        background: rgba(255, 255, 255, 0.5) !important; /* Slightly more opaque on mobile */
+        backdrop-filter: blur(8px) !important; /* Slightly less blur on mobile */
+        -webkit-backdrop-filter: blur(8px) !important;
     }
     
     /* Adjust modal content margins on mobile */
@@ -1332,6 +1456,7 @@ html body form:has(input[placeholder*="Search"]) {
         margin: 30px auto 20px !important;
         width: 98% !important;
         max-height: 95vh !important;
+        transform: translateY(30px) scale(0.95) rotateX(3deg) !important; /* Less dramatic 3D on mobile */
     }
     
     /* Reduce banner height further on mobile */
@@ -1365,5 +1490,19 @@ html body form:has(input[placeholder*="Search"]) {
     /* Ensure modal scroll works properly on mobile */
     #esc-seed-detail-content {
         max-height: calc(95vh - 30px) !important;
+    }
+    
+    /* Smoother animations on mobile */
+    .esc-modal.show .esc-seed-detail-field:nth-child(1),
+    .esc-modal.show .esc-seed-detail-field:nth-child(2),
+    .esc-modal.show .esc-seed-detail-field:nth-child(3),
+    .esc-modal.show .esc-seed-detail-field:nth-child(4),
+    .esc-modal.show .esc-seed-detail-field:nth-child(n+5) {
+        animation-duration: 0.4s !important; /* Slightly faster animations on mobile */
+    }
+    
+    /* Adjust blur effect for better mobile performance */
+    .esc-blurred {
+        filter: blur(4px) !important;
     }
 }
