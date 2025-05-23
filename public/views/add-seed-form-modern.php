@@ -7,13 +7,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Make sure modern form CSS is loaded first
 wp_enqueue_style('esc-modern-form', ESC_PLUGIN_URL . 'public/css/esc-modern-form.css', [], ESC_VERSION);
 
-// Enqueue enhanced AI results CSS and JS
-wp_enqueue_style('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/css/esc-ai-results-enhanced.css', ['esc-modern-form'], ESC_VERSION);
-wp_enqueue_script('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/js/esc-ai-results-enhanced.js', ['jquery'], ESC_VERSION, true);
+// Enqueue refactored CSS (includes consolidated fixes)
+wp_enqueue_style('esc-refactored', ESC_PLUGIN_URL . 'public/css/esc-refactored.css', ['esc-modern-form'], ESC_VERSION);
 
-// Enqueue fixes JS
-wp_enqueue_style('esc-ai-results-fixes', ESC_PLUGIN_URL . 'public/css/esc-ai-results-fixes.css', ['esc-modern-form'], ESC_VERSION);
-wp_enqueue_script('esc-ai-results-fixes', ESC_PLUGIN_URL . 'public/js/esc-ai-results-fixes.js', ['jquery'], ESC_VERSION, true);
+// TESTING CONSOLIDATED VERSION - Switch comments to toggle between versions
+// Original version (comment out when testing):
+// wp_enqueue_style('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/css/esc-ai-results-enhanced.css', ['esc-modern-form'], ESC_VERSION);
+// wp_enqueue_script('esc-ai-results-enhanced', ESC_PLUGIN_URL . 'public/js/esc-ai-results-enhanced.js', ['jquery'], ESC_VERSION, true);
+// wp_enqueue_style('esc-ai-results-fixes', ESC_PLUGIN_URL . 'public/css/esc-ai-results-fixes.css', ['esc-modern-form'], ESC_VERSION);
+// wp_enqueue_script('esc-ai-results-fixes', ESC_PLUGIN_URL . 'public/js/esc-ai-results-fixes.js', ['jquery'], ESC_VERSION, true);
+
+// Consolidated version (testing):
+wp_enqueue_script('esc-add-seed-modern-consolidated', ESC_PLUGIN_URL . 'public/js/esc-add-seed-modern-consolidated.js', ['jquery'], ESC_VERSION, true);
 
 // Prepare AJAX object data
 $ajax_object = [
@@ -28,60 +33,9 @@ $ajax_object = [
     'view_catalog_text' => __('View Catalog', 'erins-seed-catalog'),
 ];
 
-// Localize script for AJAX calls - for both scripts
-wp_localize_script('esc-ai-results-fixes', 'esc_ajax_object', $ajax_object);
-wp_localize_script('esc-ai-results-enhanced', 'esc_ajax_object', $ajax_object);
+// Localize script for AJAX calls - for the consolidated script
+wp_localize_script('esc-add-seed-modern-consolidated', 'escAjax', $ajax_object);
 
-// Add direct form submission handler
-wp_add_inline_script('esc-ai-results-enhanced', '
-document.addEventListener("DOMContentLoaded", function() {
-    console.log("Direct form handler added");
-    var form = document.getElementById("esc-add-seed-form");
-    var submitBtn = document.getElementById("esc-submit-seed");
-
-    if (form && submitBtn) {
-        submitBtn.addEventListener("click", function(e) {
-            e.preventDefault();
-            console.log("Submit button clicked directly");
-
-            // Get the form data
-            var formData = new FormData(form);
-            formData.append("action", "esc_add_seed");
-            formData.append("nonce", esc_ajax_object.nonce);
-
-            // Create AJAX request
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", esc_ajax_object.ajax_url, true);
-            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-
-            // Set up response handler
-            xhr.onload = function() {
-                if (xhr.status >= 200 && xhr.status < 400) {
-                    var response = JSON.parse(xhr.responseText);
-                    console.log("AJAX response:", response);
-
-                    if (response.success) {
-                        alert("Seed added successfully!");
-                        form.reset();
-                    } else {
-                        alert("Error: " + (response.data.message || "Unknown error"));
-                    }
-                } else {
-                    alert("Error: Server returned status " + xhr.status);
-                }
-            };
-
-            // Handle errors
-            xhr.onerror = function() {
-                alert("Error: Could not send request");
-            };
-
-            // Send the request
-            xhr.send(formData);
-        });
-    }
-});
-');
 ?>
 
 <div id="esc-add-seed-form-container" class="esc-container esc-modern-form">
